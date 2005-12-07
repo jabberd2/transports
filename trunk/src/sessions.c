@@ -630,7 +630,7 @@ GList *it;
 	}
 	while(s->resources) resource_remove((Resource *)s->resources->data,0);
 	if (s->connected && s->s && s->jid){
-		presence_send(s->s,NULL,s->user->jid,0,NULL,"Offline",0);
+		presence_send(s->s,NULL,s->user->jid,0,NULL,s->gg_status_descr,0);
 		for(it=s->user->contacts;it;it=it->next){
 			Contact *c=(Contact *)it->data;
 
