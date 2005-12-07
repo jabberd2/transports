@@ -255,7 +255,7 @@ User *user_load(const char *jid){
 char *fn,*njid;
 xmlnode xml,tag,t;
 char *uin,*ujid,*name,*password,*email,*locale;
-char *status,*offline_status,*invisible_status;
+char *status;
 int last_sys_msg=0,invisible=0,friends_only=0,ignore_unknown=0;
 unsigned int file_format_version=0;
 User *u;
@@ -314,12 +314,7 @@ char *data;
 	tag=xmlnode_get_tag(xml,"friendsonly");
 	if (tag!=NULL) friends_only=1;
 	tag=xmlnode_get_tag(xml,"invisible");
-	if (tag!=NULL) {
-	       	invisible=1;
-		invisible_status=xmlnode_get_data(tag);
-		if (invisible_status==NULL) invisible_status="";
-	}
-	else invisible_status=NULL;
+	if (tag!=NULL) invisible=1;
 	tag=xmlnode_get_tag(xml,"ignore_unknown");
 	if (tag!=NULL) ignore_unknown=1;
 	tag=xmlnode_get_tag(xml,"locale");
@@ -331,12 +326,6 @@ char *data;
 		if (status==NULL) status="";
 	}
 	else status=NULL;
-	tag=xmlnode_get_tag(xml,"offline_status");
-	if (tag!=NULL){
-	       	offline_status=xmlnode_get_data(tag);
-		if (offline_status==NULL) offline_status="";
-	}
-	else offline_status=NULL;
 	tag=xmlnode_get_tag(xml,"userlist");
 	contacts=NULL;
 	if (tag!=NULL){
@@ -423,8 +412,6 @@ char *data;
 	u->ignore_unknown=ignore_unknown;
 	u->locale=g_strdup(locale);
 	u->status=g_strdup(status);
-	u->offline_status=g_strdup(offline_status);
-	u->invisible_status=g_strdup(invisible_status);
 	u->contacts=contacts;
 	xmlnode_free(xml);
 	g_assert(users_jid!=NULL);
@@ -466,8 +453,6 @@ Contact *c;
 	g_free(u->password);
 	g_free(u->locale);
 	g_free(u->status);
-	g_free(u->offline_status);
-	g_free(u->invisible_status);
 	g_free(u);
 	return 0;
 }

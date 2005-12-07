@@ -678,11 +678,9 @@ char *status_descr;
 	}
 	status=status_jabber_to_gg(r->available,r->show,r->status);
 	status_descr=r->status;
-	if (!r->available && s->user->offline_status) status_descr=s->user->offline_status;
-	else if (s->user->status) status_descr=s->user->status;
+	if (s->user->status) status_descr=s->user->status;
 	if (s->user->invisible || r->available==-1){
 	       	status=GG_STATUS_INVISIBLE;
-		if (s->user->invisible_status) status_descr=s->user->invisible_status;
 	}
 	else if (s->user->friends_only) status|=GG_STATUS_FRIENDS_MASK;
 

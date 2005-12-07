@@ -58,21 +58,16 @@ void message_unignore(struct stream_s *s,const char *from, const char *to,
 				const char *args, xmlnode msg);
 void message_status(struct stream_s *s,const char *from, const char *to,
 				const char *args, xmlnode msg);
-void message_offline_status(struct stream_s *s,const char *from, const char *to,
-				const char *args, xmlnode msg);
 
 MsgCommand msg_commands[]={
 	{"get roster","gr",N_("Download user list from server"),message_get_roster,0},
 	{"friends only","fo",N_("\"Only for friends\" mode"),message_friends_only,0},
-	{"invisible","iv",N_("\"Invisible\" mode. As an argument"
-		" you should pass 'on', 'off' or a status message to be shown"
-		" when invisible."),message_invisible,0},
+	{"invisible","iv",N_("\"Invisible\" mode"),message_invisible,0},
 	{"locale","loc",N_("Set user locale (language)"),message_locale,0},
 	{"ignore_unknown","iu",N_("Ignore messages from unknown users"),message_ignore_unknown,0},
 	{"ignore","ig",N_("Add a user to, or view the ignore list"),message_ignore,0},
 	{"unignore","ui",N_("Remove a user from, or view the ignore list"),message_unignore,0},
 	{"status","st",N_("Status message to show to GG users. Use 'off' to use Jabber status."),message_status,0},
-	{"offline_status","os",N_("Status message to show to GG users when not available. Use 'off' to use the one set with the command described above."),message_offline_status,0},
 	{NULL,NULL,NULL,0},
 };
 
@@ -335,8 +330,7 @@ void message_invisible(struct stream_s *stream,const char *from, const char *to,
 				const char *args, xmlnode msg){
 Session *session;
 User *user;
-char *m;
-int on;
+gboolean on;
 
 	session=session_get_by_jid(from,stream,0);
 	if (session!=NULL)
@@ -344,34 +338,22 @@ int on;
 	else
 		user=user_get_by_jid(from);
 
-	if (args) {
-		if (g_strcasecmp(args,"on")==0) {
-		       	on=TRUE;
-			g_free(user->invisible_status);
-			user->invisible_status=NULL;
-		}
-		else if (g_strcasecmp(args,"off")==0) {
-		       	on=FALSE;
-			g_free(user->invisible_status);
-			user->invisible_status=NULL;
-		}
-		else {
-		       	on=TRUE;
-			g_free(user->invisible_status);
-			user->invisible_status=g_strndup(args,70);
-		}
-	}
+	if (args && g_strcasecmp(args,"on")==0) on=TRUE;
+	else if (args && g_strcasecmp(args,"off")==0) on=FALSE;
 	else on=!user->invisible;
 
 	user->invisible=on;
 
-	m=g_strdup_printf(_("invisible: %s status: %s%s%s"),
-			(on?_("on"):_("off")),
-			(user->invisible_status?"`":""),
-			(user->invisible_status?user->invisible_status:_("not set")),
-			(user->invisible_status?"'":""));
-	message_send(stream,to,from,1,m,0);
-	g_free(m);
+	if (user->invisible==on){
+		message_send(stream,to,from,1,_("No change."),0);
+		return;
+	}
+	user->invisible=on;
+
+	if (on)
+		message_send(stream,to,from,1,_("invisible: on"),0);
+	else
+		message_send(stream,to,from,1,_("invisible: off"),0);
 
 	if (session!=NULL) session_send_status(session);
 
@@ -408,36 +390,6 @@ char *m;
 	user_save(user);
 }
 
-void message_offline_status(struct stream_s *stream,const char *from, const char *to,
-				const char *args, xmlnode msg){
-Session *session;
-User *user;
-char *m;
-
-	session=session_get_by_jid(from,stream,0);
-	if (session!=NULL)
-		user=session->user;
-	else
-		user=user_get_by_jid(from);
-
-	g_free(user->offline_status);
-	if (args) {
-		if (!g_strcasecmp(args,"off")) user->offline_status=NULL;
-		else user->offline_status=g_strndup(args,70);
-	}
-	else user->offline_status=NULL;
-
-	m=g_strdup_printf(_("offline status: %s%s%s"),
-			(user->offline_status?"`":""),
-			(user->offline_status?user->offline_status:_("not set")),
-			(user->offline_status?"'":""));
-	message_send(stream,to,from,1,m,0);
-	g_free(m);
-
-	if (session!=NULL) session_send_status(session);
-	user_save(user);
-}
-
 void message_locale(struct stream_s *stream,const char *from, const char *to,
 				const char *args, xmlnode msg){
 Session *session;
@@ -465,7 +417,7 @@ void message_ignore_unknown(struct stream_s *stream,const char *from, const char
 				const char *args, xmlnode msg){
 Session *session;
 User *user;
-int on;
+gboolean on;
 
 	session=session_get_by_jid(from,stream,0);
 	if (session!=NULL)
