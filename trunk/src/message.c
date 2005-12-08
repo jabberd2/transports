@@ -337,12 +337,9 @@ gboolean on;
 		user=session->user;
 	else
 		user=user_get_by_jid(from);
-
 	if (args && g_strcasecmp(args,"on")==0) on=TRUE;
 	else if (args && g_strcasecmp(args,"off")==0) on=FALSE;
 	else on=!user->invisible;
-
-	user->invisible=on;
 
 	if (user->invisible==on){
 		message_send(stream,to,from,1,_("No change."),0);
