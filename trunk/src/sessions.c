@@ -485,7 +485,7 @@ time_t timestamp;
 			s->connected=1;
 			session_send_status(s);
 			if (s->user->contacts) session_send_notify(s);
-			presence_send(s->s,NULL,s->user->jid,1,NULL,s->gg_status_descr,0);
+			presence_send(s->s,NULL,s->user->jid,s->user->invisible?-1:1,NULL,s->gg_status_descr,0);
 
 			if (s->timeout_func) g_source_remove(s->timeout_func);
 			s->ping_timeout_func=
@@ -680,7 +680,11 @@ char *status_descr;
 	status_descr=r->status;
 	if (s->user->status) status_descr=s->user->status;
 	if (s->user->invisible || r->available==-1){
-	       	status=GG_STATUS_INVISIBLE;
+		if(status_descr){
+		       	status=GG_STATUS_INVISIBLE_DESCR;
+		}else{
+		       	status=GG_STATUS_INVISIBLE;
+		}
 	}
 	else if (s->user->friends_only) status|=GG_STATUS_FRIENDS_MASK;
 
@@ -693,7 +697,7 @@ char *status_descr;
 	s->gg_status_descr=g_strdup(status_descr);
 	s->gg_status=status;
 	if (send_presence) {
-		presence_send(s->s,NULL,s->user->jid,r->available,r->show,s->gg_status_descr,0);
+		presence_send(s->s,NULL,s->user->jid,s->user->invisible?-1:r->available,r->show,s->gg_status_descr,0);
 	}
 	return 1;
 }
@@ -855,11 +859,13 @@ int r;
 	r=session_make_status(s, s->connected);
 	if (r==-1) return -1;
 	if (r==0) return 0;
-	debug(L_("Changing gg status to %i"),s->gg_status);
-	if (s->gg_status_descr!=NULL)
+	if (s->gg_status_descr!=NULL){
+		debug(L_("Changing gg status to %i (%s)"),s->gg_status,s->gg_status_descr);
 		gg_change_status_descr(s->ggs,s->gg_status,s->gg_status_descr);
-	else
+	}else{
+		debug(L_("Changing gg status to %i"),s->gg_status);
 		gg_change_status(s->ggs,s->gg_status);
+	}
 	return 0;
 }
 

@@ -176,7 +176,7 @@ xmlnode n;
 		g_free(jid);
 	}
 	xmlnode_put_attrib(pres,"to",to);
-
+debug("SMK!!!! available: %d", available);
 	if (available==-1) xmlnode_put_attrib(pres,"type","invisible");
 	else if (!available) xmlnode_put_attrib(pres,"type","unavailable");
 
@@ -404,7 +404,7 @@ GTime timestamp;
 			}
 			else{
 				Resource *r=session_get_cur_resource(s);
-				if (r) presence_send(stream,NULL,s->user->jid,r->available,
+				if (r) presence_send(stream,NULL,s->user->jid,s->user->invisible?-1:r->available,
 							r->show,r->status,0);
 			}
 		}
