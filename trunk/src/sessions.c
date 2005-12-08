@@ -726,7 +726,6 @@ Resource *r;
 static int session_try_login(Session *s){
 struct gg_login_params login_params;
 GgServer *serv;
-int r;
 
 	g_warning(N_("Trying to log in on server %u"),
 			g_list_position(gg_servers, s->current_server));
