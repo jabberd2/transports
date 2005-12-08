@@ -372,7 +372,7 @@ char *m;
 	g_free(user->status);
 	if (args) {
 		if (!g_strcasecmp(args,"off")) user->status=NULL;
-		else user->status=g_strndup(args,70);
+		else user->status=g_strndup(args,GG_STATUS_DESCR_MAXSIZE);
 	}
 	else user->status=NULL;
 
