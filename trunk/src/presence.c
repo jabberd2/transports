@@ -176,7 +176,7 @@ xmlnode n;
 		g_free(jid);
 	}
 	xmlnode_put_attrib(pres,"to",to);
-debug("SMK!!!! available: %d", available);
+
 	if (available==-1) xmlnode_put_attrib(pres,"type","invisible");
 	else if (!available) xmlnode_put_attrib(pres,"type","unavailable");
 
