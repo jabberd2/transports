@@ -330,6 +330,7 @@ void message_invisible(struct stream_s *stream,const char *from, const char *to,
 				const char *args, xmlnode msg){
 Session *session;
 User *user;
+Resource *r;
 gboolean on;
 
 	session=session_get_by_jid(from,stream,0);
@@ -353,6 +354,9 @@ gboolean on;
 		message_send(stream,to,from,1,_("invisible: off"),0);
 
 	if (session!=NULL) session_send_status(session);
+	r=session_get_cur_resource(session);
+	if ( r )
+		presence_send(stream,NULL,user->jid,user->invisible?-1:r->available,r->show,session->gg_status_descr,0);
 
 	user_save(user);
 }
