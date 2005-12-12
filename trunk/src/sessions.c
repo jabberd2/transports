@@ -676,9 +676,8 @@ char *status_descr;
 		s->gg_status=status_jabber_to_gg(0,NULL,s->gg_status_descr);
 		return -1;
 	}
-	status=status_jabber_to_gg(r->available,r->show,r->status);
-	status_descr=r->status;
-	if (s->user->status) status_descr=s->user->status;
+	status_descr=s->user->status?s->user->status:r->status;
+	status=status_jabber_to_gg(r->available,r->show,status_descr);
 	if (s->user->invisible || r->available==-1){
 		if(status_descr){
 		       	status=GG_STATUS_INVISIBLE_DESCR;
@@ -689,9 +688,9 @@ char *status_descr;
 	else if (s->user->friends_only) status|=GG_STATUS_FRIENDS_MASK;
 
 	if (status==s->gg_status){
-		if (r->status!=NULL && s->gg_status_descr!=NULL
+		if (status_descr!=NULL && s->gg_status_descr!=NULL
 				&& !strcmp(status_descr,s->gg_status_descr)) return 0;
-		if (r->status==NULL && s->gg_status_descr==NULL) return 0;
+		if (status_descr==NULL && s->gg_status_descr==NULL) return 0;
 	}
 	g_free(s->gg_status_descr);
 	s->gg_status_descr=g_strdup(status_descr);

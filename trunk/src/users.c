@@ -184,7 +184,7 @@ xmlnode xml,tag,ctag,userlist;
 	}
 	if (u->status){
 		tag=xmlnode_insert_tag(xml,"status");
-		xmlnode_insert_cdata(tag,u->status,-1);
+		xmlnode_insert_cdata(tag,to_utf8(u->status),-1);
 	}
 
 	if (u->contacts){
@@ -415,7 +415,7 @@ char *data;
 	u->invisible=invisible;
 	u->ignore_unknown=ignore_unknown;
 	u->locale=g_strdup(locale);
-	u->status=g_strdup(status);
+	u->status=g_strdup(from_utf8(status));
 	u->contacts=contacts;
 	xmlnode_free(xml);
 	g_assert(users_jid!=NULL);

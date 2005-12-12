@@ -376,13 +376,13 @@ char *m;
 	g_free(user->status);
 	if (args) {
 		if (!g_strcasecmp(args,"off")) user->status=NULL;
-		else user->status=g_strndup(args,GG_STATUS_DESCR_MAXSIZE);
+		else user->status=g_strndup(from_utf8(args),GG_STATUS_DESCR_MAXSIZE);
 	}
 	else user->status=NULL;
 
 	m=g_strdup_printf(_("status: %s%s%s"),
 			(user->status?"`":""),
-			(user->status?user->status:_("not set")),
+			(user->status?to_utf8(user->status):_("not set")),
 			(user->status?"'":""));
 	message_send(stream,to,from,1,m,0);
 	g_free(m);
