@@ -873,8 +873,8 @@ Session *s=r->session;
 
 	debug(L_("Removing resource %s of %s"),r->name,s->jid);
 	s->resources=g_list_remove(s->resources,r);
-	if (!s->resources){
-		/* HACK! when last resource is removed set session description to it's status */
+	/* HACK! when last resource is removed set session description to it's status */
+	if (!s->resources && !s->user->status){
 		g_free(s->gg_status_descr);
 		if(r->status) s->gg_status_descr=g_strdup(r->status);
 		else s->gg_status_descr=NULL;
