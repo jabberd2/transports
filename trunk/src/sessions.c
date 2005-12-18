@@ -977,8 +977,8 @@ static int compute_notify_type(Contact *c){
 int notify_type=0;
 
 	if (c->blocked) return GG_USER_BLOCKED;
-	if (c->got_online) notify_type|=GG_USER_NORMAL-GG_USER_OFFLINE;
-	if (c->got_probe || c->subscribe==SUB_TO || c->subscribe==SUB_BOTH) notify_type|=GG_USER_OFFLINE;
+	if (c->got_online || c->subscribe==SUB_FROM || c->subscribe==SUB_BOTH) notify_type|=GG_USER_FRIEND;
+	if (c->got_probe || c->subscribe==SUB_TO || c->subscribe==SUB_BOTH) notify_type|=GG_USER_BUDDY;
 
 	return notify_type;
 }
