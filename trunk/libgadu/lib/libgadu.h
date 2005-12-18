@@ -944,7 +944,7 @@ int gg_image_queue_remove(struct gg_session *s, struct gg_image_queue *q, int fr
 #define GG_DEFAULT_TIMEOUT 30
 #define GG_HAS_AUDIO_MASK 0x40000000
 #define GG_ERA_OMNIX_MASK 0x04000000
-#define GG_LIBGADU_VERSION "CVS"
+#define GG_LIBGADU_VERSION "20051217"
 
 #define GG_DEFAULT_DCC_PORT 1550
 
@@ -1083,8 +1083,10 @@ struct gg_notify {
 } GG_PACKED;
 
 #define GG_USER_OFFLINE 0x01	/* bêdziemy niewidoczni dla u¿ytkownika */
-#define GG_USER_NORMAL 0x03	/* zwyk³y u¿ytkownik */
+#define GG_USER_NORMAL  0x03	/* zwyk³y u¿ytkownik */
 #define GG_USER_BLOCKED 0x04	/* zablokowany u¿ytkownik */
+#define GG_USER_BUDDY   0x01	/* Ka¿dy u¿ytkownik dodany do listy kontaktów */
+#define GG_USER_FRIEND  0x02	/* U¿ytkownik, dla którego jeste¶my widoczni w trybie ,,tylko dla przyjació³'' */
 
 #define GG_LIST_EMPTY 0x0012
 	

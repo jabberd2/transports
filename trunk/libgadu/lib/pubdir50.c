@@ -1,4 +1,4 @@
-/* $Id: pubdir50.c,v 1.14 2005/03/20 00:51:24 szalik Exp $ */
+/* $Id: pubdir50.c,v 1.15 2005/12/05 17:09:02 wojtekka Exp $ */
 
 /*
  *  (C) Copyright 2003 Wojtek Kaniewski <wojtekka@irc.pl>
@@ -62,7 +62,7 @@ gg_pubdir50_t gg_pubdir50_new(int type)
  *
  * 0/-1
  */
-int gg_pubdir50_add_n(gg_pubdir50_t req, int num, const char *field, const char *value)
+static int gg_pubdir50_add_n(gg_pubdir50_t req, int num, const char *field, const char *value)
 {
 	struct gg_pubdir50_entry *tmp = NULL, *entry;
 	char *dupfield, *dupvalue;

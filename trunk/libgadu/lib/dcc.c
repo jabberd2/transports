@@ -1,4 +1,4 @@
-/* $Id: dcc.c,v 1.69 2005/05/22 08:41:54 wojtekka Exp $ */
+/* $Id: dcc.c,v 1.70 2005/12/05 17:09:01 wojtekka Exp $ */
 
 /*
  *  (C) Copyright 2001-2002 Wojtek Kaniewski <wojtekka@irc.pl>
@@ -92,7 +92,7 @@ int gg_dcc_request(struct gg_session *sess, uin_t uin)
  *  - unix - czas w postaci unixowej
  *  - filetime - czas w postaci windowsowej
  */
-void gg_dcc_fill_filetime(uint32_t ut, uint32_t *ft)
+static void gg_dcc_fill_filetime(uint32_t ut, uint32_t *ft)
 {
 #ifdef __GG_LIBGADU_HAVE_LONG_LONG
 	unsigned long long tmp;
