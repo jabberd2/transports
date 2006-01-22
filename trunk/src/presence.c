@@ -235,7 +235,11 @@ Contact *c;
 	if (jid_is_me(to)){
 		debug(L_("Presence subscribe request sent to me"));
 		if (!u) presence_send_unsubscribed(stream,to,from);
-		else presence_send_subscribed(stream,to,from);
+		else {
+			presence_send_subscribed(stream,to,from);
+			/* workaround for subscription 'from' removal */
+			presence_send_subscribe(stream,to,from);
+		}
 		return 0;
 	}
 	if (!u){
