@@ -29,7 +29,6 @@ typedef struct resource_s{
 	char *show;
 	char *status;
 	struct session_s *session;
-	guint disconnect_delay_func;
 }Resource;
 
 typedef struct session_s{

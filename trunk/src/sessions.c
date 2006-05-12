@@ -38,7 +38,6 @@
 
 static int conn_timeout=30;
 static int pong_timeout=30;
-static int disconnect_delay=2;
 static int ping_interval=10;
 static int reconnect=0;
 static GList *gg_servers=NULL;
@@ -142,8 +141,6 @@ GgServer *server;
 	if (i>0) conn_timeout=i;
 	i=config_load_int("pong_timeout",0);
 	if (i>0) pong_timeout=i;
-	i=config_load_int("disconnect_delay",0);
-	if (i>0) disconnect_delay=i;
 	i=config_load_int("ping_interval",0);
 	if (i>0) ping_interval=i;
 	i=config_load_int("reconnect",0);
@@ -881,10 +878,6 @@ Session *s=r->session;
 		if(r->status) s->gg_status_descr=g_strdup(r->status);
 		else s->gg_status_descr=NULL;
 	}
-	if (r->disconnect_delay_func){
-		g_source_remove(r->disconnect_delay_func);
-		r->disconnect_delay_func=0;
-	}
 	if (r->name) g_free(r->name);
 	if (r->show) g_free(r->show);
 	if (r->status) g_free(r->status);
@@ -895,18 +888,6 @@ Session *s=r->session;
 		return;
 	}
 }
-
-gboolean delayed_disconnect(gpointer data){
-Resource *r=(Resource *)data;
-
-	g_assert(r!=NULL);
-
-	debug(L_("Delayed removal of resource %s of %s"),r->name,r->session->jid);
-	r->disconnect_delay_func=0;
-	resource_remove(r,1);
-	return FALSE;
-}
-
 
 int session_set_status(Session *s,const char *resource,int available,
 			const char *show,const char *status,int priority){
@@ -939,21 +920,11 @@ int num_resources=0;
 			g_warning(N_("Unknown resource %s of %s"),resource?resource:"NULL",s->jid);
 			return 0;
 		}
-		if (disconnect_delay>0 && r->available && num_resources==1){
-			r->available=0;
-			if (status) r->status=g_strndup(status,GG_STATUS_DESCR_MAXSIZE);
-			r->priority=-1;
-			debug(L_("Delaying removal of resource %s of %s"),resource?resource:"NULL",s->jid);
-			r->disconnect_delay_func=g_timeout_add(disconnect_delay*1000,delayed_disconnect,r);
-		}
 		else resource_remove(r,1);
 		return 0;
 	}
 	else{
-		if ( r ){
-			if (r->disconnect_delay_func) g_source_remove(r->disconnect_delay_func);
-		}
-		else{
+		if (!r){
 			debug(L_("New resource %s of %s"),resource?resource:"NULL",s->jid);
 			r=g_new0(Resource,1);
 			if (resource) r->name=g_strdup(resource);

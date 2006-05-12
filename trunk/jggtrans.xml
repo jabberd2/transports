@@ -126,10 +126,6 @@
       negative value means, that jggtrans should terminate -->
       <restart_timeout>60</restart_timeout>
 
- <!-- Delay between the unavailable presence is received from user and loggin out 
-      from GG - for nice <presence type="invisible"/> support -->
-      <disconnect_delay>5</disconnect_delay>
-
  <!-- list of gg servers to use.
  	<hub/> means "use GG hub to find server"
       	<server/> tag should contain server address and may contain "port"
