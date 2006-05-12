@@ -21,6 +21,7 @@
 #define users_h
 
 #include <libgadu.h>
+#include "encoding.h"
 
 #define USER_FILE_FORMAT_VERSION 0x02020001U   /* first change after 2.2.0 */
 
