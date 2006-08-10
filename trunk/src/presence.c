@@ -482,7 +482,7 @@ Session *s;
 
 	s=session_get_by_jid(from,NULL,0);
 	if (!s){
-		g_warning(N_("Couldn't find session for '%s'"),from);
+		//g_warning(N_("Couldn't find session for '%s'"),from);
 		return -1;
 	}
 
@@ -503,7 +503,7 @@ Session *s;
 
 	s=session_get_by_jid(from,NULL,0);
 	if (!s){
-		g_warning(N_("Couldn't find session for '%s'"),from);
+		//g_warning(N_("Couldn't find session for '%s'"),from);
 		return -1;
 	}
 
