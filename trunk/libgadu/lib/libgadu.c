@@ -1,10 +1,11 @@
-/* $Id: libgadu.c,v 1.148 2005/07/16 11:56:59 wojtekka Exp $ */
+/* $Id: libgadu.c,v 1.151 2006/06/10 20:56:23 gophi Exp $ */
 
 /*
- *  (C) Copyright 2001-2003 Wojtek Kaniewski <wojtekka@irc.pl>
+ *  (C) Copyright 2001-2006 Wojtek Kaniewski <wojtekka@irc.pl>
  *                          Robert J. Wo¼ny <speedy@ziew.org>
  *                          Arkadiusz Mi¶kiewicz <arekm@pld-linux.org>
  *                          Tomasz Chiliñski <chilek@chilan.com>
+ *                          Adam Wysocki <gophi@ekg.chmurka.net>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License Version
@@ -41,6 +42,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <signal.h>
 #include <unistd.h>
 #ifdef __GG_LIBGADU_HAVE_OPENSSL
 #  include <openssl/err.h>
@@ -72,7 +74,7 @@ static char rcsid[]
 #ifdef __GNUC__
 __attribute__ ((unused))
 #endif
-= "$Id: libgadu.c,v 1.148 2005/07/16 11:56:59 wojtekka Exp $";
+= "$Id: libgadu.c,v 1.151 2006/06/10 20:56:23 gophi Exp $";
 #endif 
 
 /*
@@ -208,6 +210,8 @@ int gg_resolve(int *fd, int *pid, const char *hostname)
 	}
 
 	if (!res) {
+		close(pipes[0]);
+
 		if ((a.s_addr = inet_addr(hostname)) == INADDR_NONE) {
 			struct in_addr *hn;
 		
@@ -951,8 +955,10 @@ void gg_free_session(struct gg_session *sess)
 		sess->resolver = NULL;
 	}
 #else
-	if (sess->pid != -1)
+	if (sess->pid != -1) {
+		kill(sess->pid, SIGTERM);
 		waitpid(sess->pid, NULL, WNOHANG);
+	}
 #endif
 
 	if (sess->fd != -1)
@@ -1083,8 +1089,7 @@ void gg_logoff(struct gg_session *sess)
 
 	gg_debug(GG_DEBUG_FUNCTION, "** gg_logoff(%p);\n", sess);
 
-	if (GG_S_NA(sess->status & ~GG_STATUS_FRIENDS_MASK))
-		gg_change_status(sess, GG_STATUS_NOT_AVAIL);
+	gg_change_status(sess, GG_STATUS_NOT_AVAIL | (sess->status & ~GG_STATUS_FRIENDS_MASK));
 
 #ifdef __GG_LIBGADU_HAVE_OPENSSL
 	if (sess->ssl)
@@ -1099,6 +1104,7 @@ void gg_logoff(struct gg_session *sess)
 	}
 #else
 	if (sess->pid != -1) {
+		kill(sess->pid, SIGTERM);
 		waitpid(sess->pid, NULL, WNOHANG);
 		sess->pid = -1;
 	}
