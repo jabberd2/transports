@@ -80,7 +80,7 @@ przesy³anych miêdzy klientem a serwerem.
 
 <p>
 Najnowsza wersja opisu protoko³u znajduje siê pod adresem
-<a href="http://dev.null.pl/ekg/docs/protocol.html">http://dev.null.pl/ekg/docs/protocol.html</a>.
+<a href="http://ekg.chmurka.net/docs/protocol.html">http://ekg.chmurka.net/docs/protocol.html</a>.
 </p>
 
 <hr />
@@ -355,11 +355,14 @@ Je¶li autoryzacja siê powiedzie, dostaniemy w odpowiedzi pakiet:
 </div>
 
 <p>
-o zerowej d³ugo¶ci lub pakiet:
+o d³ugo¶ci równej 0 lub 1 (dla wersji klienta powy¿ej 6.0 (build 140) 
+w pakiecie bêdzie znajdowa³o siê jednobajtowe pole o warto¶ci 0x1F, 
+którego przeznaczenie nie jest jeszcze poznane). Mo¿emy tak¿e dostaæ 
+pakiet:
 </p>
 
 <div class="c">
-<pre>#define GG_NEED_EMAIL 0x14</pre>
+<pre>#define GG_NEED_EMAIL 0x0014</pre>
 </div>
 
 <p>
@@ -912,8 +915,9 @@ Je¶li serwer zechce nas roz³±czyæ, wy¶le wcze¶niej pusty pakiet:
 
 <p>
 Ma to miejsce, gdy próbowano zbyt wiele razy po³±czyæ siê z nieprawid³owym
-has³em, lub gdy równocze¶nie po³±czy siê drugi klient z tym samym numerem
-(nowe po³±czenie ma wy¿szy priorytet).
+has³em (wtedy pakiet zostanie wys³any w odpowiedzi na GG_LOGIN60), lub gdy 
+równocze¶nie po³±czy siê drugi klient z tym samym numerem (nowe po³±czenie 
+ma wy¿szy priorytet).
 </p>
 
 <hr />
@@ -1377,12 +1381,20 @@ Je¶li wszystko przebieg³o poprawnie, serwer odpowie:
 </p>
 
 <div class="http">
-<pre>reg_success:<b>UIN</b></pre>
+<pre>Tokens okregisterreply_packet.reg.dwUserId=<b>UIN</b></pre>
 </div>
 
 <p>
 Gdzie <tt><b>UIN</b></tt> to nowy numer, który w³a¶nie otrzymali¶my.
 </p>
+
+<p>
+Je¶li zosta³ podany nieprawid³owy token, serwer odpowie:
+</p>
+
+<div class="http">
+<pre>bad_tokenval</pre>
+</div>
 
 <hr />
 
@@ -1811,7 +1823,11 @@ wiêc zamykamy po³±czenie. Je¶li nie, to wracamy do kroku 3.
 <h2>4. Autorzy</h2>
 
 <p>
-Autorami powy¿szego opisu s±:
+Lista autorów tego tekstu znajduje siê poni¿ej. Ich adresy e-mail <b>nie
+s³u¿±</b> do zadawania pytañ o podstawy programowania albo jak siê
+po³±czyæ z serwerem i co zrobiæ dalej. Je¶li masz pytania dotycz±ce protoko³u,
+napisz na listê dyskusyjn±
+<a href="http://lists.ziew.org/mailman/listinfo/ekg-devel">ekg-devel</a>.
 </p>
 
 <ul>
@@ -1843,12 +1859,16 @@ Autorami powy¿szego opisu s±:
 	<li><b>Walerian Soko³owski</b>: pierwsza wersja opisu protoko³u
 	bezpo¶rednich po³±czeñ.</li>
 	<li><b>Nikodem</b> (n-d%tlen.pl): flagi rodzaju u¿ytkownika.</li>
+	<li><b>Adam Wysocki</b> (gophi%ekg.chmurka.net): poprawki, utrzymanie 
+	wszystkiego w porz±dku.</li>
+	<li><b>Marcin Krupowicz</b> (marcin.krupowicz%gmail.com): informacja na 
+	temat tego, ¿e pakiet GG_LOGIN_OK nie zawsze jest zerowej d³ugo¶ci.</li>
 </ul>
 
 <hr />
 
 <font color="silver">
-$Id: protocol.html,v 1.74 2005/11/19 16:21:11 gophi Exp $
+$Id: protocol.html,v 1.80 2006/06/10 20:56:21 gophi Exp $
 </font>
 
 </td></tr></table>
