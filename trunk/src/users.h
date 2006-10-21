@@ -1,7 +1,7 @@
 /* $Id: users.h,v 1.20 2003/06/27 14:06:51 jajcus Exp $ */
 
 /*
- *  (C) Copyright 2002-2005 Jacek Konieczny [jajcus(a)jajcus,net]
+ *  (C) Copyright 2002-2006 Jacek Konieczny [jajcus(a)jajcus,net]
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License Version 2 as
@@ -21,9 +21,8 @@
 #define users_h
 
 #include <libgadu.h>
-#include "encoding.h"
 
-#define USER_FILE_FORMAT_VERSION 0x02020001U   /* first change after 2.2.0 */
+#define USER_FILE_FORMAT_VERSION 0x02020101U   /* first change after 2.2.1 */
 
 typedef enum subscription_type_e {
 	SUB_UNDEFINED=0,
@@ -62,6 +61,7 @@ typedef struct user_s{
 	gboolean ignore_unknown;
 	char *locale;
 	char * status;
+	SubscriptionType subscribe;
 
 	int confirmed;
 	int refcount;

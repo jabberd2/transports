@@ -1,7 +1,7 @@
 /* $Id: jabber.c,v 1.24 2004/04/13 17:44:07 jajcus Exp $ */
 
 /*
- *  (C) Copyright 2002-2005 Jacek Konieczny [jajcus(a)jajcus,net]
+ *  (C) Copyright 2002-2006 Jacek Konieczny [jajcus(a)jajcus,net]
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License Version 2 as
@@ -31,6 +31,7 @@ Stream *stream=NULL;
 char *stream_id=NULL;
 const char *secret;
 const char *my_name;
+int bare_domain = 0;
 int stop_it;
 
 enum jabber_state_e jabber_state;
@@ -223,6 +224,9 @@ xmlnode node;
 	my_name=xmlnode_get_attrib(node,"jid");
 	if (!my_name)
 		g_error(L_("<service/> without \"jid\" in config file"));
+
+	node=xmlnode_get_tag(config, "bare_domain");
+	if (node) bare_domain=1;
 
 	server=config_load_string("connect/ip");
 	if (!server)

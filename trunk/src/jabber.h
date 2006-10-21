@@ -1,7 +1,7 @@
 /* $Id: jabber.h,v 1.11 2003/01/15 08:04:56 jajcus Exp $ */
 
 /*
- *  (C) Copyright 2002-2005 Jacek Konieczny [jajcus(a)jajcus,net]
+ *  (C) Copyright 2002-2006 Jacek Konieczny [jajcus(a)jajcus,net]
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License Version 2 as
@@ -37,10 +37,11 @@ enum jabber_state_e{
 extern enum jabber_state_e jabber_state;
 
 
-extern const char *my_name;
+extern const char *my_name;		/* transport domain name */
 extern char *register_instructions;
 extern char *search_instructions;
 extern char *gateway_desc;
 extern char *gateway_prompt;
+extern int bare_domain;			/* when not "0" no "/registered" will be used in transport JID */
 
 #endif

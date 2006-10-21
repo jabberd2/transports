@@ -1,7 +1,7 @@
 /* $Id: message.c,v 1.46 2004/10/27 20:50:14 jajcus Exp $ */
 
 /*
- *  (C) Copyright 2002-2005 Jacek Konieczny [jajcus(a)jajcus,net]
+ *  (C) Copyright 2002-2006 Jacek Konieczny [jajcus(a)jajcus,net]
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License Version 2 as
@@ -67,7 +67,7 @@ MsgCommand msg_commands[]={
 	{"ignore_unknown","iu",N_("Ignore messages from unknown users"),message_ignore_unknown,0},
 	{"ignore","ig",N_("Add a user to, or view the ignore list"),message_ignore,0},
 	{"unignore","ui",N_("Remove a user from, or view the ignore list"),message_unignore,0},
-	{"status","st",N_("Status message to show to GG users. Use 'st off' to use Jabber status."),message_status,0},
+	{"status","st",N_("Status message to show to GG users. Use 'off' to use Jabber status."),message_status,0},
 	{NULL,NULL,NULL,0},
 };
 

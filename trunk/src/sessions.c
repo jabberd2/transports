@@ -1,7 +1,7 @@
 /* $Id: sessions.c,v 1.105 2004/06/11 07:19:11 smoku Exp $ */
 
 /*
- *  (C) Copyright 2002-2005 Jacek Konieczny [jajcus(a)jajcus,net]
+ *  (C) Copyright 2002-2006 Jacek Konieczny [jajcus(a)jajcus,net]
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License Version 2 as
@@ -681,7 +681,7 @@ char *status_descr;
 		if(status_descr){
 		       	status=GG_STATUS_INVISIBLE_DESCR;
 		}else{
-		       	status=GG_STATUS_INVISIBLE;
+			status=GG_STATUS_INVISIBLE;
 		}
 	}
 	else if (s->user->friends_only) status|=GG_STATUS_FRIENDS_MASK;

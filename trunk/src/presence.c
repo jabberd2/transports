@@ -1,7 +1,7 @@
 /* $Id: presence.c,v 1.53 2004/04/13 17:44:07 jajcus Exp $ */
 
 /*
- *  (C) Copyright 2002-2005 Jacek Konieczny [jajcus(a)jajcus,net]
+ *  (C) Copyright 2002-2006 Jacek Konieczny [jajcus(a)jajcus,net]
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License Version 2 as
@@ -234,12 +234,17 @@ Contact *c;
 	u=user_get_by_jid(from);
 	if (jid_is_me(to)){
 		debug(L_("Presence subscribe request sent to me"));
-		if (!u) presence_send_unsubscribed(stream,to,from);
-		else {
-			presence_send_subscribed(stream,to,from);
-			/* workaround for subscription 'from' removal */
+		if (!u) {
+			presence_send_unsubscribed(stream,to,from);
+			return 0;
+		}
+		presence_send_subscribed(stream,to,from);
+		if (u->subscribe==SUB_UNDEFINED || u->subscribe==SUB_NONE) u->subscribe=SUB_TO;
+		else if (u->subscribe==SUB_FROM) u->subscribe=SUB_BOTH;
+		if (u->subscribe!=SUB_FROM && u->subscribe!=SUB_BOTH){
 			presence_send_subscribe(stream,to,from);
 		}
+		user_save(u);
 		return 0;
 	}
 	if (!u){
@@ -267,7 +272,9 @@ Contact *c;
 	debug(L_("Subscribed."));
 	presence_send_subscribed(stream,to,from);
 	bare=jid_normalized(from,FALSE);
-	presence_send_subscribe(stream,to,bare);
+	if (c->subscribe!=SUB_FROM && c->subscribe!=SUB_BOTH) {
+		presence_send_subscribe(stream,to,bare);
+	}
 	g_free(bare);
 	return 0;
 }
@@ -285,6 +292,9 @@ uin_t uin;
 		return -1;
 	}
 	if (jid_is_me(to)){
+		if (u->subscribe==SUB_NONE) u->subscribe=SUB_FROM;
+		else if (u->subscribe==SUB_UNDEFINED || u->subscribe==SUB_TO) u->subscribe=SUB_BOTH;
+		user_save(u);
 		debug(L_("Presence 'subscribed' sent to me"));
 		return 0;
 	}
@@ -320,6 +330,9 @@ uin_t uin;
 		return -1;
 	}
 	if (jid_is_me(to)){
+		if (u->subscribe==SUB_FROM) u->subscribe=SUB_NONE;
+		else if (u->subscribe==SUB_BOTH || u->subscribe==SUB_UNDEFINED) u->subscribe=SUB_TO;
+		user_save(u);
 		debug(L_("Presence 'unsubscribed' sent to me"));
 		return 0;
 	}
@@ -348,15 +361,18 @@ Session *s;
 Contact *c;
 uin_t uin;
 
-	if (jid_is_me(to)){
-		debug(L_("Presence unsubscribe request sent to me"));
-		presence_send_unsubscribed(stream,to,from);
-		return 0;
-	}
 	u=user_get_by_jid(from);
 	if (!u){
 		g_warning(N_("Presence subscription from unknown user (%s)"),from);
+		presence_send_unsubscribed(stream,to,from);
 		return -1;
+	}
+	if (jid_is_me(to)){
+		debug(L_("Presence unsubscribe request sent to me"));
+		if (u->subscribe==SUB_TO || u->subscribe==SUB_UNDEFINED) u->subscribe=SUB_NONE;
+		else if (u->subscribe==SUB_BOTH) u->subscribe=SUB_FROM;
+		user_save(u);
+		return 0;
 	}
 	if (!jid_has_uin(to) || !jid_is_my(to)){
 		g_warning(N_("Bad 'to': %s"),to);
@@ -376,7 +392,6 @@ uin_t uin;
 	user_save(u);
 
 	if (s) session_update_contact(s,c);
-	
 	
 	debug(L_("Unsubscribed."));
 	presence_send_unsubscribed(stream,to,from);

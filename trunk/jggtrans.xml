@@ -36,6 +36,10 @@
   <!-- this should match <service/> in <browse/> section of jabber.xml -->
   <service jid="gg.localhost"/>
 
+  <!-- older transport versions used "/registered" resource in own jid, this 
+       directive disables that behaviour (may break existing registered accounts). -->
+  <bare_domain/> 
+
   <!-- This connects the GG-transport process to the master process -->
   <connect>
     <ip>127.0.0.1</ip>
@@ -88,7 +92,7 @@
  <vCard>
      <FN>GaduGadu Transport</FN>
      <DESC>This is GaduGadu Transport</DESC>
-	 <URL>http://www.jabberstudio.org/projects/jabber-gg-transport/project/view.php</URL>
+	 <URL>http://jggtrans.jajcus.net/</URL>
  </vCard>
 
  <!-- Default user locale (language).

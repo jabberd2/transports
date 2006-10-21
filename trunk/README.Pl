@@ -1,7 +1,7 @@
 
 		     GaduGadu Transport for Jabber
 		    ===============================
-	    (c) 2002-2005 Jacek Konieczny [jajcus(a)jajcus,net]
+	    (c) 2002-2006 Jacek Konieczny [jajcus(a)jajcus,net]
 
 Jest to zewnêtrzny komponent dla serwera Jabber (http://www.jabber.org)
 realizuj±cy bramkê do serwisu GaduGadu.
@@ -26,13 +26,12 @@ bêdzie opcja "-u" (oraz opcjonalnie "-g"). W takim przypadku program
 zmieni uid i gid zaraz po starcie.
 
 Wszelkie b³êdy oraz pro¶by o ulepszenia najlepiej umieszczaæ na stronie
-projektu na JabberStudio:
-http://www.jabberstudio.org/projects/jabber-gg-transport/project/view.php
+projektu: http://jggtrans.jajcus.net/
 
 Mo¿na oczywi¶cie te¿ s³aæ mailem do mnie.
 
-Jest te¿ lista dyskusyjna: jggtrans@lists.bnet.pl
-Aby siê na ni± zapisaæ nale¿y wys³aæ majla na adres: jggtrans-subscribe@lists.bnet.pl
+Jest te¿ lista dyskusyjna: jggtrans@lists.jajcus.net
+Aby siê na ni± zapisaæ nale¿y wys³aæ majla na adres: jggtrans-subscribe@lists.jajcus.net
 
 
 	Mi³ego Jabberowania :-)
