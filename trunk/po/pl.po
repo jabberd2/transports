@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: jabber-gg-transport\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-21 23:47+0200\n"
+"POT-Creation-Date: 2006-10-22 00:04+0200\n"
 "PO-Revision-Date: 2004-03-10 13:15+0200\n"
 "Last-Translator: Tomasz Sterna <tomek@xiaoka.com>\n"
 "Language-Team: Polish <pl@li.org>\n"
@@ -523,7 +523,6 @@ msgid "Remove a user from, or view the ignore list"
 msgstr "Usunięcie użytkownika z listy ignorowanych lub pokazanie tej listy"
 
 #: src/message.c:70
-#, fuzzy
 msgid "Status message to show to GG users. Use 'st off' to use Jabber status."
 msgstr ""
 "Komunikat statusu pokazywany użytkownikom GG. Użyj 'st off' aby pokazywany "
@@ -868,12 +867,12 @@ msgstr "Formularz rejestracyjny Jabber GG transport"
 
 #: src/register.c:52
 msgid ""
-"Fill in this form to regiser in the transport.\n"
-"You may use registration later to change your settings, public directory "
+"Fill in this form to register in the transport.\n"
+"You may use registration later to change your settings or public directory "
 "information."
 msgstr ""
 "Wypełnij ten formularz aby zarejestrować się w transporcie.\n"
-"Możesz użyć trybu rejestracji w przyszłości aby zmienić swoje ustawienia, "
+"Możesz użyć trybu rejestracji w przyszłości aby zmienić swoje ustawienia lub "
 "informacje w katalogu."
 
 #: src/register.c:56 src/search.c:47
@@ -918,10 +917,10 @@ msgstr "Formularz zmiany danych rejestracyjnych"
 
 #: src/register.c:83
 msgid ""
-"You may use this form to change account information, change personal "
+"You may use this form to change account information or change personal "
 "information in the public directory."
 msgstr ""
-"Możesz używać tego formularza do zmiany ustawień konta, zmiany informacji "
+"Możesz używać tego formularza do zmiany ustawień konta lub zmiany informacji "
 "osobistych w katalogu."
 
 #: src/register.c:87

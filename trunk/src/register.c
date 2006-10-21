@@ -49,8 +49,8 @@ int i;
 char *tmp;
 
 	form=form_new(parent,_("Jabber GG transport registration form"),
-			_("Fill in this form to regiser in the transport.\n"
-			"You may use registration later to change your settings,"
+			_("Fill in this form to register in the transport.\n"
+			"You may use registration later to change your settings or"
 			" public directory information."));
 
 	form_add_field(form,"text-single","uin",_("GG number"),NULL,1);
@@ -81,7 +81,7 @@ int i;
 
 	form=form_new(parent,_("Registration change form"),
 			_("You may use this form to change account"
-			" information, change personal information"
+			" information or change personal information"
 			" in the public directory."));
 
 	field=form_add_field(form,"list-single","action",_("Action"),"options",1);
