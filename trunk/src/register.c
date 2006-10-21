@@ -51,7 +51,7 @@ char *tmp;
 	form=form_new(parent,_("Jabber GG transport registration form"),
 			_("Fill in this form to regiser in the transport.\n"
 			"You may use registration later to change your settings,"
-			" public directory information or to unregister."));
+			" public directory information."));
 
 	form_add_field(form,"text-single","uin",_("GG number"),NULL,1);
 	form_add_field(form,"text-private","password",_("Password"),NULL,1);
@@ -82,14 +82,13 @@ int i;
 	form=form_new(parent,_("Registration change form"),
 			_("You may use this form to change account"
 			" information, change personal information"
-			" in the public directory or unregister from"
-			" the transport."));
+			" in the public directory."));
 
 	field=form_add_field(form,"list-single","action",_("Action"),"options",1);
 	form_add_option(field,_("Change account options"),"options");
 	/*form_add_option(field,_("Change password"),"passwd"); */
 	form_add_option(field,_("Change public directory information"),"pubdir");
-	form_add_option(field,_("Unregister"),"unregister");
+	/*form_add_option(field,_("Unregister"),"unregister");*/
 
 
 	form_add_fixed(form,_("Fill out this part only when changing account options:"));
@@ -333,11 +332,13 @@ char *action;
 			return -1;
 		return 0;
 	}
+#if 0
 	else if (!strcmp(action,"unregister")){
 		if (unregister(s,from,to,id,0))
 			return -1;
 		return 0;
 	}
+#endif
 	else{
 		jabber_iq_send_error(s,from,to,id,406,_("Bad action given"));
 		return -1;
@@ -583,7 +584,7 @@ Request *r;
 	node=xmlnode_get_firstchild(q);
 	if (!node){
 		debug(L_("Set query for jabber:iq:register empty: %s"),xmlnode2str(q));
-		unregister(s,from,to,id,0);
+		/*unregister(s,from,to,id,0);*/
 		return;
 	}
 
@@ -666,11 +667,11 @@ Request *r;
 	if (node) born=xmlnode_get_data(node);
 
 	if (!first && !last && !nick && !city && !born && !sex){
-			if (!uin && !password){
+			/*if (!uin && !password){
 				debug(L_("Set query for jabber:iq:register empty: %s"),xmlnode2str(q));
 				unregister(s,from,to,id,0);
 				return;
-			}
+			}*/
 			if (!uin || !password){
 				g_warning(N_("Nothing to change"));
 				session_remove(session);
