@@ -502,7 +502,7 @@ GString *usernamestr;
 	else {
 		usernamestr=g_string_new("");
 		g_string_printf(usernamestr,"%d",user->uin);
-		xmlnode_insert_cdata(username,usernamestr->str);
+		xmlnode_insert_cdata(username,usernamestr->str,-1);
 		g_string_free(usernamestr,TRUE);
 		xmlnode_insert_tag(query,"registered");
 		register_change_form(query,user);
