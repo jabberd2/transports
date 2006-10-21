@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-21 19:07+0200\n"
+"POT-Creation-Date: 2006-10-21 21:25+0200\n"
 "PO-Revision-Date: 03/04/04 13:02\n"
 "Last-Translator: Sander Devrieze <s.devrieze@pandora.be>\n"
 "Language-Team: Nederlands\n"
@@ -81,8 +81,8 @@ msgid "Bad Request"
 msgstr "Onjuist verzoek"
 
 #: src/iq.c:228 src/iq.c:233 src/iq.c:238 src/presence.c:583
-#: src/presence.c:590 src/register.c:461 src/register.c:618 src/register.c:669
-#: src/register.c:679
+#: src/presence.c:590 src/register.c:463 src/register.c:626 src/register.c:677
+#: src/register.c:687
 msgid "Not Acceptable"
 msgstr "Niet aanvaardbaar"
 
@@ -729,8 +729,8 @@ msgid "Unsupported message type"
 msgstr "Niet ondersteund berichttype"
 
 #: src/message.c:654 src/register.c:293 src/register.c:406 src/register.c:413
-#: src/register.c:428 src/register.c:517 src/register.c:544 src/register.c:626
-#: src/register.c:633
+#: src/register.c:428 src/register.c:525 src/register.c:552 src/register.c:634
+#: src/register.c:641
 msgid "Internal Server Error"
 msgstr "Interne serverfout"
 
@@ -824,7 +824,7 @@ msgstr "Uitschrijven %s van %s..."
 msgid "Unsubscribed."
 msgstr "Authorizatie ongedaan gemaakt."
 
-#: src/presence.c:435 src/presence.c:472 src/register.c:524 src/search.c:382
+#: src/presence.c:435 src/presence.c:472 src/register.c:532 src/search.c:382
 msgid "Not Found"
 msgstr "Niet gevonden"
 
@@ -1042,12 +1042,12 @@ msgstr "Geen wachtwoordveld aanwezig"
 msgid "No password value defined"
 msgstr "Geen wachtwoordwaarde gedefiniëerd"
 
-#: src/register.c:405 src/register.c:625
+#: src/register.c:405 src/register.c:633
 #, c-format
 msgid "Couldn't create user %s"
 msgstr "Kon gebruiker %s niet aanmaken"
 
-#: src/register.c:412 src/register.c:632
+#: src/register.c:412 src/register.c:640
 #, c-format
 msgid "Couldn't create session for %s"
 msgstr "Kon geen sessie aanmaken voor %s"
@@ -1066,72 +1066,72 @@ msgstr "Kon de gebruiker niet vinden."
 msgid "Password changed for user '%s'"
 msgstr "Wachtwoord van gebruiker '%s' is gewijzigd"
 
-#: src/register.c:467 src/register.c:571
+#: src/register.c:469 src/register.c:579
 msgid "User still in use, try later."
 msgstr ""
 
-#: src/register.c:512
+#: src/register.c:520
 #, c-format
 msgid "Unregistering '%s'"
 msgstr "Bezig met authorizatie ongedaan te maken van '%s'"
 
-#: src/register.c:516 src/register.c:543
+#: src/register.c:524 src/register.c:551
 #, c-format
 msgid "'%s' unregistration failed"
 msgstr "Ongedaan maken van de registratie van '%s' is mislukt"
 
-#: src/register.c:523
+#: src/register.c:531
 #, c-format
 msgid "Tried to unregister '%s' who was never registered"
 msgstr ""
 "Probeerde de registratie van '%s' ongedaan te maken maar die was nooit "
 "geregistreerd"
 
-#: src/register.c:553
+#: src/register.c:561
 #, c-format
 msgid "User '%s' unregistered"
 msgstr "Registratie van gebruiker '%s' is ongedaan gemaakt"
 
-#: src/register.c:577 src/register.c:662
+#: src/register.c:585 src/register.c:670
 #, c-format
 msgid "Set query for jabber:iq:register empty: %s"
 msgstr "Stel vraag in voor jabber:iq:register empty: %s"
 
-#: src/register.c:586
+#: src/register.c:594
 msgid "Form returned with no type defined"
 msgstr "Formulier teruggestuurd zonder een type te definiëren"
 
-#: src/register.c:595
+#: src/register.c:603
 msgid "Cancelled"
 msgstr "Geannulleerd"
 
-#: src/register.c:597
+#: src/register.c:605
 msgid "Bad form type"
 msgstr "Ongeldig formuliertype"
 
-#: src/register.c:603
+#: src/register.c:611
 #, c-format
 msgid "<remove/> in jabber:iq:register set: %s"
 msgstr "<remove/> in jabber:iq:register set: %s"
 
-#: src/register.c:617
+#: src/register.c:625
 #, c-format
 msgid "User '%s' doesn't exist and not enough info to add him"
 msgstr ""
 "Gebruiker '%s' bestaat niet en er is niet genoeg informatie opgegeven om hem "
 "toe te voegen"
 
-#: src/register.c:667
+#: src/register.c:675
 msgid "Nothing to change"
 msgstr "Niets om te veranderen"
 
-#: src/register.c:677
+#: src/register.c:685
 msgid "Not registered, and no password given for public directory change."
 msgstr ""
 "Niet geregistreerd en geen wachtwoord opgegeven voor publieke directory "
 "verandering."
 
-#: src/register.c:713 src/sessions.c:395
+#: src/register.c:721 src/sessions.c:395
 msgid "Remote Server Error"
 msgstr "Serverfout"
 
@@ -1736,4 +1736,3 @@ msgstr "%sLaaste update: %s"
 
 #~ msgid "Couldn't find session for '%s'"
 #~ msgstr "Kon sessie voor '%s' niet vinden of openen"
-
