@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-05-12 21:06+0200\n"
+"POT-Creation-Date: 2006-10-21 19:07+0200\n"
 "PO-Revision-Date: 03/04/04 13:02\n"
 "Last-Translator: Sander Devrieze <s.devrieze@pandora.be>\n"
 "Language-Team: Nederlands\n"
@@ -80,8 +80,8 @@ msgstr "Geen UIN opgegeven in 'aan': %s"
 msgid "Bad Request"
 msgstr "Onjuist verzoek"
 
-#: src/iq.c:228 src/iq.c:233 src/iq.c:238 src/presence.c:568
-#: src/presence.c:575 src/register.c:461 src/register.c:618 src/register.c:669
+#: src/iq.c:228 src/iq.c:233 src/iq.c:238 src/presence.c:583
+#: src/presence.c:590 src/register.c:461 src/register.c:618 src/register.c:669
 #: src/register.c:679
 msgid "Not Acceptable"
 msgstr "Niet aanvaardbaar"
@@ -142,7 +142,7 @@ msgstr "Fout-iq ontvangen: %s"
 msgid "unexpected <iq/> (not connected yet)"
 msgstr "onverwachte <iq/> (nog niet verbonden)"
 
-#: src/iq.c:365 src/message.c:638 src/presence.c:544
+#: src/iq.c:365 src/message.c:638 src/presence.c:559
 msgid "Not allowed"
 msgstr "Niet toegestaan"
 
@@ -151,70 +151,70 @@ msgstr "Niet toegestaan"
 msgid "Unsupported <iq/> type in: %s"
 msgstr "Niet ondersteund <iq/>-type in: %s"
 
-#: src/jabber.c:44
+#: src/jabber.c:45
 msgid "unexpected <stream:stream/>"
 msgstr "onverwachte <stream:stream/>"
 
-#: src/jabber.c:62
+#: src/jabber.c:63
 msgid "unexpected <hanshake/>"
 msgstr "onverwachte <hanshake/>"
 
-#: src/jabber.c:66
+#: src/jabber.c:67
 msgid "handshake OK"
 msgstr "handdruk OK"
 
-#: src/jabber.c:76
+#: src/jabber.c:77
 #, c-format
 msgid "Stream error: %s"
 msgstr "Stream-fout: %s"
 
-#: src/jabber.c:102
+#: src/jabber.c:103
 #, c-format
 msgid "Unsupported tag: %s"
 msgstr "Niet ondersteunde tag: %s"
 
-#: src/jabber.c:132
+#: src/jabber.c:133
 msgid "Stream Error"
 msgstr "Streamfout"
 
-#: src/jabber.c:140
+#: src/jabber.c:141
 #, c-format
 msgid "Unknown node type: %i"
 msgstr "Onbekend nodetype: %i"
 
-#: src/jabber.c:221
+#: src/jabber.c:222
 msgid "No <service/> found in config file"
 msgstr "Geen <service/>-tag gevonden in configuratiebestand"
 
-#: src/jabber.c:225
+#: src/jabber.c:226
 msgid "<service/> without \"jid\" in config file"
 msgstr "<service/> zonder \"jid\" in configuratiebestand"
 
-#: src/jabber.c:229
+#: src/jabber.c:233
 msgid "Jabberd server not found in config file"
 msgstr "Geen Jabberserver gevonden in configuratiebestand"
 
-#: src/jabber.c:233
+#: src/jabber.c:237
 msgid "Connect port not found in config file"
 msgstr "Poort niet gevonden in configuratiebestand"
 
-#: src/jabber.c:238
+#: src/jabber.c:242
 msgid "Connect secret not found in config file"
 msgstr "\"Server secret\" niet gevonden in configuratiebestand"
 
-#: src/jabber.c:242
+#: src/jabber.c:246
 msgid "Registration instructions not not found in config file"
 msgstr "Registratie-instructies niet gevonden in configuratiebestand"
 
-#: src/jabber.c:246
+#: src/jabber.c:250
 msgid "Search instructions not found in config file"
 msgstr "Zoekinstructies niet gevonden in configuratiebestand"
 
-#: src/jabber.c:250
+#: src/jabber.c:254
 msgid "Gateway instructions not found in config file"
 msgstr "Gateway-instructies niet gevonden in configuratiebestand"
 
-#: src/jabber.c:254
+#: src/jabber.c:258
 msgid "Gateway prompt not found in config file"
 msgstr "Gateway prompt niet gevonden in configuratiebestand"
 
@@ -223,7 +223,7 @@ msgstr "Gateway prompt niet gevonden in configuratiebestand"
 msgid "Non-digits before '@' in jid: %s"
 msgstr "Ongeldige tekens voor het @-teken in jid: %s"
 
-#: src/jid.c:53 src/jid.c:176
+#: src/jid.c:53 src/jid.c:179
 #, c-format
 msgid "slash<at (%i<%i) in %s"
 msgstr "slash<at (%i<%i) in %s"
@@ -241,32 +241,32 @@ msgstr ""
 msgid "Bad hostname (%s) in JID: %s"
 msgstr "Onjuiste hostnaam (%s) in JID: %s"
 
-#: src/jid.c:180
+#: src/jid.c:183
 #, c-format
 msgid "empty domain in %s"
 msgstr ""
 
-#: src/jid.c:187
+#: src/jid.c:190
 #, c-format
 msgid "node too long in %s"
 msgstr ""
 
-#: src/jid.c:198 src/jid.c:206
+#: src/jid.c:201 src/jid.c:209
 #, c-format
 msgid "domain too long in %s"
 msgstr ""
 
-#: src/jid.c:215
+#: src/jid.c:218
 #, fuzzy, c-format
 msgid "resource too long in %s"
 msgstr "Nieuwe bron %s van %s"
 
-#: src/jid.c:225 src/jid.c:232
+#: src/jid.c:228 src/jid.c:235
 #, fuzzy, c-format
 msgid "bad node: %s"
 msgstr "Ongeldige 'aan': %s"
 
-#: src/jid.c:238
+#: src/jid.c:241
 #, fuzzy, c-format
 msgid "bad domain: %s"
 msgstr "Ongeldige 'ontvanger' in: %s"
@@ -763,101 +763,96 @@ msgstr "aanwezigheid: Er is geen dergelijke sessie: %s"
 msgid "Presence subscribe request sent to me"
 msgstr "Authorizatieaanvraag ontvangen"
 
-#: src/presence.c:246 src/presence.c:283 src/presence.c:358
+#: src/presence.c:251 src/presence.c:290 src/presence.c:366
 #, c-format
 msgid "Presence subscription from unknown user (%s)"
 msgstr "Geauthorizeerd van onbekende gebruiker (%s)"
 
-#: src/presence.c:251 src/presence.c:292 src/presence.c:327 src/presence.c:362
+#: src/presence.c:256 src/presence.c:302 src/presence.c:340 src/presence.c:378
 #, c-format
 msgid "Bad 'to': %s"
 msgstr "Ongeldige 'aan': %s"
 
-#: src/presence.c:255
+#: src/presence.c:260
 #, c-format
 msgid "Subscribing %s to %s..."
 msgstr "Bezig met authorizatie van %s op %s..."
 
-#: src/presence.c:259
+#: src/presence.c:264
 msgid "Subscription failed"
 msgstr "Authorizatie mislukt"
 
-#: src/presence.c:267
+#: src/presence.c:272
 msgid "Subscribed."
 msgstr "Geauthorizeerd."
 
-#: src/presence.c:288
+#: src/presence.c:298
 #, fuzzy
 msgid "Presence 'subscribed' sent to me"
 msgstr "Authorizatie is ongedaan gemaakt."
 
-#: src/presence.c:296
+#: src/presence.c:306
 #, c-format
 msgid "%s accepted %s's subscription..."
 msgstr ""
 
-#: src/presence.c:319
+#: src/presence.c:329
 #, fuzzy, c-format
 msgid "Presence 'unsubscribed' from unknown user (%s)"
 msgstr "Geauthorizeerd van onbekende gebruiker (%s)"
 
-#: src/presence.c:323
+#: src/presence.c:336
 #, fuzzy
 msgid "Presence 'unsubscribed' sent to me"
 msgstr "Authorizatie is ongedaan gemaakt."
 
-#: src/presence.c:331
+#: src/presence.c:344
 #, c-format
 msgid "%s denied/canceled %s's subscription..."
 msgstr ""
 
-#: src/presence.c:352
+#: src/presence.c:371
 msgid "Presence unsubscribe request sent to me"
 msgstr "Uitschrijvingsaanvraag op aanwezigheid naar mij verstuurt"
 
-#: src/presence.c:366
+#: src/presence.c:382
 #, c-format
 msgid "Unsubscribing %s from %s..."
 msgstr "Uitschrijven %s van %s..."
 
-#: src/presence.c:381
+#: src/presence.c:396
 msgid "Unsubscribed."
 msgstr "Authorizatie ongedaan gemaakt."
 
-#: src/presence.c:420 src/presence.c:457 src/register.c:524 src/search.c:382
+#: src/presence.c:435 src/presence.c:472 src/register.c:524 src/search.c:382
 msgid "Not Found"
 msgstr "Niet gevonden"
 
-#: src/presence.c:428
+#: src/presence.c:443
 msgid "Not registered"
 msgstr "Niet geregistreerd"
 
-#: src/presence.c:485 src/presence.c:506
-#, fuzzy, c-format
-msgid "Couldn't find session for '%s'"
-msgstr "Kon sessie voor '%s' niet vinden of openen"
-
-#: src/presence.c:569
+#: src/presence.c:584
 #, c-format
 msgid "Bad <presence/>: %s"
 msgstr "Ongeldige <presence/>: %s"
 
-#: src/presence.c:576
+#: src/presence.c:591
 #, c-format
 msgid "Wrong 'to' in %s"
 msgstr "Verkeerde 'aan' in %s"
 
-#: src/presence.c:609
+#: src/presence.c:624
 #, c-format
 msgid "Error presence received: %s"
 msgstr "Statusfout ontvangen: %s"
 
-#: src/presence.c:613
+#: src/presence.c:628
 #, c-format
 msgid "Unsupported type in %s"
 msgstr "Niet ondersteund type in %s"
 
-#: src/presence.c:614
+#: src/presence.c:629
 msgid "Not Implemented"
 msgstr "Niet ingeprogrammeerd"
 
@@ -1361,7 +1356,7 @@ msgstr "Zet TLS %s"
 msgid "Creating session for '%s'"
 msgstr "Bezig met creëren van sessie voor '%s'"
 
-#: src/sessions.c:779 src/sessions.c:819 src/users.c:473
+#: src/sessions.c:779 src/sessions.c:819 src/users.c:489
 #, fuzzy, c-format
 msgid "Bad JID: '%s'"
 msgstr "Ongeldige 'aan': %s"
@@ -1559,227 +1554,186 @@ msgstr "Niet verbonden stream"
 msgid "Error reading from stream"
 msgstr ""
 
-#: src/users.c:69
+#: src/users.c:70
 msgid "No <spool/> defined in config file"
 msgstr "Geen <spool/> gedefiniëerd in bestand"
 
-#: src/users.c:72
+#: src/users.c:73
 #, c-format
 msgid "Couldn't enter %s: %s"
 msgstr "Kon %s niet betreden: %s"
 
-#: src/users.c:89
+#: src/users.c:90
 #, fuzzy, c-format
 msgid "Before cleanup: %u users in hash table"
 msgstr "Nog steeds %u gebruikers in hash-tabel"
 
-#: src/users.c:92
+#: src/users.c:93
 #, c-format
 msgid "Still %u users in hash table"
 msgstr "Nog steeds %u gebruikers in hash-tabel"
 
-#: src/users.c:123
+#: src/users.c:124
 #, c-format
 msgid "user_remove: user '%s' not found in hash table"
 msgstr "user_remove: gebruiker '%s' niet gevonden in hash-tabel"
 
-#: src/users.c:142
+#: src/users.c:162
 #, c-format
 msgid "Not saving user '%s' - account not confirmed."
 msgstr "Gebruiker '%s' word niet opgelsagen - account niet bevestigd."
 
-#: src/users.c:146
+#: src/users.c:166
 #, c-format
 msgid "Saving user '%s'"
 msgstr "Opslaan van gebruiker '%s'"
 
-#: src/users.c:152
+#: src/users.c:172
 #, c-format
 msgid "Couldn't open '%s': %s"
 msgstr "Kon '%s' niet openen: %s"
 
-#: src/users.c:225
+#: src/users.c:231
 #, c-format
 msgid "Couldn't save '%s': %s"
 msgstr "Kon '%s' niet opslaan: %s"
 
-#: src/users.c:236 src/users.c:666
+#: src/users.c:242 src/users.c:682
 #, c-format
 msgid "Couldn't unlink '%s': %s"
 msgstr "Kon '%s' niet unlinken: %s"
 
-#: src/users.c:245
+#: src/users.c:251
 #, c-format
 msgid "Couldn't rename '%s' to '%s': %s"
 msgstr "Kon '%s' niet hernoemen naar '%s': %s"
 
-#: src/users.c:271
+#: src/users.c:309
 #, c-format
 msgid "Loading user '%s'"
 msgstr "Bezig met laden van gebruiker '%s'"
 
-#: src/users.c:274
+#: src/users.c:312
 #, fuzzy, c-format
 msgid "Bad JID: %s"
 msgstr "%sJID: %s"
 
-#: src/users.c:280
+#: src/users.c:318
 #, c-format
 msgid "Couldn't read or parse '%s': %s"
 msgstr "Kon '%s' niet lezen of ontleden: %s"
 
-#: src/users.c:280
+#: src/users.c:318
 msgid "XML parse error"
 msgstr "XML-ontledingsfout"
 
-#: src/users.c:293
+#: src/users.c:334
 #, c-format
 msgid "Couldn't find JID in %s's file"
 msgstr "Kon JID niet vinden in %s's bestand"
 
-#: src/users.c:299
+#: src/users.c:340
 #, c-format
 msgid "Couldn't find UIN in %s's file"
 msgstr "Kon UIN niet vinden in %s's bestand"
 
-#: src/users.c:305
+#: src/users.c:346
 #, c-format
 msgid "Couldn't find password in %s's file"
 msgstr "Kon wachtwoord niet vinden in %s's bestand"
 
-#: src/users.c:445
+#: src/users.c:461
 #, c-format
 msgid "Destroying user '%s'"
 msgstr "Verwijderen van gebruiker '%s'"
 
-#: src/users.c:469
+#: src/users.c:485
 #, c-format
 msgid "Creating user '%s'"
 msgstr "Bezig met aanmaken van gebruiker '%s'"
 
-#: src/users.c:479
+#: src/users.c:495
 #, c-format
 msgid "User '%s' already exists"
 msgstr "Gebruiker '%s' bestaat al"
 
-#: src/users.c:485
+#: src/users.c:501
 msgid "Bad UIN"
 msgstr "Ongeldige UIN"
 
-#: src/users.c:490
+#: src/users.c:506
 msgid "Password not given"
 msgstr "Wachtwoord niet opgegeven"
 
-#: src/users.c:495
+#: src/users.c:511
 msgid "JID not given"
 msgstr "JID niet opgegeven"
 
-#: src/users.c:608 src/users.c:632
+#: src/users.c:624 src/users.c:648
 #, c-format
 msgid "Couldn't open '%s' directory: %s"
 msgstr "Kon map '%s' niet openen: %s"
 
-#: src/users.c:614 src/users.c:638
+#: src/users.c:630 src/users.c:654
 #, c-format
 msgid "Couldn't stat '%s': %s"
 msgstr "Kon '%s' niet statten: %s"
 
-#: src/users.c:687
+#: src/users.c:703
 #, c-format
 msgid "%sUser: %p"
 msgstr "%sGebruiker: %p"
 
-#: src/users.c:688
+#: src/users.c:704
 #, c-format
 msgid "%sJID: %s"
 msgstr "%sJID: %s"
 
-#: src/users.c:689
+#: src/users.c:705
 #, c-format
 msgid "%sUIN: %u"
 msgstr "%sUIN: %u"
 
-#: src/users.c:690
+#: src/users.c:706
 #, c-format
 msgid "%sPassword: %p"
 msgstr "%sWachtwoord: %p"
 
-#: src/users.c:691
+#: src/users.c:707
 #, c-format
 msgid "%sLast sys message: %i"
 msgstr "%sLaaste sys bericht: %i"
 
-#: src/users.c:692
+#: src/users.c:708
 #, c-format
 msgid "%sConfirmed: %i"
 msgstr "%sBevestigd: %i"
 
-#: src/users.c:693
+#: src/users.c:709
 #, c-format
 msgid "%sContacts:"
 msgstr "%sContacten:"
 
-#: src/users.c:696
+#: src/users.c:712
 #, c-format
 msgid "%sContact: %p"
 msgstr "%sContact: %p"
 
-#: src/users.c:697
+#: src/users.c:713
 #, c-format
 msgid "%sUin: %u"
 msgstr "%sUin: %u"
 
-#: src/users.c:698
+#: src/users.c:714
 #, c-format
 msgid "%sStatus: %i"
 msgstr "%sStatus: %i"
 
-#: src/users.c:699
+#: src/users.c:715
 #, c-format
 msgid "%sLast update: %s"
 msgstr "%sLaaste update: %s"
 
-#~ msgid "Delayed removal of resource %s of %s"
-#~ msgstr "Uitgestelde verwijdering van bron %s van %s"
+#~ msgid "Couldn't find session for '%s'"
+#~ msgstr "Kon sessie voor '%s' niet vinden of openen"
 
-#~ msgid "Delaying removal of resource %s of %s"
-#~ msgstr "Bezig met uitstellen van verwijdering van bron %s van %s"
-
-#~ msgid "(invisible)"
-#~ msgstr "(onzichtbaar)"
-
-#~ msgid "Setting gg status to %i (%s)"
-#~ msgstr "Bezig met instellen van gg-status naar %i (%s)"
-
-#~ msgid "Change password"
-#~ msgstr "Wijzig wachtwoord"
-
-#~ msgid "Fill out this part only when changing password:"
-#~ msgstr "Vul dit deel enkel in als u het wachtwoord verandert:"
-
-#~ msgid "New password"
-#~ msgstr "Nieuw wachtwoord"
-
-#~ msgid "Confirm new password"
-#~ msgstr "Bevestig nieuw wachtwoord"
-
-#~ msgid "Question"
-#~ msgstr "Vraag"
-
-#~ msgid "Answer"
-#~ msgstr "Antwoord"
-
-#~ msgid "Unknow gg_http session type: %i"
-#~ msgstr "Onbekend gg_http sessie type: %i"
-
-#~ msgid "Max. result groups"
-#~ msgstr "Max. resultaatgroepen"
-
-#~ msgid "%sIO Channel: %p"
-#~ msgstr "%sIO-kanaal: %p"
-
-#~ msgid "Bad hostname len (%i) instead of %i in JID: %s"
-#~ msgstr "Onjuiste hostnaam (%i) in plaats van %i in JID: %s"
-
-#~ msgid "Bad hostname in JID: %s[%i:%i]"
-#~ msgstr "Onjuiste hostnaam in JID: %s[%i:%i]"
