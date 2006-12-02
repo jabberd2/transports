@@ -38,7 +38,7 @@
 
   <!-- older transport versions used "/registered" resource in own jid, this 
        directive disables that behaviour (may break existing registered accounts). -->
-  <bare_domain/> 
+  <!-- <bare_domain/> -->
 
   <!-- This connects the GG-transport process to the master process -->
   <connect>
