@@ -144,9 +144,9 @@ const char *p;
 	return p;
 }
 
-char * jid_my_registered(){
+char * jid_my_registered(int bare){
 
-	if (bare_domain) 
+	if (bare)
 		return g_strdup(my_name);
 	else 
 		return g_strdup_printf("%s/registered",my_name);

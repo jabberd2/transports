@@ -30,7 +30,7 @@ const char *jid_get_resource(const char *jid);
 
 /* returns normalized (all parts stringpreped) jid. Bare jid (no resource) is returned if full=0 */
 char * jid_normalized(const char *jid,int full);
-char * jid_my_registered();
+char * jid_my_registered(int bare);
 char * jid_build(long unsigned int uin);
 char * jid_build_full(long unsigned int uin);
 

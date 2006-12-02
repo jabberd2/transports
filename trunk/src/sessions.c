@@ -539,28 +539,23 @@ time_t timestamp;
 			
 			if (event->event.msg.sender==0){
 				if (!user_sys_msg_received(s->user,event->event.msg.msgclass)) break;
-				jid=jid_my_registered();
 				timestamp=event->event.msg.time;
 				str=g_strdup_printf(_("GG System message #%i"),
 							event->event.msg.msgclass);
-				message_send_subject(s->s,jid,s->user->jid,str,
+				message_send_subject(s->s,NULL,s->user->jid,str,
 						to_utf8(event->event.msg.message),timestamp);
 				g_free(str);
-				jid=jid_my_registered();
 				break;
 			}
-			else{
-				Contact *c=user_get_contact(s->user,
-						event->event.msg.sender,0);
-				if ((!c && s->user->ignore_unknown) 
-						|| (c && c->ignored)) {
-					debug(L_("Ignoring the message."));
-				       	break;
-				}
-				jid=jid_build_full(event->event.msg.sender);
-				if ((event->event.msg.msgclass&GG_CLASS_CHAT)!=0) chat=1;
-				else chat=0;
+			Contact *c=user_get_contact(s->user,event->event.msg.sender,0);
+			if ((!c && s->user->ignore_unknown) 
+					|| (c && c->ignored)) {
+				debug(L_("Ignoring the message."));
+			       	break;
 			}
+			jid=jid_build_full(event->event.msg.sender);
+			if ((event->event.msg.msgclass&GG_CLASS_CHAT)!=0) chat=1;
+			else chat=0;
 			if ((event->event.msg.msgclass&GG_CLASS_QUEUED)!=0){
 				timestamp=event->event.msg.time;
 			}

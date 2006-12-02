@@ -35,20 +35,17 @@ int presence_send_error(struct stream_s *stream,const char *from,const char *to,
 				int code,const char *string){
 xmlnode pres;
 xmlnode error;
-char *jid;
 char *str;
 
 	pres=xmlnode_new_tag("presence");
-	jid=jid_my_registered();
 	if (from!=NULL)
 		xmlnode_put_attrib(pres,"from",from);
 	else{
 		char *jid;
-		jid=jid_my_registered();
+		jid=jid_my_registered(0);
 		xmlnode_put_attrib(pres,"from",jid);
 		g_free(jid);
 	}
-	g_free(jid);
 	xmlnode_put_attrib(pres,"to",to);
 	xmlnode_put_attrib(pres,"type","error");
 	error=xmlnode_insert_tag(pres,"error");
@@ -73,7 +70,7 @@ xmlnode pres;
 		xmlnode_put_attrib(pres,"from",from);
 	else{
 		char *jid;
-		jid=jid_my_registered();
+		jid=jid_my_registered(1);
 		xmlnode_put_attrib(pres,"from",jid);
 		g_free(jid);
 	}
@@ -88,11 +85,17 @@ int presence_send_subscribe(struct stream_s *stream,const char *from,const char 
 xmlnode pres;
 
 	pres=xmlnode_new_tag("presence");
-	if (from!=NULL)
+	if (from!=NULL){
+		char *buf, *str;
+		buf = g_strdup(from);
+		str = strstr(buf, "/");
+		if (str!=NULL) *str='\0';
 		xmlnode_put_attrib(pres,"from",from);
+		g_free(buf);
+	}
 	else{
 		char *jid;
-		jid=jid_my_registered();
+		jid=jid_my_registered(1);
 		xmlnode_put_attrib(pres,"from",jid);
 		g_free(jid);
 	}
@@ -111,7 +114,7 @@ xmlnode pres;
 		xmlnode_put_attrib(pres,"from",from);
 	else{
 		char *jid;
-		jid=jid_my_registered();
+		jid=jid_my_registered(1);
 		xmlnode_put_attrib(pres,"from",jid);
 		g_free(jid);
 	}
@@ -130,7 +133,7 @@ xmlnode pres;
 		xmlnode_put_attrib(pres,"from",from);
 	else{
 		char *jid;
-		jid=jid_my_registered();
+		jid=jid_my_registered(1);
 		xmlnode_put_attrib(pres,"from",jid);
 		g_free(jid);
 	}
@@ -149,7 +152,7 @@ xmlnode pres;
 		xmlnode_put_attrib(pres,"from",from);
 	else{
 		char *jid;
-		jid=jid_my_registered();
+		jid=jid_my_registered(1);
 		xmlnode_put_attrib(pres,"from",jid);
 		g_free(jid);
 	}
@@ -171,7 +174,7 @@ xmlnode n;
 		xmlnode_put_attrib(pres,"from",from);
 	else{
 		char *jid;
-		jid=jid_my_registered();
+		jid=jid_my_registered(0);
 		xmlnode_put_attrib(pres,"from",jid);
 		g_free(jid);
 	}

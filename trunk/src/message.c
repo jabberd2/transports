@@ -83,7 +83,7 @@ char buf[101];
 		xmlnode_put_attrib(msg,"from",from);
 	else{
 		char *jid;
-		jid=jid_my_registered();
+		jid=jid_my_registered(0);
 		xmlnode_put_attrib(msg,"from",jid);
 		g_free(jid);
 	}
@@ -117,7 +117,7 @@ char buf[101];
 		xmlnode_put_attrib(msg,"from",from);
 	else{
 		char *jid;
-		jid=jid_my_registered();
+		jid=jid_my_registered(0);
 		xmlnode_put_attrib(msg,"from",jid);
 		g_free(jid);
 	}
@@ -149,7 +149,7 @@ char *s;
 		xmlnode_put_attrib(msg,"from",from);
 	else{
 		char *jid;
-		jid=jid_my_registered();
+		jid=jid_my_registered(1);
 		xmlnode_put_attrib(msg,"from",jid);
 		g_free(jid);
 	}
@@ -201,7 +201,7 @@ int i;
 	message_send(s->s,NULL,s->user->jid,0,_("Roster received."),0);
 
 	msg=xmlnode_new_tag("message");
-	jid=jid_my_registered();
+	jid=jid_my_registered(0);
 	xmlnode_put_attrib(msg,"from",jid);
 	g_free(jid);
 
