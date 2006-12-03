@@ -138,6 +138,114 @@ char buf[101];
 	return 0;
 }
 
+int message_send_rich(struct stream_s *stream,const char *from,
+		const char *to,int chat,const char *message,time_t timestamp,
+		unsigned int formats_length,void *formats){
+xmlnode msg;
+xmlnode n;
+xmlnode htmln;
+struct tm *tm;
+void *formats_end = formats + formats_length;
+struct gg_msg_richtext_format *actformat;
+struct gg_msg_richtext_color *actcolor;
+char buf[101];
+char *html, *t;
+unsigned int pos=0,newpos,inspan=0,msglen;
+char color[15];
+
+	msg=xmlnode_new_tag("message");
+	if (from!=NULL)
+		xmlnode_put_attrib(msg,"from",from);
+	else{
+		char *jid;
+		jid=jid_my_registered(0);
+		xmlnode_put_attrib(msg,"from",jid);
+		g_free(jid);
+	}
+	xmlnode_put_attrib(msg,"to",to);
+	if (chat) xmlnode_put_attrib(msg,"type","chat");
+	n=xmlnode_insert_tag(msg,"body");
+	xmlnode_insert_cdata(n,to_utf8(message),-1);
+	if (timestamp){
+		n=xmlnode_insert_tag(msg,"x");
+		xmlnode_put_attrib(n,"xmlns","jabber:x:delay");
+		tm=gmtime(&timestamp);
+		strftime(buf,100,"%Y%m%dT%H:%M:%S",tm);
+		xmlnode_put_attrib(n,"stamp",buf);
+		xmlnode_insert_cdata(n,"Delayed message",-1);
+	}
+	if(formats_length){
+		html=g_strdup("<body xmlns='http://www.w3.org/1999/xhtml'>");
+		message=strescape(msg->p,message);
+		while(formats<formats_end){
+			actformat=(struct gg_msg_richtext_format *)formats;
+			formats+=sizeof(struct gg_msg_richtext_format);
+			if(formats>formats_end) continue;
+			newpos=gg_fix16(actformat->position);
+			debug(L_("position: %d, font: %d"),newpos,actformat->font);
+			if(newpos>pos){
+				t=g_strdup_printf("%s%.*s",html,newpos-pos,message+pos);
+				g_free(html);
+				html=t;
+				pos=newpos;
+			}
+			if(inspan){
+				t=g_strdup_printf("%s</span>",html);
+				g_free(html);
+				html=t;
+			}
+			debug("format: font:%d | bold:%d italic:%d underline:%d color:%d image:%d",
+				actformat->font, (actformat->font & GG_FONT_BOLD) != 0, (actformat->font & GG_FONT_ITALIC) != 0,
+				(actformat->font & GG_FONT_UNDERLINE) != 0, (actformat->font & GG_FONT_COLOR) != 0,
+				(actformat->font & GG_FONT_IMAGE) != 0);
+			if(actformat->font&(~GG_FONT_IMAGE)){
+				inspan=1;
+				if(actformat->font&GG_FONT_COLOR){
+					actcolor=(struct gg_msg_richtext_color *)formats;
+					formats+=sizeof(struct gg_msg_richtext_color);
+					if(formats>formats_end) continue;
+					debug("color: red: %d, green: %d, blue: %d",actcolor->red,actcolor->green,actcolor->blue);
+					snprintf(color,14,"color:#%02X%02X%02X;",actcolor->red,actcolor->green,actcolor->blue);
+				}
+				t=g_strdup_printf("%s<span style='%s%s%s%s'>",html,
+					(actformat->font&GG_FONT_BOLD?"font-weight:bold;":""),
+					(actformat->font&GG_FONT_ITALIC?"font-style:italic;":""),
+					(actformat->font&GG_FONT_UNDERLINE?"text-decoration:underline;":""),
+					(actformat->font&GG_FONT_COLOR?color:"")
+				);
+				g_free(html);
+				html=t;
+			}
+			else
+				inspan=1;
+		}
+		msglen=strlen(message);
+		if(pos<msglen){
+			t=g_strdup_printf("%s%.*s",html,msglen-pos,message+pos);
+			g_free(html);
+			html=t;
+		}
+		if(inspan){
+			t=g_strdup_printf("%s</span>",html);
+			g_free(html);
+			html=t;
+		}
+		t=g_strdup_printf("%s</body>",html);
+		g_free(html);
+		html=t;
+		n=xmlnode_insert_tag(msg,"html");
+		xmlnode_put_attrib(n,"xmlns","http://jabber.org/protocol/xhtml-im");
+		t=to_utf8(html);
+		g_free(html);
+		debug("html: %s",t);
+		htmln=xmlnode_str(t,strlen(t));
+		xmlnode_insert_node(n,htmln);
+	}
+	stream_write(stream,msg);
+	xmlnode_free(msg);
+	return 0;
+}
+
 int message_send_error(struct stream_s *stream,const char *from,
 		const char *to,const char *body,int code,const char *str){
 xmlnode msg;
@@ -631,7 +739,7 @@ User *u;
 
 	if (!acl_is_allowed(from,tag)){
 		if (type && !strcmp(type,"error")){
-			debug("Ignoring forbidden message error");
+			debug(L_("Ignoring forbidden message error"));
 			return -1;
 		}
 		if (!from) return -1;

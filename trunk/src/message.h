@@ -28,6 +28,10 @@ struct stream_s;
 int message_send(struct stream_s *stream,const char *from,
 		const char *to,int chat,const char *message, time_t timestamp);
 
+int message_send_rich(struct stream_s *stream,const char *from,
+		const char *to,int chat,const char *message,time_t timestamp,
+		unsigned int formats_length,void *formats);
+
 int message_send_subject(struct stream_s *stream,const char *from,
 		const char *to,const char *subject,const char *message, time_t timestamp);
 

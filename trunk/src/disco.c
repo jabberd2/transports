@@ -26,7 +26,10 @@
 #include "sessions.h"
 #include "debug.h"
 
-static const char *extra_features[]={NULL};
+static const char *extra_features[]={
+	"http://jabber.org/protocol/xhtml-im",
+	NULL
+};
 
 static void disco_session(gpointer key,gpointer value,gpointer data){
 const char *jid=(char *)key;
