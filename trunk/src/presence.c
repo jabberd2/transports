@@ -555,7 +555,7 @@ User *u;
 
 	if (!acl_is_allowed(from,tag)){
 		if (type && !strcmp(type,"error")){
-			debug("Ignoring forbidden presence error");
+			debug(L_("Ignoring forbidden presence error"));
 			return -1;
 		}
 		if (!from) return -1;

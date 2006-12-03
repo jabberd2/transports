@@ -356,7 +356,7 @@ User *u;
 	type=xmlnode_get_attrib(x,"type");
 	if (!acl_is_allowed(from,x)){
 		if (type && !strcmp(type,"error")){
-			debug("Ignoring forbidden error");
+			debug(L_("Ignoring forbidden error"));
 			return;
 		}
 		if (!from) return;

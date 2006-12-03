@@ -95,7 +95,7 @@ char *jid,*node;
 		xmlnode_put_attrib(n,"node","online_users");
 		xmlnode_put_attrib(n,"name",_("Online users"));
 	}
-	else debug("%s not admin",jid);
+	else debug(L_("%s not admin"),jid);
 	g_free(jid);
 	jabber_iq_send_result(s,from,to,id,result);
 	xmlnode_free(result);

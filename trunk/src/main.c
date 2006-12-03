@@ -586,9 +586,9 @@ int i;
 	signal(SIGCHLD,sigchld_handler);
 
 	start_time=time(NULL);
-	debug("starting the main loop...");
+	debug(L_("starting the main loop..."));
 	g_main_run(main_loop);
-	debug("g_main_run() finished.");
+	debug(L_("g_main_run() finished."));
 
 	sessions_done();
 	users_done();
@@ -598,7 +598,7 @@ int i;
 	/* process pending events - write anything not written yet */
 	if (g_main_pending())
 		for(i=0;i<100;i++){
-			debug("flushing events...");
+			debug(L_("flushing events..."));
 			if (!g_main_iteration(1)) break;
 		}
 

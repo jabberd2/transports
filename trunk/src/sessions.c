@@ -560,8 +560,13 @@ time_t timestamp;
 				timestamp=event->event.msg.time;
 			}
 			else timestamp=0;
-			message_send(s->s,jid,s->user->jid,chat,
-					to_utf8((char *)event->event.msg.message),timestamp);
+			if(event->event.msg.formats_length>0)
+				message_send_rich(s->s,jid,s->user->jid,chat,
+						event->event.msg.message,timestamp,
+						event->event.msg.formats_length,(void *)event->event.msg.formats);
+			else
+				message_send(s->s,jid,s->user->jid,chat,
+						to_utf8((char *)event->event.msg.message),timestamp);
 			g_free(jid);
 			break;
 		case GG_EVENT_PONG:

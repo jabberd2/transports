@@ -74,10 +74,10 @@ int hash;
 Request *r;
 
 	hash=gg_pubdir50_seq(data->event.pubdir50);
-	debug("got public directory write response (id: %i)",hash);
+	debug(L_("got public directory write response (id: %i)"),hash);
 	r=g_hash_table_lookup(lookups, &hash);
 	if (r==NULL){
-		debug("no associated request found");
+		debug(L_("no associated request found"));
 		return;
 	}
 	g_hash_table_remove(lookups, &hash);
@@ -89,11 +89,11 @@ Request *r;
 		return;
 	}
 	if (r->from!=NULL && r->to!=NULL && r->id!=NULL && r->query!=NULL){
-		debug("Query defined in request - sending result.");
+		debug(L_("Query defined in request - sending result."));
 		jabber_iq_send_result(r->stream,r->from,r->to,r->id,NULL);
 	}
 	else
-		debug("Query not defined in request - not sending result.");
+		debug(L_("Query not defined in request - not sending result."));
 }
 
 
