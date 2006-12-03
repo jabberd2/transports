@@ -21,6 +21,7 @@
 #define encoding_h
 
 char *to_utf8(const char *str);
+char *to_utf8_len(const char *str, size_t len);
 char *from_utf8(const char *str);
 int encoding_init();
 void encoding_done();

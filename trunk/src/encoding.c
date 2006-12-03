@@ -90,6 +90,15 @@ unsigned u;
 	return (char *)buf;
 }
 
+char *to_utf8_len(const char *str, size_t len){
+unsigned char *local_buf;
+
+	local_buf = g_strndup(str,len);
+	to_utf8(local_buf);
+	g_free(local_buf);
+	return (char *)buf;
+}
+
 char *from_utf8(const char *str){
 unsigned char b;
 unsigned u;
