@@ -1382,13 +1382,13 @@ msgstr "Tworzenie nowej sesji"
 
 #: src/sessions.c:860
 #, c-format
-msgid "Changing gg status to %i (%s)"
-msgstr "Zmiana statusu gg na %i (%s)"
+msgid "Changing gg status to 0x%X (%s)"
+msgstr "Zmiana statusu gg na 0x%X (%s)"
 
 #: src/sessions.c:863
 #, c-format
-msgid "Changing gg status to %i"
-msgstr "Zmiana statusu gg na %i"
+msgid "Changing gg status to 0x%X"
+msgstr "Zmiana statusu gg na 0x%X"
 
 #: src/sessions.c:873
 #, c-format

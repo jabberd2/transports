@@ -543,7 +543,7 @@ time_t timestamp;
 				str=g_strdup_printf(_("GG System message #%i"),
 							event->event.msg.msgclass);
 				message_send_subject(s->s,NULL,s->user->jid,str,
-						to_utf8(event->event.msg.message),timestamp);
+						to_utf8((char *)event->event.msg.message),timestamp);
 				g_free(str);
 				break;
 			}
@@ -561,7 +561,7 @@ time_t timestamp;
 			}
 			else timestamp=0;
 			message_send(s->s,jid,s->user->jid,chat,
-					to_utf8(event->event.msg.message),timestamp);
+					to_utf8((char *)event->event.msg.message),timestamp);
 			g_free(jid);
 			break;
 		case GG_EVENT_PONG:
@@ -852,10 +852,10 @@ int r;
 	r=session_make_status(s, s->connected);
 	if (r==0) return 0;
 	if (s->gg_status_descr!=NULL){
-		debug(L_("Changing gg status to %i (%s)"),s->gg_status,s->gg_status_descr);
+		debug(L_("Changing gg status to 0x%X (%s)"),s->gg_status,s->gg_status_descr);
 		gg_change_status_descr(s->ggs,s->gg_status,s->gg_status_descr);
 	}else{
-		debug(L_("Changing gg status to %i"),s->gg_status);
+		debug(L_("Changing gg status to 0x%X"),s->gg_status);
 		gg_change_status(s->ggs,s->gg_status);
 	}
 	if (r==-1) return -1;
@@ -1021,13 +1021,13 @@ int i;
 
 int session_send_message(Session *s,uin_t uin,int chat,const char *body){
 const char *m;
-char *mp;
+unsigned char *mp;
 
 	g_assert(s!=NULL);
 	if (!s->connected || !s->ggs) return -1;
 	m=body;
 	while(m){
-		mp=session_split_message(&m);
+		mp=(unsigned char *)session_split_message(&m);
 		if (mp){
 			gg_messages_out++;
 			gg_send_message(s->ggs,chat?GG_CLASS_CHAT:GG_CLASS_MSG,uin,mp);
