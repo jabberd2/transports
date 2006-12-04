@@ -746,6 +746,8 @@ GgServer *serv;
 	login_params.last_sysmsg=s->user->last_sys_msg;
 	login_params.protocol_version=GG_DEFAULT_PROTOCOL_VERSION;
 	login_params.status=GG_STATUS_INVISIBLE;
+	if(s->user->status)
+		login_params.status_descr=s->user->status;
 
 	serv=(GgServer*)s->current_server->data;
 	if(serv->port!=1){
