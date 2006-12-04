@@ -328,7 +328,10 @@ Contact *c;
 	       	return 0;
 	}
 	if (!c->got_probe && c->subscribe!=SUB_TO && c->subscribe!=SUB_BOTH) {
-		debug(L_("%s got notification from contact %i whose presence was not requested, ignoring.."),s->user->jid,uin);
+		debug(L_("%s got notification from contact %i whose presence was not requested. Converting to subscription request."),s->user->jid,uin);
+		ujid=jid_build(uin);
+		presence_send_subscribe(s->s,ujid,s->user->jid);
+		g_free(ujid);
 	       	return 0;
 	}
 
@@ -562,7 +565,7 @@ time_t timestamp;
 			else timestamp=0;
 			if(event->event.msg.formats_length>0)
 				message_send_rich(s->s,jid,s->user->jid,chat,
-						event->event.msg.message,timestamp,
+						(char *)event->event.msg.message,timestamp,
 						event->event.msg.formats_length,(void *)event->event.msg.formats);
 			else
 				message_send(s->s,jid,s->user->jid,chat,
@@ -836,12 +839,13 @@ GList *it;
 		Contact *c;
 		char *c_jid;
 		c=(Contact *)it->data;
-		if (c->subscribe == SUB_UNDEFINED) {
+		if (c->subscribe == SUB_UNDEFINED || c->subscribe == SUB_FROM || c->subscribe == SUB_BOTH) {
+			/* we're resubscribing FROM/BOTH to do roster resync */
 			c_jid=jid_build(c->uin);
 			presence_send_subscribe(stream,c_jid,u->jid);
 			g_free(c_jid);
 		}
-		else if (c->subscribe == SUB_FROM || c->subscribe == SUB_BOTH){
+		if (c->subscribe == SUB_FROM || c->subscribe == SUB_BOTH){
 			c_jid=jid_build(c->uin);
 			presence_send_probe(stream,c_jid,u->jid);
 			g_free(c_jid);

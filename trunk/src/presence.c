@@ -452,7 +452,10 @@ GTime timestamp;
 
 	c=user_get_contact(u,uin,TRUE);
 	if (!c) {
-	       	return -1;
+		/* we've got a probe, for user not in our contact list */
+		/* probably server and transport rosters desynced */
+		/* process it like subscription request */
+	       	return presence_subscribe(stream,from,to);
 	}
 
 	c->got_probe=TRUE;
