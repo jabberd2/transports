@@ -56,3 +56,4 @@ char *gg_version[]={
 	NULL,NULL,NULL,NULL,			/* 0x3a - 0x3d */
 	NULL,NULL				/* 0x3e - 0x3f */
 };
+/* do not forget to update GG_VERSION_ELEMENTS in gg_versions.h */
