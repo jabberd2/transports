@@ -1089,8 +1089,6 @@ void gg_logoff(struct gg_session *sess)
 
 	gg_debug(GG_DEBUG_FUNCTION, "** gg_logoff(%p);\n", sess);
 
-	gg_change_status(sess, GG_STATUS_NOT_AVAIL | (sess->status & ~GG_STATUS_FRIENDS_MASK));
-
 #ifdef __GG_LIBGADU_HAVE_OPENSSL
 	if (sess->ssl)
 		SSL_shutdown(sess->ssl);
