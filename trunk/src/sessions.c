@@ -839,13 +839,12 @@ GList *it;
 		Contact *c;
 		char *c_jid;
 		c=(Contact *)it->data;
-		if (c->subscribe == SUB_UNDEFINED || c->subscribe == SUB_FROM || c->subscribe == SUB_BOTH) {
-			/* we're resubscribing FROM/BOTH to do roster resync */
+		if (c->subscribe == SUB_UNDEFINED) {
 			c_jid=jid_build(c->uin);
 			presence_send_subscribe(stream,c_jid,u->jid);
 			g_free(c_jid);
 		}
-		if (c->subscribe == SUB_FROM || c->subscribe == SUB_BOTH){
+		else if (c->subscribe == SUB_FROM || c->subscribe == SUB_BOTH){
 			c_jid=jid_build(c->uin);
 			presence_send_probe(stream,c_jid,u->jid);
 			g_free(c_jid);
