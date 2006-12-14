@@ -138,18 +138,32 @@ char buf[101];
 	return 0;
 }
 
+void message_xhtml_break_cdata(xmlnode n, char *cdata, unsigned int length){
+char *br;
+
+	while((br = g_strstr_len(cdata, length, "\r\n"))){
+		xmlnode_insert_cdata(n, to_utf8_len(cdata, br-cdata), -1);
+		xmlnode_insert_tag(n, "br");
+		length -= (br-cdata) + 2;
+		cdata = br + 2;
+	}
+	if(length){
+		xmlnode_insert_cdata(n, to_utf8_len(cdata, length), -1);
+	}
+}
+
 int message_send_rich(struct stream_s *stream,const char *from,
 		const char *to,int chat,const char *message,time_t timestamp,
 		unsigned int formats_length,void *formats){
 xmlnode msg;
 xmlnode n;
-xmlnode span;
+xmlnode span=NULL;
 struct tm *tm;
 void *formats_end = formats + formats_length;
 struct gg_msg_richtext_format *actformat;
 struct gg_msg_richtext_color *actcolor;
 char buf[101];
-unsigned int pos=0,newpos,inspan=0,msglen;
+unsigned int pos=0,newpos=0,inspan=0,msglen=0;
 char color[15], style[76];
 
 	msg=xmlnode_new_tag("message");
@@ -186,9 +200,9 @@ char color[15], style[76];
 			debug(L_("position: %d, font: %d"),newpos,actformat->font);
 			if(newpos>pos){
 				if(inspan)
-					xmlnode_insert_cdata(span,to_utf8_len(message+pos,newpos-pos),-1);
+					message_xhtml_break_cdata(span,(char*)message+pos,newpos-pos);
 				else
-					xmlnode_insert_cdata(n,to_utf8_len(message+pos,newpos-pos),-1);
+					message_xhtml_break_cdata(n,(char*)message+pos,newpos-pos);
 				pos=newpos;
 			}
 			if(newpos<pos) continue;
@@ -220,9 +234,9 @@ char color[15], style[76];
 		msglen=strlen(message);
 		if(pos<msglen){
 			if(inspan)
-				xmlnode_insert_cdata(span,to_utf8_len(message+pos,msglen-pos),-1);
+				message_xhtml_break_cdata(span,(char*)message+pos,msglen);
 			else
-				xmlnode_insert_cdata(n,to_utf8_len(message+pos,msglen-pos),-1);
+				message_xhtml_break_cdata(n,(char*)message+pos,msglen);
 		}
 	}
 	stream_write(stream,msg);
