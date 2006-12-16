@@ -139,9 +139,10 @@ char buf[101];
 }
 
 void message_xhtml_break_cdata(xmlnode n, char *cdata, unsigned int length){
-char *br;
+char *br,*sp;
 
 	while((br = g_strstr_len(cdata, length, "\r\n"))){
+		for(sp=cdata;sp<br&&*sp==' ';sp++) *sp=(char)0xa0; /* replace leading spaces with non-breaking spaces */
 		xmlnode_insert_cdata(n, to_utf8_len(cdata, br-cdata), -1);
 		xmlnode_insert_tag(n, "br");
 		length -= (br-cdata) + 2;
