@@ -188,7 +188,7 @@ char color[15], style[76];
 		xmlnode_put_attrib(n,"stamp",buf);
 		xmlnode_insert_cdata(n,"Delayed message",-1);
 	}
-	if(formats_length){
+	if(formats_length>1){
 		n=xmlnode_insert_tag(msg,"html");
 		xmlnode_put_attrib(n,"xmlns","http://jabber.org/protocol/xhtml-im");
 		n=xmlnode_insert_tag(n,"body");
