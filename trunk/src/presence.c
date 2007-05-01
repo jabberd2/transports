@@ -422,7 +422,7 @@ GTime timestamp;
 	if (jid_is_me(to)){
 		if (s){
 			if (!s->connected){
-				presence_send(stream,to,from,0,NULL,"Disconnected",0);
+				presence_send(stream,NULL,s->user->jid,0,NULL,"Disconnected",0);
 			}
 			else{
 				Resource *r=session_get_cur_resource(s);
@@ -430,7 +430,7 @@ GTime timestamp;
 							r->show,r->status,0);
 			}
 		}
-		else presence_send(stream,to,from,0,NULL,"Not logged in",0);
+		else presence_send(stream,NULL,from,0,NULL,"Not logged in",0);
 		return 0;
 	}
 
