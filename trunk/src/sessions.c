@@ -188,7 +188,7 @@ GgServer *server;
 		gg_servers=g_list_append(gg_servers, server);
 
 		server=g_new(GgServer, 1);
-		inet_aton("217.17.41.85", &server->addr);
+		inet_aton("217.17.45.143", &server->addr);
 		server->port=8074;
 		server->tls=0;
 		gg_servers=g_list_append(gg_servers, server);
@@ -427,9 +427,9 @@ time_t timestamp;
 	user_load_locale(s->user);
 	debug(L_("Checking error conditions..."));
 	if (condition&(G_IO_ERR|G_IO_NVAL)){
-		if (condition&G_IO_ERR) g_warning(N_("Error on connection for %s"),s->jid);
+		if (condition&G_IO_ERR) g_warning(N_("Error on connection for %s ,GGid: %i"),s->jid,s->ggs->uin);
 		if (condition&G_IO_HUP){
-			g_warning(N_("Hangup on connection for %s"),s->jid);
+			g_warning(N_("Hangup on connection for %s ,GGid: %i"),s->jid,s->ggs->uin);
 			s->current_server=g_list_next(s->current_server);
 			if(!s->connected && s->current_server!=NULL){
 				session_try_login(s);
@@ -445,19 +445,19 @@ time_t timestamp;
 	debug(L_("watching fd (gg_debug_level=%i)..."),gg_debug_level);
 	event=gg_watch_fd(s->ggs);
 	if (!event){
-		g_warning(N_("Connection broken. Session of %s"),s->jid);
+		g_warning(N_("Connection broken. Session of %s ,GGid: %i"),s->jid,s->ggs->uin);
 		session_broken(s);
 		return FALSE;
 	}
 
 	switch(event->type){
 		case GG_EVENT_DISCONNECT:
-			g_warning(N_("Server closed connection of %s"),s->jid);
+			g_warning(N_("Server closed connection of %s, GGid: %i"),s->jid,s->ggs->uin);
 			session_broken(s);
 			gg_event_free(event);
 			return FALSE;
 		case GG_EVENT_CONN_FAILED:
-			g_warning(N_("Login failed for %s, GGid: %i"),s->jid,s->ggs->uin);
+			g_warning(N_("Login failed for %s ,GGid: %i"),s->jid,s->ggs->uin);
 			if (s->req_id)
 				jabber_iq_send_error(s->s,s->jid,NULL,s->req_id,401,_("Unauthorized"));
 			else presence_send(s->s,NULL,s->user->jid,0,NULL,"Login failed",0);
@@ -550,15 +550,18 @@ time_t timestamp;
 				g_free(str);
 				break;
 			}
-			Contact *c=user_get_contact(s->user,event->event.msg.sender,0);
-			if ((!c && s->user->ignore_unknown) 
-					|| (c && c->ignored)) {
-				debug(L_("Ignoring the message."));
-			       	break;
+			else{
+				Contact *c=user_get_contact(s->user,
+						event->event.msg.sender,0);
+				if ((!c && s->user->ignore_unknown) 
+				    || (c && c->ignored)) {
+					debug(L_("Ignoring the message."));
+			       		break;
+				}
+				jid=jid_build_full(event->event.msg.sender);
+				if ((event->event.msg.msgclass&GG_CLASS_CHAT)!=0) chat=1;
+				else chat=0;
 			}
-			jid=jid_build_full(event->event.msg.sender);
-			if ((event->event.msg.msgclass&GG_CLASS_CHAT)!=0) chat=1;
-			else chat=0;
 			if ((event->event.msg.msgclass&GG_CLASS_QUEUED)!=0){
 				timestamp=event->event.msg.time;
 			}
@@ -1014,19 +1017,19 @@ char * session_split_message(const char **msg){
 const char *m;
 int i;
 
-	m=*msg;
-	if (strlen(*msg)<=2000){
-		*msg=NULL;
+	m = *msg;
+	if (strlen(*msg) <= 1989){
+		*msg = NULL;
 		return g_strdup(m);
 	}
-	for(i=2000;i>1000;i++){
+	for(i=1988; i >= 1000; i--){
 		if (isspace(m[i])){
-			*msg=m+i+1;
-			return g_strndup(m,i);
+			*msg = m + i + 1;
+			return g_strndup(m, i);
 		}
 	}
-	*msg=m+i;
-	return g_strndup(m,i);
+	*msg = m + i;
+	return g_strndup(m, i);
 }
 
 int session_send_message(Session *s,uin_t uin,int chat,const char *body){

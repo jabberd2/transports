@@ -153,15 +153,16 @@
       -->
  <!--
  <servers>
-        <server tls="no">217.17.41.84</server>
-        <server tls="no">217.17.41.88</server>
-        <server tls="no">217.17.41.86</server>
-        <server tls="no">217.17.41.87</server>
-        <server tls="no">217.17.41.85</server>
-        <hub/>
-        <server port="443">217.17.41.90</server>
+        <hub tls="no"/>
+        <server tls="no">217.17.45.143</server>
+        <server tls="no">217.17.45.144</server>
+        <server tls="no">217.17.45.145</server>
+        <server tls="no">217.17.45.146</server>
+        <server tls="no">217.17.45.147</server>
+        <server tls="no">217.17.41.92</server>
+        <server tls="no">217.17.41.93</server>
  </servers>
- -->
+-->
 
  <!-- Gdzie zapisywać/sprawdzać plik z pid procesu ggtrans. -->
  <pidfile>/var/lib/jabber/ggtrans.pid</pidfile>
