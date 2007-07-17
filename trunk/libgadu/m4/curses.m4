@@ -1,7 +1,7 @@
 dnl Rewritten from scratch. --wojtekka
 dnl $Id: curses.m4,v 1.17 2003/06/24 21:20:12 wojtekka Exp $
 
-AC_DEFUN(AC_CHECK_NCURSES,
+AC_DEFUN([AC_CHECK_NCURSES],
 [
 	AC_SUBST(CURSES_LIBS)
 	AC_SUBST(CURSES_INCLUDES)

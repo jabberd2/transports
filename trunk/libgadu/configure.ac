@@ -1,11 +1,11 @@
 dnl $Id: configure.in,v 1.154 2004/06/28 10:13:09 deletek Exp $
 
-AC_INIT([libgadu], [20050128.jggtrans.1], [])
+AC_INIT([libgadu],[20050128.jggtrans.1],[])
 AC_CONFIG_SRCDIR([lib/libgadu.h])
 AM_INIT_AUTOMAKE
 
-AC_PREREQ(2.50)
-AM_CONFIG_HEADER([config.h])
+AC_PREREQ(2.61)
+AC_CONFIG_HEADERS([config.h])
 AC_DISABLE_SHARED
 AC_PROG_LIBTOOL
 
@@ -47,6 +47,7 @@ dnl
 
 AC_PROG_CC
 AC_PROG_CPP
+AM_PROG_CC_C_O
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_C_CONST
@@ -134,20 +135,18 @@ dnl inet_pton
 AC_CHECK_FUNCS(inet_pton)
 
 AC_MSG_CHECKING([for va_copy])
-AC_TRY_LINK([#include <stdarg.h>], [va_list a, b; va_copy(a, b);], 
-[
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <stdarg.h>]], [[va_list a, b; va_copy(a, b);]])],[
 	AC_MSG_RESULT([yes])
 	AC_LIBGADU_DEFINE([HAVE_VA_COPY])
-], [
+],[
 	AC_MSG_RESULT([no])
 ])
 
 AC_MSG_CHECKING([for __va_copy])
-AC_TRY_LINK([#include <stdarg.h>], [va_list a, b; __va_copy(a, b);], 
-[
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <stdarg.h>]], [[va_list a, b; __va_copy(a, b);]])],[
 	AC_MSG_RESULT([yes])
 	AC_LIBGADU_DEFINE([HAVE___VA_COPY])
-], [
+],[
 	AC_MSG_RESULT([no])
 ])
 
@@ -205,7 +204,7 @@ AC_ARG_ENABLE(dynamic,
 
 dnl
 dnl  Sprawd¼my, jak± wersjê vsnprintf() dostajemy. Dodatkowa opcja jest
-dnl  dla crosskompilacji, bo nie mo¿na wtedy korzystaæ z AC_TRY_RUN().
+dnl  dla crosskompilacji, bo nie mo¿na wtedy korzystaæ z AC_RUN_IFELSE([AC_LANG_SOURCE([[]])],[],[],[]).
 dnl
 
 AC_ARG_WITH(c99-vsnprintf,
@@ -217,20 +216,19 @@ fi
 
 if test "x$with_c99_vsnprintf" = "x"; then
 	AC_MSG_CHECKING([for C99-compatible vsnprintf()])
-	AC_TRY_RUN(
-	[
+	AC_RUN_IFELSE([AC_LANG_SOURCE([[
 		#include <stdio.h>
 		int main()
 		{
 			char tmp;
 			return (snprintf(&tmp, sizeof(tmp), "test") != 4);
 		}
-	], [
+	]])],[
 		AC_MSG_RESULT([yes])
 		AC_LIBGADU_DEFINE([HAVE_C99_VSNPRINTF])
-	], [
+	],[
 		AC_MSG_RESULT([no])
-	])
+	],[])
 fi
 
 dnl
@@ -266,14 +264,13 @@ dnl
 
 AC_MSG_CHECKING([for long long])
 
-AC_TRY_COMPILE([],
-[
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[
 	long long a = 1LL;
 	unsigned long long b = 1LL;
-], [
+]])],[
 	AC_MSG_RESULT([yes])
 	AC_LIBGADU_DEFINE([HAVE_LONG_LONG])
-])
+],[])
 
 dnl
 dnl  Sprawdzamy OpenSSL

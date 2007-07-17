@@ -1,7 +1,7 @@
 
 localedir=$(datadir)/locale
 
-sbin_PROGRAMS=jggtrans
+bin_PROGRAMS=jggtrans
 
 jggtrans_SOURCES= \
 	acl.c \

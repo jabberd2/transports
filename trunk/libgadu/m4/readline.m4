@@ -1,7 +1,7 @@
 dnl Rewritten from scratch. --wojtekka
 dnl $Id: readline.m4,v 1.17 2003/01/19 17:28:53 wojtekka Exp $
 
-AC_DEFUN(AC_CHECK_READLINE,[
+AC_DEFUN([AC_CHECK_READLINE],[
   AC_SUBST(READLINE_LIBS)
   AC_SUBST(READLINE_INCLUDES)
 
