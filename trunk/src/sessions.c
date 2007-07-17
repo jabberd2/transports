@@ -675,7 +675,7 @@ int status;
 char *status_descr;
 
 	if (!r) {
-		if (send_presence) presence_send(s->s,NULL,s->user->jid,FALSE,NULL,s->gg_status_descr,0);
+		if (send_presence && s->s) presence_send(s->s,NULL,s->user->jid,FALSE,NULL,s->gg_status_descr,0);
 		status=status_jabber_to_gg(0,NULL,s->gg_status_descr);
 		if (s->user->friends_only) status|=GG_STATUS_FRIENDS_MASK;
 		s->gg_status=status;
@@ -1015,14 +1015,15 @@ int i;
 
 char * session_split_message(const char **msg){
 const char *m;
-int i;
+int i,len;
 
-	m = *msg;
-	if (strlen(*msg) <= 1989){
-		*msg = NULL;
+	m=*msg;
+	len=strlen(*msg);
+	if (len<=2000){
+		*msg=NULL;
 		return g_strdup(m);
 	}
-	for(i=1988; i >= 1000; i--){
+	for(i=2000;i>1000&&i<len;i++){
 		if (isspace(m[i])){
 			*msg = m + i + 1;
 			return g_strndup(m, i);
