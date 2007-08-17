@@ -1,0 +1,58 @@
+<jcr>
+  <!--
+       This is a config file for a copy of MU-Conference, compiled against
+       the Jabber Component Runtime (JCR). This is the same file that I use
+       to connect to my development server, running jabberd2 beta2
+
+       In order to connect to a jabberd v1.4 server, simply change the
+       <name> value to muclinker, and make sure the muclinker section is in
+       your main jabber.xml file, as per the MU-Conference README file.
+  -->
+
+  <name>yahoo-linker</name>
+  <host>yahoo.terrapin.com</host>
+  <ip>1.1.1.1</ip>
+  <port>5347</port>
+  <secret>NoSecretHere</secret>
+
+  <spool>/tmp/test/spool/yahoo</spool>
+  <logdir>/tmp/test/syslogs</logdir>
+  <pidfile>/tmp/test/yahoo.pid</pidfile>
+  <!--
+     <logstderr/>
+  -->
+  <loglevel>124</loglevel>
+
+
+    <config xmlns="jabber:config:yahoo">
+
+<!-- This is the name that will appear when the transport is browsed or
+     discovered.  REQUIRED -->
+      <vCard>
+        <NAME>Yahoo! IM Gateway</NAME>
+      </vCard>
+
+<!-- This is the text that is presented to the user when they register with
+     transport REQUIRED -->
+      <instructions>Enter your YAHOO! Messenger Username and Password to register with the gateway.</instructions>
+
+<!-- The Yahoo IM server REQUIRED ... should not have to be changed -->
+      <server>scs.yahoo.com</server>
+
+<!-- The Yahoo IM server's port REQUIRED ... should not have to be changed -->
+      <port>5050</port>
+
+<!-- The character map. This provides character set translation from UTF-8
+     to the indicated character map. See the man page for 'iconv' for available
+     character maps on your platform. CP1252 is the standard Windows character
+     set -->
+      <charmap>CP1252</charmap>
+
+<!-- When this element exists, the transport will send new mail notifications as
+     well as a count of unread messages when the user initially logs in -->
+      <newmail/>
+
+    </config>
+
+</jcr>
+

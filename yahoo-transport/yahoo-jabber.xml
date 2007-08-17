@@ -1,0 +1,51 @@
+
+<!-- Example yahoo-jabber.xml configuration file -->
+<!--  $Id: yahoo-jabber.xml,v 1.4 2003/10/01 15:12:39 pcurtis Exp $   -->
+
+<!-- This configuration is designed as the transport configuration when the
+     transport is run in a separate process  -->
+
+<jabber>
+    <service id="yahoo-linker">
+        <connect>
+            <ip></ip>
+            <port></port>
+            <secret></secret>
+        </connect>
+        <uplink/>
+    </service>
+  <pidfile>./yahoo-jabber.pid</pidfile>
+
+  <service id="yahoo.example.com">
+    <load><yahoo_transport>/path/to/yahoo-transport.so</yahoo_transport></load>
+    <config xmlns="jabber:config:yahoo">
+
+<!-- This is the name that will appear when the transport is browsed or
+     discovered.  REQUIRED -->
+      <vCard>
+        <NAME>Yahoo! IM Gateway</NAME>
+      </vCard>
+
+<!-- This is the text that is presented to the user when they register with
+     transport REQUIRED -->
+      <instructions>Enter your YAHOO! Messenger Username and Password to registe r with the gateway.</instructions>
+
+<!-- The Yahoo IM server REQUIRED ... should not have to be changed -->
+      <server>scs.yahoo.com</server>
+
+<!-- The Yahoo IM server's port REQUIRED ... should not have to be changed -->
+      <port>5050</port>
+
+<!-- The character map. This provides character set translation from UTF-8
+     to the indicated character map. See the man page for 'iconv' for available
+     character maps on your platform. CP1252 is the standard Windows character
+     set -->
+      <charmap>CP1252</charmap>
+
+<!-- When this element exists, the transport will send new mail notifications as
+     well as a count of unread messages when the user initially logs in -->
+      <newmail/>
+
+    </config>
+  </service>
+</jabber>

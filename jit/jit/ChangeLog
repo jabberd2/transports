@@ -1,0 +1,86 @@
+----------------------
+JIT Jabber ICQ Transport - Changelog
+----------------------
+
+2004-01-19 Maqi
+    * Matthias Wimmer: Support for Service Discovery (JEP-0030)
+
+2003-04-29 Lukas Karwacki
+    * fixed bug with jabber:iq:last query
+    
+    * fixed bugs related with UTF8 encoding
+    
+    * JIT will take 5 sec break before reconnecting user to ICQ sever
+
+2003-04-16
+    - added separated mtq for unknown reqest
+
+	
+2003-03-10
+    - some changes to avoid racing conditions
+    - removed bug in utf8 convert functions
+
+2003-02-28
+    - added own roster support
+
+2003-01-28 Lukas
+    - xhash replaced with wpxhash. xhash makes memory leaks.
+
+2003-01-16 Maqi
+    - contact nicks are imported now if you use a Jabber server
+      that has been patched with http://jit.jabberstudio.org/mod_roster.c.diff
+
+2003-01-08 Lukasz Karwacki
+    - web pager messages support added
+    - added unknown@icq... from when web or email incoming messages.
+
+2003-01-06 Lukas Karwacki
+    - make JIT works as module
+
+Version 1.1.0
+======================================================
+
+2002-01-05 Maqi <maqi@jabberstudio.org>
+    - ICQ server-side contact lists are imported
+      automatically on registration with the transport now.
+      Nicks are not imported currently.
+
+2002-12-28 Maqi <maqi@jabberstudio.org>
+    - user part of JIDs now really case insensitive
+      (XDB gets converted automatically)
+    - Doxygen comments, minor code cleanup
+
+2002-12-16 Sergei Golovan
+    - recoding from/to UTF8 
+    - jabber:x:data in register and search forms
+
+2002-12-10 Lukas Karwacki  <lukasm@wp-sa.pl>
+    - changes for SunOS systems
+
+2002-12-06 Lukas Karwacki  <lukasm@wp-sa.pl>
+    - lowercase user in xdb_id
+
+2002-11-27 Lukas Karwacki  <lukasm@wp-sa.pl>
+    - last for user added
+    - web presence added
+    - some modification to compile under gcc 3.2
+    - remove possible memory leak with vcard
+
+2002-11-25 Lukas Karwacki  <lukasm@wp-sa.pl>
+    - getting vcard from users not in our roster added
+    - possible lock on xdb reqest removed when shutting down JIT
+
+2002-11-19 Lukas Karwacki  <lukasm@wp-sa.pl>
+    - added IP to vcard
+    - away messages repaired
+    - some UTF8 conversions repaired
+    - upgraded to libicq ver 0.3.2
+    - added user defined sms presence
+
+2002-11-05 Lukas Karwacki  <lukasm@wp-sa.pl>
+    - charset support added
+    - user vcard support added
+
+2002-10-29 Lukas Karwacki  <lukasm@wp-sa.pl>
+    ### 1.0.0 released ###
+

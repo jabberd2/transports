@@ -1,0 +1,100 @@
+#!/bin/sh
+##
+# Jabberd Configuration File
+##
+
+JHOME=`pwd`
+PREFIX="."
+
+JABBERD_BIN='jabberd-jit'
+JIT_MODULE='jit.so'
+XDB_MODULE='xdb_file.so'
+CONFIG_FILE='jabber.xml'
+DEFINES='-I../jabberd -I/usr/include -DWPJABBER'
+
+for x in $@; do
+    parname=`echo $x | sed "s/\([^=]*\).*$/\1/"`
+    parvalu=`echo $x | sed "s/[^=]*=\(.*\)$/\1/"`
+    
+    case x$parname in
+      x--prefix)
+	PREFIX=$parvalu
+	JHOME=$PREFIX;;
+      x--nodebug)
+	DEFINES="$DEFINES -DNODEBUG"
+	echo "*** no debug ...";;
+      x--forwp)
+	DEFINES="$DEFINES -DFORWP"
+	echo "*** compile for WP ...";;      
+      x--optimize)
+	DEFINES="$DEFINES -O2"
+	echo "*** compile wth optimizations ...";;      
+      x--help)
+        echo "Possible flags/switches:"
+        echo "  --prefix=[DIR] default=./"
+	echo "  --nodebug - compile without debug logs, up to 10% faster"
+	echo "  --optimize - compile with code optimization , not tested :("	
+	exit;;      
+    esac;
+done;
+
+if [ -n "$CC" ]; then
+    CC="$CC";
+else
+    CC="gcc";
+fi;
+
+if [ -n "$CXX" ]; then
+    CXX="$CXX";
+else
+    CXX="g++";
+fi;
+
+CFLAGS="$CFLAGS -g -Wall -I. $DEFINES"
+LIBS="$LIBS"
+
+printf "Setting Build Parameters..."
+hosttype=`uname -s`
+case $hosttype in
+    Linux)
+        CFLAGS="$CFLAGS -I/usr/include -fPIC"
+        LIBS="$LIBS -ldl -lpthread";;	
+    FreeBSD)
+	CFLAGS="$CFLAGS -I/usr/local/include -I/usr/src/contrib/libstdc++ -D_THREAD_SAFE -DSUNOS"
+	LIBS="$LIBS -pthread -lcompat -lc_r -L/usr/local/lib -liconv";;
+    OpenBSD)
+	CFLAGS="$CFLAGS -I/usr/local/include -I/usr/src/contrib/libstdc++ -D_THREAD_SAFE -DSUNOS"
+	LIBS="$LIBS -pthread -lcompat -lc_r -L/usr/local/lib -liconv";;	
+    SunOS)
+        CFLAGS="$CFLAGS -I/usr/include -DSUNOS -D_REENTRANT -fPIC"
+        LIBS="$LIBS -ldl -lsocket -lnsl -lpthread -lresolv";;
+    CYGWIN*)
+        JABBERD_EXPORTS_LIB="exports.o"
+        JABBERD_CYGWIN_LIB="libjabberd.exe.a"
+        JABBERD_BIN="jabberd.exe"
+        JIT_MODULE="jit.dll"
+        XDB_MODULE="xdb_file.dll"
+        CFLAGS="$CFLAGS -I/usr/include -DSUNOS -DCYGWIN"
+        LIBS="$LIBS -lpthread -liconv -L../jabberd -ljabberd.exe";;
+esac
+
+printf "     Done.\n"
+
+printf "Generating JIT Settings Script..."
+cat << EOF > platform-settings
+#!/bin/sh
+CC=$CC
+CXX=$CXX
+COMMON_CFLAGS=$CFLAGS
+COMMON_LIBS=$LIBS
+JHOME=$JHOME
+PREFIX=$PREFIX
+CONFIG_FILE=$CONFIG_FILE
+OUT_FILE=$JABBERD_BIN
+JABBERD_EXPORTS_LIB=$JABBERD_EXPORTS_LIB
+JABBERD_CYGWIN_LIB=$JABBERD_CYGWIN_LIB
+JIT_MODULE=$JIT_MODULE
+XDB_MODULE=$XDB_MODULE
+EOF
+chmod 0700 platform-settings
+printf "   Done.\n\n"

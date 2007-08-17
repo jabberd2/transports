@@ -1,0 +1,2 @@
+ - change mio to use poll instead of select ( select limits numer of connection to 1024 
+   beetween servers )

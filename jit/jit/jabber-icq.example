@@ -1,0 +1,137 @@
+<jabber>
+
+  <!-- you can add elogger and rlogger entries here if
+       you don't want the main Jabber server do the
+       logging
+  <log id='elogger'>
+    <host/>
+    <logtype/>
+    <format>%d: [%t] (%h): %s</format>
+    <file>icqerror</file>
+  </log>
+
+  <log id='rlogger'>
+    <host/>    
+    <logtype>record</logtype>
+    <format>%d %h %s</format>
+    <file>icqrecord</file>
+  </log> -->
+
+  <!-- Some Jabber server implementations do not
+     provide XDB services (for example jabberd 2.0).
+     Configure XDB here to have WPJabber handle all
+     XDB requests. This is strongly recommended if
+     you use xdb_ldap, xdb_sql or other non-file XDB
+     implementations, too.
+     See xdb_file directory for more information.
+  <xdb id="xdb">
+    <host/>
+    <load>
+      <xdb_file>xdb_file/xdb_file.so</xdb_file>
+    </load>
+    <xdb_file xmlns="jabber:config:xdb_file">
+      <spool><jabberd:cmdline flag='s'>./spool</jabberd:cmdline></spool>
+    </xdb_file>
+  </xdb> -->
+
+  <!--
+     localhost is your jabber host.
+     Replace "localhost" by the full host name of your server
+     and have all host names here resolveable via DNS if you
+     want the transport to be available to the public.
+  -->
+  <service id="icq.localhost">
+
+    <!-- to enable sms. Replace localhost with the same name as above -->
+    <host>sms.icq.localhost</host>
+   
+    <!-- JIT configuration -->
+    <icqtrans xmlns="jabber:config:icqtrans">
+      <sms>
+        <host>sms.icq.localhost</host>
+  	<show>away</show>
+	<status></status>
+	<name>SMS over Jabber ICQ Transport</name>
+      </sms>
+
+      <instructions>Please enter your UIN and password</instructions>
+
+      <search>Search users in ICQ</search>
+
+      <vCard>
+        <FN>JIT</FN>
+        <DESC>Jabber ICQ Transport</DESC>
+        <URL>http://jit.jabberstudio.org</URL>
+      </vCard>
+
+      <!-- Hashtable for users -->
+      <prime>3907</prime>
+            
+      <!-- Send messages from icq as chat to jabber clients -->
+      <chat/>
+
+      <!-- Enable this for ICQ web presence
+      <web/> -->
+
+      <!-- If you don't want jabber:x:data forms
+           in reg and search uncomment this tag.
+	   Not recomended -->
+      <no_xdata/> -->
+
+      <!-- Remove this tag to disable JIT's own contact list.
+           This will break the transport if it can not request
+           the user's roster via xdb get then (meaning the peer
+           uses jabberd 2 or the peer uses a remote jabber
+           server). -->
+      <own_roster/>
+
+      <!-- When present, this tag will tell JIT not to try to
+           get the user's roster (which will take a bit of time
+           to fail in scenarios described above). -->
+      <no_jabber_roster/>
+      
+      <!-- File with stats -->        
+      <user_count_file>session_count.log</user_count_file>
+      
+      <!-- Interval beetween checking sessions: ping, messages, acks -->                 
+      <session_check>5</session_check>
+
+      <!-- Reconnect retries. -->                 
+      <reconnects>5</reconnects>
+      
+      <!-- Time in sec when session can be inactive, 0  - disabled -->
+      <session_timeout>18000</session_timeout>
+
+      <!-- Charset -->
+      <charset>windows-1252</charset>
+
+      <!-- You may want to replace login.icq.com by the corresponding
+           IPs to speed up JIT but keep in mind the IPs may change -->
+      <server>
+	 <host port="5190">login.icq.com</host>
+      </server>
+
+    </icqtrans>
+
+    <!-- JIT module -->
+    <load>
+      <icqtrans>jit/jit.so</icqtrans>
+    </load>
+
+  </service>
+
+  <!--
+     The settings here have to match the setting you made
+     in your main Jabber server's configuration file.
+     Replace localhost with your main jabber server host name
+  -->
+  <service id="icqlinker">
+    <uplink/>
+    <connect>
+      <ip>127.0.0.1</ip>
+      <port>5555</port>
+      <secret>someSecret</secret>
+    </connect>
+  </service>
+
+</jabber>

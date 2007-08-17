@@ -1,0 +1,51 @@
+
+The new Yahoo Transport (yahoo-transport-2)
+   Paul Curtis .....
+  $Id: README,v 1.2 2003/10/01 15:12:39 pcurtis Exp $
+
+The author would like to acknowledge the efforts of the Gaim authors,
+specifically those programmers who work on the Yahoo plugin. All of the Yahoo
+protocol handling is taken from the Gaim Yahoo plugin. Many thanks to them
+all.
+
+In addition, in the current version, many thanks must also be given to the
+programmers on the Trillian team, as they were instrumental in decoding the
+new Yahoo authentication protocol, and freely providing to the Gaim team.
+
+
+29 September, 2003
+In version 2.2.0, several items have added and changed.
+
+  The user XML files ahd a limitation using a SHA hash of the user's JID as
+  the file name. This made the user's XML file name case dependent. This was
+  not a major problem, but could cause issues when a Jabber user
+  re-registered with the transport, and used a different case for their JID.
+  A patch provided by maqi has been included in this release.
+
+  The composing events from the Yahoo clients is correctly passed on to the
+  Jabber client. On Jabber clients that have the 'composing' event indicated,
+  the transport provides the 'composing' events to the Jabber clients.
+  However, this feature is currently only implemented from Yahoo to the
+  Jabber clients, and not the other way. I hope to have that available soon.
+
+  The transport also now handles new mail notifications from Yahoo. If the
+  user has a Yahoo e-mail account, a message will be sent to the Jabber
+  client when a new e-mail has arrived. In addition, when the user initially
+  logs into the Yahoo transport, a message will be sent with the number of
+  unread e-mails in the user's Yahoo inbox. To enable this feature, a new
+  element must be added to the Yahoo transport's XML configuration. The
+  "<newmail/>" element must be added for the notifications to be sent from
+  the transport. See the example configuration file included in the transport
+  source code.
+
+  The transport now supports Service Discovery (JEP-0030)
+
+  The registration instructions are now configurable. See the example 
+  configuration XML file an example. This element is REQUIRED for
+  the transport to start correctly.
+
+  The browsable name of the transport is now configurable. The
+  vCard/Name element in the configuration is REQUIRED. This will
+  allow the server administrator to have the name used by
+  browse/disco appear in a different language.
+

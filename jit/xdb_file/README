@@ -1,0 +1,94 @@
+xdb_file module by Lukas Karwacki <lukasm@wp-sa.pl>
+
+
+Wirtualna Polska ( http://www.wp.pl )
+
+=================================================
+features:
+ - threaded environment
+ - special path balance system
+ - supports huge systems with lots of files
+  
+=================================================
+report bugs at
+
+lukasm@wp-sa.pl
+
+
+=================================================
+Configuration
+ 
+timeout:
+ -1 - forever ( only for small systems )
+ 0 - don't cache
+ >1 - cache for specified time ( best value is 300 sec )
+
+maxfiles:
+ set to max users online on your jabber server.
+ 
+sizelimit:
+ 0 - no size limit
+ r - limit to r bytes.
+ 
+
+ <xdb id="xdbother">
+    <host/>
+    <ns>jabber:iq:auth</ns>
+    <ns>jabber:iq:register</ns>
+    <ns>jabber:x:delay</ns>
+    <ns>jabber:iq:last</ns>
+    <load>
+      <xdb_file>xdb_file.so</xdb_file>
+    </load>
+    <xdb_file xmlns="jabber:config:xdb_file">    
+        <spool><jabberd:cmdline flag='s'>./spool/other</jabberd:cmdline></spool>
+      <timeout>300</timeout>    	
+      <maxfiles>7963</maxfiles>	
+    </xdb_file>
+  </xdb>
+
+ <xdb id="xdbroster">
+    <host/>
+    <ns>jabber:iq:roster</ns>
+    <load>
+      <xdb_file>./xdb_file/xdb_file.so</xdb_file>
+    </load>
+    <xdb_file xmlns="jabber:config:xdb_file">
+      <spool><jabberd:cmdline flag='s'>./spool/roster</jabberd:cmdline></spool>
+      <timeout>500</timeout>    
+      <maxfiles>7963</maxfiles>
+    </xdb_file>
+  </xdb>
+
+ <xdb id="xdboffline">
+    <host/>
+    <ns>jabber:x:offline</ns>
+    <load>
+      <xdb_file>./xdb_file/xdb_file.so</xdb_file>
+    </load>
+    <xdb_file xmlns="jabber:config:xdb_file">
+      <spool><jabberd:cmdline flag='s'>./spool/offline</jabberd:cmdline></spool>
+      <timeout>0</timeout>    
+      <maxfiles>7963</maxfiles> 
+      <sizelimit>100000</sizelimit>           
+    </xdb_file>
+  </xdb>           
+
+ <xdb id="xdbprivate">
+    <host/>
+    <ns/>
+    <load>
+      <xdb_file>./xdb_file/xdb_file.so</xdb_file>
+    </load>
+    <xdb_file xmlns="jabber:config:xdb_file">
+      <spool><jabberd:cmdline flag='s'>./spool/private</jabberd:cmdline></spool>
+      <timeout>0</timeout>    
+      <maxfiles>7963</maxfiles>      
+    </xdb_file>
+  </xdb>     
+
+
+==============================================================
+
+For porting from old to new xdb_file see doc/FAQ-xdb in wpjabber
+

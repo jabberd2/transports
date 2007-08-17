@@ -1,0 +1,43 @@
+JIT - Jabber ICQ Transport 
+============================
+http://jit.jabberstudio.org
+
+by Lukas Karwacki <lukasm@wp-sa.pl>
+
+
+Introduction
+------------
+
+JIT consists of WPJabber (which in fact is a modified
+Jabberd 1.4, see wpjabber.jabberstudio.org) and an ICQ
+transport module for this server.
+
+JIT (or precisely spoken, WPJabber + ICQ module) links
+to the main Jabber server via the connect/accept
+mechanism. This means you can use JIT with every Jabber
+server implementation (be it jabberd 1.4, WPJabber or a
+commercial server) that can accept TCP connections from
+external components.
+
+For installation instructions see jit/INSTALL
+
+
+Jabberd/WPJabber features
+-------------------------
+
+ - uses pthreads instead of pth
+ - supports multi-processor systems
+ - fast and stable
+ - architecture compatible with jabberd 1.4.2
+   (so it is easy to rewrite existing modules)
+
+
+ICQ transport features
+----------------------
+
+ - threads architecture
+ - jit uses libicq2000 
+ - messages, presences and sms support
+ - search support
+ - vcard support
+

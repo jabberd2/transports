@@ -1,0 +1,12 @@
+---------------------------------------------------------------------
+
+1. JIT does not show ICQ contacts online
+
+JIT uses the user's Jabber roster for getting contacts list.
+You can always use <own_roster/> flag in config file to make JIT
+storing contacts list.
+
+2. WebPresence doesn't work.
+
+Check configuration file for <web/> tag. If you don't have <web/>, add one
+and web presence will start working.

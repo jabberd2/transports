@@ -1,0 +1,32 @@
+
+
+Yahoo! Transport for Jabber
+    $Id: INSTALL,v 1.4 2002/08/27 15:45:45 pcurtis Exp $
+
+
+REQUIREMENTS:
+
+  Jabber server 1.4.2
+  gcc
+  glib
+
+
+
+INSTALL:
+
+  Gunzip and untar the file in the jabber server distribution
+  directory. (typically ..../jabber-1.4.2)
+
+  This will create a directory called "yahoo-transport-2"
+
+  cd into "yahoo-transport-2"
+
+  type "make"
+
+  NOTE: You must update the yahoo-jabber.xml to contain the Yahoo
+  server name and port number!! PLEASE use the one that is provided in
+  the tarball or in CVS!!
+
+  NOTE: The format of the user Yahoo XML file has changed. This will mean
+  that any users will have to re-register, and any XDB may have to be 
+  reconfigured. 

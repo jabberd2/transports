@@ -1,0 +1,26 @@
+
+<!-- Example jabber.xml configuration file sections  -->
+<!--  $Id: jabber.xml,v 1.2 2002/08/04 20:55:47 pcurtis Exp $   -->
+
+
+<!-- browse section -->
+
+    <service type="yahoo" jid="yahoo.example.com" name="Yahoo! Transport">
+      <ns>jabber:iq:gateway</ns>
+      <ns>jabber:iq:register</ns>
+      <ns>jabber:iq:version</ns>
+      <ns>jabber:iq:time</ns>
+    </service>
+
+<!-- service section -->
+    <service id="yahoo-linker">
+      <host>yahoo.example.com</host>
+      <accept>
+        <ip>jabber-server-ip-address</ip>
+        <port>some-random-port-number</port>
+        <secret>some-random-characters</secret>
+      </accept>
+    </service>
+
+
+

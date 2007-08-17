@@ -1,0 +1,86 @@
+JIT - Jabber ICQ Transport 
+============================
+http://jit.jabberstudio.org
+
+by Lukas Karwacki <lukasm@wp-sa.pl>
+
+
+Building WPJabber and ICQ module
+--------------------------------
+
+Go to main directory and
+ ./configure
+ make
+
+You should have a
+ jabberd/jabberd
+executable (WPJabber) and
+ jit/jit.so
+then (ICQ module for WPJabber).
+
+
+Configuration
+-------------
+
+1. Main Jabber server configuration files
+
+In order to have your main Jabber server accept connections from JIT,
+you have to configure it accordingly.
+
+For jabberd server, add the following to the <service> section of its
+configuration file.
+
+ <service id="icq">
+   <host>icq.localhost</host>
+   <host>sms.icq.localhost</host>
+   <accept>
+     <ip>127.0.0.1</ip>
+     <port>5555</port>
+     <secret>someSecret</secret>
+     <timeout>30</timeout>
+   </accept>
+ </service>
+
+Be sure to replace "localhost" with the full host name of your server
+if you want users of other Jabber servers to be able to use this
+transport. Also, the host name of the transport has to be resolveable
+via DNS then.
+
+In order to advertise the ICQ transport's services to the Jabber
+clients, add the following to the <browse> section of the main jabberd
+configuration file.
+
+ <service type="icq" jid="icq.localhost" name="ICQ Link">
+   <ns>jabber:iq:gateway</ns>
+   <ns>jabber:iq:register</ns>
+   <ns>jabber:iq:search</ns>
+ </service>
+
+
+2. ICQ module configuration files
+
+An example configuration file is included, modify it as needed.
+
+
+Running
+-------
+
+chdir to the main directory of the tarball
+
+ jabberd/jabberd -c jit/jabber-icq.xml
+
+If you run into trouble, add "-D" for debug output.
+
+
+Notes
+-----
+
+- Auto-Import						    
+If you want the auto-import function that imports ICQ
+server-side contact lists to import the nicks too, you
+have to patch your Jabber server, see
+http://jit.jabberstudio.org/mod_roster.c.diff
+
+- Firewalls
+JIT only creates outgoing connections to port 5190 of
+the ICQ servers currently.

@@ -1,0 +1,18 @@
+JIT - Jabber ICQ Transport FAQ
+
+
+==================================================================
+1. Why JIT ?
+
+ - JIT starts only small amount of threads ( 12 ) for all connected users
+ - JIT is stable and very fast
+ - JIT supports most functions that user would need
+ 
+ 
+2. Why in my messages chars looks ugly or were converted to '?'
+ - Try using another charset, for example iso-8859-1 in config file
+
+
+3. Auto-import of the ICQ contact lists does not import the contact's nick
+ - The Jabber server needs to be patched for this to work, see
+   http://jit.jabberstudio.org/mod_roster.c.diff

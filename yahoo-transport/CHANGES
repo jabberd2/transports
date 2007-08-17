@@ -1,0 +1,20 @@
+
+$Id: CHANGES,v 1.1 2004/01/15 22:00:45 pcurtis Exp $
+
+* Spool file renaming and JID normalization (bug #778)
+  maqi@jabberstudio.org
+
+* Configurable instructions (Bug #710)
+
+* Yahoo protocol authentication (bugs #3060, #3182)
+  Jeffrey Lynn, Andrew Wellington, Lucas Nussbaum
+
+* Better status message handling (bugs #1714, #2236)
+  skiman65@yahoo.co.uk
+
+* Jabber messages sent as chat messages (bugs #772, 2710)
+
+* Unregister bug with a blank username (bugs #1713)
+* Do not send the <registered/> element if the either the
+  username or password are blank.
+  cbas for RhymBox
