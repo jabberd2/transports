@@ -1,0 +1,10 @@
+Handler of tlen errors
+Make presence/roster working
+Support reconecting to jabber server
+Support reconecting to tlen server
+vCard
+xhtml in message
+
+<presence to='movaxus@tlen.jabber.mpi.int.pl' type='subscribe' from='movax2@jabber.mpi.int.pl'>
+<status>I would like to add you to my roster.</status>
+</presence>

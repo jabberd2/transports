@@ -1,0 +1,331 @@
+MSN Transport (CVS)
+===================
+Check this site for the latest version of this document.
+http://msn-transport.jabberstudio.org/
+
+Features
+--------
+
+- MSN protocol 8
+
+Requirements
+------------
+
+- jabberd 1.4.x source and header files (-dev)
+- libcurl2-ssl with headers (-dev) > 7.10.4
+
+Building from tarball
+---------------------
+
+  Run "./configure --with-jabberd=/path/to/jabberd" to regenerate the Makefile
+  Run "make" to build the transport
+
+  Other configure options are --with-curl-includes, --with-curl-libs and
+  --with-pth to specify the path to curl/curl.h, libcurl.a and pth.h
+  If you pass --with-pth=no, then you can build without the check for PTH,
+  this won't work with an ordinary Jabberd1.4.x, but I've heard it works if
+  you're compiling against WPJabberd.
+  There is also --ignore-ssl to compile against a version of curl with no
+  SSL support (only use this if you know what you're doing). SSL is _required_
+  for the transport to run.
+
+Building from CVS
+-----------------
+
+  Make sure you have the auto tools installed (autoconf 2.50+ and automake 1.4+)
+  Run "./bootstrap" to generate the configure file
+  Then, to just build the transport:
+   Run "./configure --with-jabberd=/path/to/jabberd" to regenerate the Makefile
+   Run "make" to build the transport
+  To create a tarball for distribution:
+   Run "./configure --with-jabberd=/path/to/jabberd"
+   Run "make dist"
+
+
+Building the transport module
+-----------------------------
+
+Go to the transport's main directory and
+ ./configure --with-jabberd=/path/to/jabberd
+ make
+
+You should get a
+ src/msntrans.so
+then (MSN-t module for jabberd 1.4.x).
+
+
+Overview
+--------
+
+MSN-t is a module for jabberd 1.4.x.
+
+MSN-t (or precisely spoken, jabberd 1.4.x running the MSN-t
+module) links to the main Jabber server via the connect/accept
+mechanism. This means you can use the transport with every 
+Jabber server implementation (be it jabberd 1.4.x, jabberd 2,
+WPJabber or a commercial server) that can accept TCP
+connections from external components.
+
+
+Groupchat
+---------
+
+The conferencing code is built into the transport, so it has
+nothing to do with any MUC or other groupchat service you may
+or may not have running.
+
+Setting a conference ID in msnt.xml will make that JID into a
+conference server. If you join a room on that server, the name 
+of the room you pick does not appear anywhere on the MSN side,
+you can then invite your MSN contacts into the room to have a 
+groupchat with them.
+
+If you are chatting one-to-one with an MSN user, and they invite
+somebody into the chat from their side, then a new room will be
+created on the server and you will receive an invitation to it.
+When you join the room, your conversation will resume, and you will
+see any other MSN participants as room members.
+
+
+
+Configuration
+-------------
+
+1. Main Jabber server configuration files
+
+In order to have your main Jabber server accept connections from the
+transport's jabberd, you have to configure it accordingly.
+
+If you run jabberd 1.4.x as your main server , add the following to
+the <service> section of its configuration file.
+
+ <service id="msnlinker">
+   <host>msn.localhost</host>
+   <host>conference.msn.localhost</host>
+   <accept>
+     <ip>127.0.0.1</ip>
+     <port>1234</port>
+     <secret>test</secret>
+   </accept>
+ </service>
+
+Be sure to replace "localhost" with the full host name of your server
+if you want users of other Jabber servers to be able to use this
+transport. Also, the host name of the transport has to be resolveable
+via DNS then.
+If you do not want users of other Jabber server to be able to use
+your server's transport, just add the hostnames of the transport to
+/etc/hosts.
+
+In order to advertise the transport's services to the Jabber clients,
+add the following to the <browse> section of the main jabberd 1.4.x
+configuration file.
+
+ <service type="msn" jid="msn.localhost" name="MSN Transport">
+   <ns>jabber:iq:gateway</ns>
+   <ns>jabber:iq:register</ns>
+ </service>
+
+
+2. MSN module configuration files
+
+An example configuration file is included (msnt.xml), modify it as
+needed.
+
+
+
+Running
+-------
+
+- make sure the main Jabber server is running
+- chdir to the main directory of the tarball
+- run "./jabberd -c msnt.xml"
+
+
+
+Troubleshooting
+---------------
+
+Firstly, if you run into trouble, add "-D" for debug output. Have
+a look through that and it might tell you the problem. If not,
+read below.
+
+If the transport fails to connect to the main Jabber server,
+make sure "telnet 127.0.0.1 1234" (or whatever values you used
+in the configuration files) is working on the machine you try
+to start the transport on.
+
+If Jabberd has trouble finding it's files, try running
+"jabber -c msnt.xml -H /path/to/jabber" to specify the home
+directory for jabber to run from.
+
+If you get "Error processing packet", perhaps accompanied by a Curl
+warning during login/registration with the transport, try setting
+the <insecureSSL/> option (look in the example config file).
+Note, this option is BAD! Don't use it unless you really don't care
+about the passport accounts that will be used on this server. Try to
+fix your curl certificates, there should be a certificate bundle
+somewhere around curl-prefix/share/curl/curl-ca-bundle.crt
+(I'm talking about the curl client certificates that are used to connect
+to Microsoft Passport servers, not your Jabber server certs. MSN-t doesn't
+care about the latter)
+
+There also may be a problem with your version of Curl, check it has
+SSL support compiled in (you can do this with the curl-config command).
+I've also heard of bugs in versions of Curl less than 7.10.7, so try
+that version or newer.
+
+If all else fails, have a look at the Curl error message, do "man curl"
+to get a list of what the different error codes mean, you may be able
+to fix the problem like that. If not, run in debug mode and mail the
+entire session off to me.
+
+If you have problems with conferencing check that the domain you are using
+for msn conference resolves properly from the main Jabberd.
+eg, ping conference.msn.yourhost
+Double check your configuration matches the examples provided.
+In particular, many people get "Circular reference detected" as an error,
+this can be caused by having a <host>msn.yourhost</host> tag in msnt.xml
+
+To compile on OSX, do everything as normal, but the final command (used
+to create msntrans.so) will fail. Change into the src directory, then
+re-run the command, but replace "-shared" with
+"-bundle -undefined suppress -flat_namespace"
+You may also have to add "-L /sw/lib -lcurl" into platform-settings for
+Jabberd, and to then recompile that.
+
+Another thing that solved a mysterious crash somebody was having, was to
+simply grab a fresh tarball of Jabberd and msn-transport, and recompile
+them both. So, try that for you.
+
+Curl 7.10.8 is broken. If you feel like fixing it, you can look in tranfer.c
+and patch Curl_perform() so that it doesn't free the uninitialised variable,
+otherwise upgrade or downgrade. It won't work as-is.
+
+If you get an error message like
+  'libcurl.so.2: cannot open shared object file: No such file or directory'
+Make sure you have libcurl installed. You can check this by looking for the
+file libcurl.so.2 on your system. For example, if you have libcurl.so.2 as
+  /usr/local/lib/libcurl.so.2
+Check that /usr/local/lib is in /etc/ld.so.conf (and rerun ldconfig maybe)
+or run
+  export LD_LIBRARY_PATH=/usr/local/lib
+If neither of those two work, then you may have a found a build error..
+export LD_PRELOAD=/usr/local/lib/libcurl.so.2
+That should fix it, but it shouldn't be necessary if the library is in your 
+library path.
+
+Good luck trouble-shooting!
+
+Once again, if all else fails, and you cannot find/fix the problem, feel
+free to mail me and ask. It may be a bug. :)
+Please follow the instructions in the "Debugging MSN-t" section to know what
+information I'll need to help you.
+
+Also, if you have a problem that you solve and you think it may be useful
+for others to know how to also, please mail me and let me know. Thanks.
+
+
+
+
+Debugging MSN-t with GDB
+----------------------------------------
+
+Please follow these steps when reporting a crash with MSN-t
+
+* Run this command
+    ulimit -c 10000
+  It sets the OS to dump a core file when an application crashes
+
+* Start MSN-t like you usually do, except append "-D 2> stderr.log > stdout.log"
+  to the end, eg
+    ./jabberd -H /path/to/jabber -c msnt.xml -D 2> stderr.log > stdout.log
+
+* When MSN-t crashes you will have a core dump, you can get a backtrace from it
+  by running
+    gdb jabberd -c corefile
+  Then at the gdb prompt type
+    >> bt
+
+  to get a backtrace, (there may be more than one page, in which case you
+  will be instructed to press enter to continue scrolling)
+
+
+Please mail me the backtrace, along with the stderr.log and stdout.log files.
+Please compress them first.
+Note: these WILL have passwords, account info and messages in them, just a
+warning. I will respect your privacy and not use (or even look at when
+possible) any of this information.
+
+Note, if stderr.log and stdout.log are really huge (even after compression),
+just send the last thousand lines or so, eg
+
+tail -n 1000 stderr.log > stderr-small.log
+
+Then compress and mail those instead. Thanks
+
+My email address is james@delx.cjb.net
+
+
+
+
+Even more debugging MSN-t
+-------------------------
+
+Described below is how to search for memory leaks, and heap corruption in MSN-t.
+
+The problem with many of the recent crashes in MSN-t is most likely heap
+corruption. This can be caused by all sorts of things, out of bounds arrays,
+double-free, not initialising pointers, etc.
+
+They're all notoriously hard to track down, because the error usually doesn't
+crop up until a long time after the corruption happened.
+
+I found this environment variable that can be set which tells libc to perform
+sanity checking.
+
+export MALLOC_CHECK_=2
+
+I've tested this, and as soon as there is any possible memory corruption, the
+program is aborted.
+
+Now to catch this usefully, we need to run MSN-t under a debugger (gdb), we
+can then get a backtrace in the debugger, which tells me what line of what
+function is broken, right as the problem is occuring.
+
+So, the steps are.
+
+export MALLOC_CHECK_=2
+gdb jabberd
+>> run -H /path/to/home -c /path/to/config (or normal Jabberd arguments)
+Wait for abort
+>> bt
+
+Then paste the result into an email to me (james@delx.cjb.net)
+
+On MALLOC_CHECK_
+    Make sure that it says debugging hooks enabled (it should say it
+    when you start gdb, and when you start MSN-t from within gdb), if
+    not, try with export MALLOC_CHECK_=3
+    Make sure there are no spaces between the final '_' and the '='
+    and the '3'
+
+On SIGPIPE:
+    If you get returned to the GDB console with SIGPIPE, that's not
+    a bug. I'm not entirely sure what it is, but typing 'continue' 
+    at the gdb console will (or does for me) resume execution normally
+
+
+Notes
+-----
+
+MSN-t uses TCP port 1863 for outgoing connections so you have to open
+this port if you use a firewall. No incoming connections are used.
+
+As of MSN-t 1.2.8 all spool files _must_ be lowercase. If a spool file
+has any uppercase letters in it, that user will not be able to user MSN-T
+until they re-register the transport. To lowercase all the spool files,
+change into the spool directory for MSN-t and run this command
+
+"for i in *.xml; do mv "$i" `echo $i | tr '[A-Z]' '[a-z]'`; done"
+

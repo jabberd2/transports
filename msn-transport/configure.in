@@ -1,0 +1,112 @@
+AC_INIT(src/init.c)
+
+AM_CONFIG_HEADER(include/config.h)
+AM_INIT_AUTOMAKE(msn-transport,1.3-cvs4)
+
+AC_PROG_CC
+AM_SANITY_CHECK
+
+AC_ARG_WITH(jabberd,[  --with-jabberd=PATH     Absolute path to jabberd],
+            [JABBERD_PATH="$withval"],[JABBERD_PATH="/usr/local/jabber/jabberd"])
+JABBERD_INC="-I$JABBERD_PATH"
+AC_SUBST(JABBERD_INC)
+
+dnl Check for jabberd.h
+AC_MSG_CHECKING(for jabberd.h)
+if test -f "$JABBERD_PATH/jabberd.h"; then
+    AC_MSG_RESULT(Found);
+else
+    AC_MSG_RESULT(Error);
+    AC_MSG_ERROR([
++----------------------------------------+
+| Try running with the --with-jabberd    |
+| option to specify the absolute path    |
+| to jabberd.h                           |
++----------------------------------------+]);
+fi
+
+
+
+AC_ARG_WITH(pth,[  --with-pth=PATH     Absolute path to pth.h],
+            [PTH_PATH="$withval"],[PTH_PATH="`pth-config --prefix`/include"])
+if test $PTH_PATH != "no"; then
+    PTH_INC="-I$PTH_PATH"
+    AC_SUBST(PTH_INC)
+
+    dnl Check for pth.h
+    AC_MSG_CHECKING(for pth.h)
+    if test -f "$PTH_PATH/pth.h"; then
+        AC_MSG_RESULT(Found);
+    else
+        AC_MSG_RESULT(Error);
+        AC_MSG_ERROR([ $PTH_PATH
++----------------------------------------+
+| Try running with the --with-pth option |
+| to specify the absolute path to pth.h  |
++----------------------------------------+]);
+    fi
+fi
+
+
+dnl Check that curl has SSL
+AC_ARG_WITH(ignore-ssl,[   --with-ignore-ssl=true        Don't check if Curl has SSL support],[IGNORE_SSL="true"],[IGNORE_SSL="false"])
+
+if test $IGNORE_SSL = "false"; then
+    AC_MSG_CHECKING(for libcurl-ssl)
+    if curl-config --feature 2> /dev/null|grep SSL &> /dev/null; then
+	AC_MSG_RESULT(Found);
+    else
+        AC_MSG_RESULT(Error);
+        AC_MSG_ERROR([
++-------------------------------------------+
+| You must have curl with SSL compiled in.  |
+| Run with --with-ignore-ssl=true to ignore |
+| Note that curl must actually have SSL or  |
+| you will get a runtime error              |
++-------------------------------------------+
+])
+    fi
+fi
+
+AC_ARG_WITH(curl-includes,[  --with-curl-includes=PATH     Path to libcurl includes],
+            [CURL_INC_PATH="$withval"],[CURL_INC_PATH=`curl-config --prefix`/include])
+CURL_INC="-I$CURL_INC_PATH"
+AC_SUBST(CURL_INC)
+AC_MSG_CHECKING(for curl/curl.h)
+if test -f "$CURL_INC_PATH/curl/curl.h"; then
+    AC_MSG_RESULT(Found);
+else
+    AC_MSG_RESULT(Error);
+    AC_MSG_ERROR([
++----------------------------------------+
+| Try running with --with-curl-includes  |
+| to specify the path to curl/curl.h     |
++----------------------------------------+]);
+fi
+
+
+AC_ARG_WITH(curl-libs,[  --with-curl-libs=PATH     Path to libcurl library],
+            [CURL_LIB_PATH="$withval"],[CURL_LIB_PATH=`curl-config --prefix`/lib])
+if test $CURL_LIB_PATH != ""; then
+    CURL_LIBS="-L$CURL_LIB_PATH"
+fi
+CURL_LIBS="$CURL_LIBS -lcurl"
+AC_MSG_CHECKING(for libcurl.a)
+if test -f "$CURL_LIB_PATH/libcurl.a"; then
+    AC_MSG_RESULT(Found);
+    LIBS="$LIBS $CURL_LIBS"
+else
+    AC_MSG_RESULT(Error);
+    AC_MSG_ERROR([
++----------------------------------------+
+| Try running with the --with-curl-libs   |
+| option to specify the curl library path |
++----------------------------------------+]);
+fi
+
+
+
+dnl Create the makefiles
+AC_OUTPUT(Makefile \
+	include/Makefile \
+	src/Makefile)

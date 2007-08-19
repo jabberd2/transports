@@ -1,0 +1,32 @@
+AC_INIT(src/init.c)
+AM_INIT_AUTOMAKE(aim-transport,stable-20040131-sg1)
+AM_CONFIG_HEADER(src/config.h)
+
+dnl setup the install dir
+AC_PREFIX_DEFAULT(/usr/local)
+
+dnl Check for programs
+AC_PROG_CC
+AC_PROG_INSTALL
+
+AM_PROG_LIBTOOL
+
+AC_SUBST(JABBERD_INC)
+AC_ARG_WITH(jabberd,[  --with-jabberd=PATH     Path to jabberd],[
+    JABBERD_INC="-I$withval"],[
+    AC_MSG_CHECKING(for jabberd)
+    if test -f "../jabberd/jabberd.h"; then
+        AC_MSG_RESULT(Found);
+        JABBERD_INC="-I../../jabberd";
+    else
+        AC_MSG_RESULT(Error);
+        AC_MSG_ERROR([
++--------------------------------------+
+| Try running with the --with-jabberd  |
+| option to specify the jabberd path.  |
++--------------------------------------+]);
+    fi;
+])
+dnl Create the makefiles
+AC_OUTPUT(Makefile \
+	src/Makefile)

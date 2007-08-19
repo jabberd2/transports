@@ -1,0 +1,370 @@
+01-19-2004 maqi <maqi@jabberstudio.org>
+
+    * M.Wimmer: Service Discovery support (JEP-0030)
+
+12-24-2003 Chris Carlin <volkris@tamu.edu>
+
+    * more work on bug #796: added initial presence for 
+      additional instances
+
+04-22-2003 John V. Martinez <jvm@snarkhunter.com>
+
+    * partial fix for bug #796
+      ("multiple instances can't use transport simultaneously")
+    * initial presence from buddies is still missing for
+      additional instances
+
+03-14-2003 maqi <maqi@jabberstudio.org>
+
+    * documentation for running as external component
+
+01-15-2003 maqi <maqi@jabberstudio.org>
+
+    * use iconv for charset conversion
+      thanks go to S.Golovan for this patch
+    * fixed minor flaw ("origfrom" tag sometimes showed up
+      in response XML packets)
+
+12-27-2002 maqi <maqi@jabberstudio.org>
+
+    * new XDB format ("lowercaseuser%host.xml" instead of SHA1 hash)
+      - fixes user name case sensitivity
+      - you can *not* go back to older versions of AIM-t after using
+        this version
+    * honor incoming presence probe packets
+      - should fix some roster inconsistency problems
+
+11-12-2002 temas <temas@jabber.org>
+
+    * bad user/pass now results in presence type=error (Bug #720)
+    * fixed "registration madness" (Bug #726)
+
+07-11-2002 maqi <maqi@jabberstudio.org>
+
+    * temas: AIM msg encoding fix
+    * small additional ICQ vCard null pointer check
+
+07-02-2002 maqi <maqi@jabberstudio.org>
+
+    * fixed crash when trying to get a vCard but not being registered
+      (thanks to Tomas)
+
+03-21-2002 maqi <maqi@jabberstudio.org>
+
+    * glynis: some more screenname fixes
+    * D.Foster: profile kept blank now
+
+03-15-2002 maqi <maqi@jabberstudio.org>
+
+    * glynis: screenname parsing patch (fixes crashes with spaces
+      in screennames)
+
+02-02-2002 maqi <maqi@jabberstudio.org>
+
+    * j-widman: away msg auto reply patch (auto reply will be sent
+      now only once in a few minutes)
+
+12-09-2001 maqi <maqi@jabberstudio.org>
+
+    * Added simple SMS response (ICQ)
+    * Added basic vCard support (ICQ)
+
+12-06-2001 maqi <maqi@jabberstudio.org>
+
+    * Justin: forced most of the message conversions to exclude ICQ
+    * Justin: fixed a few text handling issues with AIM/ICQ messages
+      and status messages
+    * Maqi: Added simple rate warning
+
+12-02-2001 maqi <maqi@jabberstudio.org>
+
+    * fixed SMS sending (got broken by aim_strsep commit)
+    * applied M.Wimmer's Auto Reply fix
+
+11-29-2001 temas <temas@jabber.org>
+
+    * Initialize ti in sendsms
+    * use aim_strsep for XP issues
+
+11-28-2001 temas <temas@jabber.org>
+
+    * put the sendsms stuff back in
+    * Merged latest libfaim
+    * Pres changes will be shown to icq users properly
+
+11-27-2001 M.Kiesel
+
+    * updated libfaim
+    * ICQ status is displayed and sent correctly
+    * implemented ICQ offline message handling (this breaks on ICQ sometimes)
+    * quick ICQ SMS sending hack ("SEND-SMS:number:text")
+
+09-30-2001 temas <temas@box5.net> (temas@jabber.org)
+
+    * iq_cb.c: Ugg, more missed return values
+
+09-26-2001 temas <temas@box5.net> (temas@jabber.org)
+
+    * iq_cb.c: Return something in a browse request!
+
+06-07-2001 temas <temas@box5.net> (temas@jabber.org)
+
+    * sessions.c:  Took out reference to dperror (caused to crap out due to
+                   undefined symbol).
+
+06-04-2001 temas <temas@box5.net> (temas@jabber.org)
+
+    * Updated everything to ward off the evil spirits with the juju magic.
+
+05-29-2001 temas <temas@box5.net> (temas@jabber.org)
+
+    * sessions.c:  Caps again, they are still flaky, but it works for now.
+
+    * messages.c:  merged in the new stuff for messages from libfaim
+
+05-16-2001 temas <temas@box5.net> (temas@jabber.org)
+
+    * sessions.c:  latest aim data stuff... just prepend the fake filename
+    
+    * Version 0.9.21 (1.0 in disguise but because of the aim stuff I won't say
+      that).
+    
+    * Status shows idle time again
+
+05-09-2001 temas <temas@box5.net> (temas@jabber.org)
+
+    * sessions.c:  latest aim data crap
+
+    * Version 0.9.20
+
+04-28-2001 temas <temas@box5.net> (temas@jabber.org)
+
+    * sessions.c:  Apparently we use buddylist = NULL now
+
+04-24-2001 temas <temas@box5.net> (temas@jabber.org)
+
+    * sessions.c:  goofed up the integration of zero length buffers
+
+04-23-2001 temas <temas@box5.net> (temas@jabber.org)
+
+    * login.c:  Updated from libfaim to get around latest fix
+
+04-20-2001 temas <temas@box5.net> (temas@jabber.org)
+
+    * buddies.c:  SO SO SO Easy, thanks josh
+
+02-04-2001 temas <temas@box5.net> (temas@jabber.org)
+
+    * sessions.c:  Change caps, got it the same as 3.5.1670 now
+
+    * version 0.9.16
+
+02-03-2001 temas <temas@box5.net> (temas@jabber.org)
+
+    * init.c:  Thanks Nixil, this fixes up some of those config probs people
+               have been having.
+
+02-02-2001 temas <temas@box5.net> (temas@jabber.org)
+
+    * sessions.c:  Change caps again for the block
+
+03-30-2001 temas <temas@box5.net> (temas@jabber.org)
+
+    * Updated login.c
+
+    * sessions.c;  cache the modinfo to send to aim, helps with file stuff
+
+    * version 0.9.15
+
+03-29-2001 temas <temas@box5.net> (temas@jabber.org)
+
+    * Synced libfaim again
+
+    * we now require a valid aim.exe
+
+    * version 0.9.13
+
+    * Synced libfaim again because AOL now sends us a module name to read from
+
+    * version 0.9.14
+
+03-26-2001 temas <temas@box5.net> (temas@jabber.org)
+
+    * Synced up libfaim for latest round of stuff
+
+    * version 0.9.12
+
+03-22-2001 temas <temas@box5.net> (temas@jabber.org)
+
+    * sessions.c - Even newer client info string.
+
+    * version 0.9.9
+
+    * sessions.c - Fix presence probs and logs in again
+
+    * sessions.c - Better client string
+
+    * version 0.9.10
+
+03-21-2001 temas <temas@box5.net> (temas@jabber.org)
+
+    * sessions.c - Sync up with libfaim a bit more
+
+    * sessions.c - send the cookie to the adverts server (not the blocker)
+
+    * sessions.c - send more than one capability (the blocker)
+
+    * version 0.9.7
+
+    * sessions.c - newer client info string
+    
+    * version 0.9.8
+
+03-20-2001 temas <temas@box5.net> (temas@jabber.org)
+
+    * AIM was blocking us, but this fixes it up
+
+03-02-2001 temas <temas@box5.net> (temas@jabber.org)
+
+    * Lot's of mem fixes and other things.... read cvs logs for anything I missed here.
+
+    * 0.9.5 finally
+
+02-12-2001 temas <temas@box5.net> (temas@jabber.org)
+
+    * buddies.c:  don't play with the profile if there isn't one.
+    
+    * buddies.c:  Don't mess with the jpacket when doing pending.
+
+    * utils.c:  be smart about NULL values.
+
+02-09-2001 temas <temas@box5.net> (temas@jabber.org)
+
+    * buddies.c:  Lock the whole action of cleaning a pending buddy
+
+    * buddies.c:  Reworked the evil notify code so it's a lot more clean.
+
+    * init.c:  Raise the number of pending buddies I think we're hitting it,
+               and the number of sessions (Am I insane?).
+
+    * buddies.c:  Unsubscribe to all buddies on a transport remove
+
+    * register.c:  Reply properly to an iq:register
+
+    * register.c:  Unsubscribe on <remove/>
+
+    * pres.c:  show type chat no longer sets you away
+
+    * pres.c:  Send a fresh presence packet don't echo the one we got (lame).
+
+    * sessions.c:  Don't send two unavailable's on disconnect
+
+    * messages.c:  Flag messages as auto replies if they are
+
+    * messages.c:  Send autoreply if away and attach notice to user bound msg
+
+02-08-2001 temas <temas@box5.net> (temas@jabber.org)
+
+    * mutex for mangling the pending buddies
+
+    * report iq:last correctly in seconds
+
+    * actually give the away message, and no longer send a lot of presence
+      updates, when AIM gives us info.
+    
+    * No longer send idle time, we have iq:last in jabber now
+
+    * Added the TODO list to cvs
+
+01-28-2001 temas <temas@box5.net> (temas@jabber.org)
+
+    * 0.9RC
+
+    * buddies.c:  We now have a pending buddies cache fixed
+
+    * We now store the aim roster on the server side for the user.
+
+01-27-2001 temas <temas@box5.net> (temas@jabber.org)
+
+    * pres.c:  We are actually freeing it all up, so let's take note of that.
+
+    * Cleaned up how we handle an instance, based on icq-t stuff
+
+    * iq.c:  small IQ callback system
+
+    * iq_cb.c:  All our callbacks we support
+
+    * Added support for most of the namespaces, even those in the white 
+      documents
+
+01-18-2001 temas <temas@box5.net> (temas@jabber.org)
+
+    * Reverted back to the old school system, but damn, it works
+
+01-16-2001 temas <temas@box5.net> (temas@jabber.org)
+
+    * Ok, it's been a while since I've updated in here.  Lots has happened, I
+      moved everything over to MIO, and that proved very very challenging.
+      First prob is that libfaim is still a blocking lib, that's not very cool,
+      so we have to unset the nonblocking stuff.  Have to use MTQ's as well so
+      we can handle XDB's correctly.
+
+    * Moved username and password out of the roster.  Only on the wire once now
+
+12-13-2000 temas <temas@box5.net> (temas@jabber.org)
+
+    * I appear to have forgotten to note that I made a 0.8.0 release, well here
+      is 0.8.5
+
+   * buddies.c: we weren't releasing one of our locks
+
+11-09-2000 temas <temas@box5.net> (temas@jabber.org)
+
+    * sessions.c:  We were linking in the session before we knew it was
+                   actually good.  This is real bad for situaions where we
+                   can't reach the authorizer.  All cleaned up now, and we let
+                   the user know about what's going on.
+
+                   Don't print after we've freed.
+
+11-08-2000 temas <temas@box5.net> (temas@jabber.org)
+    
+    * aimtrans.h:  No longer keep the buddylist, we can regen if we need it.
+
+    * auth.c:  I really should merge this into sessions.  Fixed spooler use.
+
+    * sessions.c: connection latency
+
+    * buddies.c:  More cleanups. PRESENCE IS FIXED!!!!! It was a lame use of a
+                  spooler all along.  Create buddies more efficiently for a
+                  session.  We really don't need to store the buddylist on
+                  the session.  Take our buddies off the session pool so we
+                  can free them individually.
+
+11-07-2000 temas <temas@box5.net> (temas@jabber.org)
+
+    * buddies.c:  fixed up some of the finding code, added a mutex in there 
+                  (why wasn't there one yet?)
+
+10-20-2000 temas <temas@box5.net> (temas@jabber.org)
+
+    * buddies.c:  fixed a lame mistake that crashed the server when you added
+                  someone.
+
+10-17-2000 temas <temas@box5.net> (temas@jabber.org)
+    
+    * Added Jabber 2.0 support
+
+    * buddies.c:  cleaned up how it handles new buddies
+
+10-07-2000 temas <temas@box5.net> (temas@jabber.org)
+
+    * Yay, it works now.  One more leak and this bad boy is pretty solid
+
+09-24-2000 temas <temas@box5.net> (temas@jabber.org)
+
+    * Our first version is done
+
+09-05-2000 temas <temas@box5.net> (temas@jabber.org)
+    
+    * Implemented most of the server parsing except for s10n's

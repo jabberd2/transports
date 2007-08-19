@@ -1,0 +1,137 @@
+<jabber>
+
+  <!-- you can add elogger and rlogger entries here if
+       you don't want the main Jabber server do the
+       logging
+  <log id='elogger'>
+    <host/>
+    <logtype/>
+    <format>%d: [%t] (%h): %s</format>
+    <file>msnerror</file>
+  </log>
+
+  <log id='rlogger'>
+    <host/>    
+    <logtype>record</logtype>
+    <format>%d %h %s</format>
+    <file>msnrecord</file>
+  </log> -->
+
+  <!-- Some Jabber server implementations do not
+     provide XDB services (for example jabberd 2.0).
+     Configure XDB here to have the transport's
+     jabberd 1.4.x handle all XDB requests. This
+     is strongly recommended if you use xdb_ldap,
+     xdb_sql or other non-file XDB implementations,
+     too.
+  <xdb id="xdb">
+    <host/>
+    <load>
+      <xdb_file>xdb_file/xdb_file.so</xdb_file>
+    </load>
+    <xdb_file xmlns="jabber:config:xdb_file">
+      <spool><jabberd:cmdline flag='s'>./spool</jabberd:cmdline></spool>
+    </xdb_file>
+  </xdb> -->
+
+  <!--
+     Replace "localhost" by the full host name of your server
+     and have all host names here resolveable via DNS if you
+     want the transport to be available to the public.
+  -->
+  <service id="msn.localhost">
+    <host>conference.msn.localhost</host>
+    <msntrans xmlns="jabber:config:msntrans">
+     <instructions>Enter your MSN Messenger account and password. Example: user1@hotmail.com.  Nickname is optional.</instructions>
+
+      <!-- the transport vCard -->
+      <vCard>
+        <FN>MSN Transport</FN>
+        <DESC>This is MSN Transport</DESC>
+        <URL>http://msn-transport.jabberstudio.org/</URL>
+      </vCard>
+
+      <!-- Conference support allows you to create groupchat rooms on MSN
+           transport and invite MSN users to join. -->
+      <conference id="conference.msn.localhost">
+
+        <!-- This will make MSN transport invite you to a special groupchat
+             room when more then one user joins a normal one-on-one session.
+             Joining this room will make MSN transport "switch" the session
+             into groupchat mode.  If you ignore it, MSN transport will
+             continue to send the messages as one-on-one chats. -->
+        <invite>More then one user has joined this chat session.  Join this room to switch into groupchat mode.</invite>
+
+        <notice>
+          <join> has become available</join>
+          <leave> has left</leave>
+        </notice>
+
+      </conference>
+
+      <!-- Enable Hotmail inbox notification -->
+      <headlines/>
+      
+      <!-- Enable fancy friendly names 
+		If the user enters a nickname upon registration, and the user has a status message, their MSN friendly name will be "nickname - status message"
+		If the user does not enter a nickname on registration, but they do have a status message, their friendly name will just be their status message
+		If the user did enter a nickname on registration, but they have a blank status message, then their friendly name will just be the registered nickname
+		If the user did not enter a nickname on registration, and they have a blank status message, their nickname will just be the username portion of their JID
+
+		If the above chosen friendly name is too long, then it will be truncated and "..." placed at the end. MSN only supports friendly names of 128 characters, so this is unavoidable.
+		
+		If this is disabled, then the registered nick is always sent as the MSN friendly name, or if that is blank, the username portion of their JID is sent instead
+      -->
+      <fancy_friendly/>
+      
+      <!-- Enables file transfer for users of MSN-t. All file transfers travel through the MSN-t server -->
+      <filetransfer/>
+
+      <!-- Set options for CURL library -->
+      <curl>
+	<!-- Use insecure mode for SSL transactions (see man curl for -k option)
+	     Note, this is BAD. Fix your curl certificates, unless you
+	     really don't care about the passport accounts that will be used
+	     by this server -->
+	<!--
+	<insecureSSL/>
+	-->
+
+	<!-- Proxy settings for Curl, use this if you need a proxy for outside
+	     HTTPS connections, note that this does *not* affect the rest of
+	     MSN-t, meaning you still must be able to connect to
+	     messenger.hotmail.com on port 1863 directly for this to work
+	-->
+	<!--
+	<proxyhost>proxy-host.com:8080</proxyhost>
+	<proxypass>user:password</proxypass>
+	-->
+
+	<!-- To set the curl library to use a SOCKS5 proxy instead of an HTTP
+	     proxy, uncomment the line below  -->
+
+	<!-- <socksproxy/> -->
+      </curl>
+    </msntrans>
+    <load>
+      <msntrans>./msn-transport/src/msntrans.so</msntrans>
+    </load>
+  </service>
+
+  <!--
+     Here the jabberd 1.4.x that runs the MSN Transport
+     module is instructed to uplink to the main Jabber
+     server.
+     The settings here have to match the setting you made
+     in your main Jabber server's configuration.
+  -->
+  <service id="msnlinker">
+    <uplink/>
+    <connect>
+      <ip>127.0.0.1</ip>
+      <port>1234</port>
+      <secret>test</secret>
+    </connect>
+  </service>
+
+</jabber>

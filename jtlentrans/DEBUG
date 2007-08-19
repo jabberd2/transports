@@ -1,0 +1,7 @@
+0 - Bledy, wszystko co powoduje zamkniecie sesji, polaczenie, powoduje blad systemowy
+1 - Informacje o etapach inicjalizacji, tworzonych/zrywanych polaczeniach, rejstracji/wyrejsrotwywaniu
+2 - Dokladne informacje o inicjalizacji (debugowanie zmiennych, itp).
+3 - Informacje o typach zdazen od userow, typach wysylanych zapytan
+4 - Debugowanie zmiennych (dokladne argumenty zdazen)
+5 - Debugowanie opcjonalnych argumentow (dokladne informacje o przetwarzaniu xml)
+6 - Wyswietlanie bufforow transmisji

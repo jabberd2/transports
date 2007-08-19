@@ -1,0 +1,85 @@
+0. What it is?
+    This an experimental tlen transport for jabber. All feedback please
+    send to Witold Baryluk <movax@mpi.int.pl>. Patches will be very helpful.
+
+1. License
+    Witold Baryluk (C) Copyright 2004
+    GPL
+    I don't give you any guarenties for this program.
+
+2. Dependencies (url) (package in debian)
+    * libxode 0.71 (http://sourceforge.net/projects/libxode)
+	For XMLStream - xml parsing, in future XML generation, it's done
+	as simple snprintf call now
+    * libtlen 1.95 (http://www.libtlen.eu.org/) (libtlen1 libtlen1-dev)
+	For connecting with tlen.pl IM network servers
+    * openssl 0.9.7 (libssl-dev libssl0.9.7 openssl)
+	For SHA1 hash
+
+3. Instalation
+    * Look at page
+	http://sourceforge.net/projects/jtlentrans/
+
+	(http://www.jabberstudio.org/projects/tlen-transport/project/view.php)
+	(http://jabber.mpi.int.pl/tt/)
+    * Download archive with the newest version of the transport
+	wget http://..../tlen-transport/tt-x.x.x.tar.gz
+    * Unpack the tarball
+	tar -xvfz tt-x.x.x.tar.gz
+    * Change dir to unpacked files
+	cd ./tt-x.x.x
+    * Run compilation
+        NOTE: You must have an instaled libtlen, libxode, and openssl, and its
+	headers files.
+	./configure
+	NOTE: In *BSD run ./configure --enable-gnugetopt (please raport problems)
+	make
+    * Install compiled program to /usr/local/sbin/
+	make install
+    * Copy example config file to /etc/jabber/tt.xml
+	cp ./tt.example.xml /etc/jabber/tt.xml
+	chown jabber:adm /etc/jabber/tt.xml
+    * Edit this example file (change jid's, spool dir, and password)
+	NOTE: Reamember not adding slash (/) at the end of spool dir tag
+    * Create spool, log, pid dirs, with approtimate right
+	mkdir /var/lib/jabber/tlen.jid/
+	chown jabber:adm -R /var/lib/jabber/tlen.jid/
+    * Edit your jabber server config, and add this lines:
+	* Jabber 1.4.x:
+	In section <browse>:
+	    <service type="tlen" jid="tlen.jabber.your_domain.com" name="Tlen Transport">
+	        <ns>jabber:iq:register</ns>
+		<ns>jabber:iq:gateway</ns>
+		<ns>jabber:iq:search</ns>
+		<ns>jabber:iq:agent</ns>
+		<ns>jabber:iq:browse</ns>
+	    </service>
+	Add new service section:
+	    <service id="tlenlinker">
+		<host>tlen.jabber.your_domain.com</host>
+		<accept>
+			<ip>127.0.0.1</ip>
+			<port>7005</port>
+			<secret>secret</secret>
+		</accept>
+	    </service>
+	* Jabber 2.x: (thanks kolargol@jabber.autocom.pl) (obsolote - tt is now "self-configurable")
+	In section <identity>, in subsection <items>:
+	    <item category="service" type="x-tlen" jid="tlen.your_domain.com" name="Tlen Linker">
+	       <ns>jabber:iq:gateway</ns>
+	       <ns>jabber:iq:register</ns>
+	       <ns>jabber:iq:search</ns>
+	       <ns>jabber:iq:agent</ns>
+	       <ns>jabber:iq:browse</ns>
+	    </item>
+	NOTE: Not tested well
+    * Reload the jabber server
+    * Run transport in daemon mode (as parametr give path to config file)
+	NOTE: The transport must be run with privilage to write to spool/log dir.
+	/usr/local/sbin/tt -c /etc/jabber/tt.xml -u jabber
+	or
+	./tt.sh
+	NOTE: For tests You can use ./run-*.sh scripts
+
+4. Problems?
+    Send all questions, problems to Witold Baryluk <movax@mpi.int.pl>.

@@ -1,0 +1,51 @@
+<tt>
+	<service jid="tlen.berial.kg.one.pl"/>
+	<connect id="tlen.berial.kg.one.pl">
+		<ip>127.0.0.1</ip>
+		<port>5347</port>
+		<secret>secret</secret>
+	</connect>
+	<register>
+		<instructions>Choose a tlen username and password to register with Tlen Transport. Send blank form to unregister from transport.</instructions>
+		<!-- 
+		<instructions>
+			Proszę wprowadzic swoj login Tlen w polu "username" i hasło w
+			polu "password", aby się zarejestrować w transporcie.<p/>
+			Aby się wyrejestrować należy zostawić formularz pusty.<p/>
+			Wypełniając ten formularz zgadzasz się na wysłanie zamieszczonych
+			tutaj danych do MediaOne Sp. z o.o.<p/>
+			Na serwerze realizującym transport zachowane będzie
+			jedynie login Tlen, hasło, oraz twoj JID.
+		</instructions>
+		 -->
+	</register>
+	<search>
+ 		<instructions>
+			Aby wyszukać ludzi:<!--<br/>-->
+			Wprowadz imię lub naziwsko, nick, miasto
+			rok urodzenie lub zakres (np. 1950-1960)
+			oraz płeć (mozesz wypelnic jedno lub wiecęj pol).<!--<br-->
+			lub<!--<br/>-->
+			Wprowadz numer telefonu.<!--<br/>-->
+		</instructions>
+		<!--	Prosz? poda? imi? (first) i/lub nazwisko (last) i/lub ksyw? (nick) i/lub miasto (city) szukanej osoby. Mo?na tak?e wyszukiwa? wed?ug loginu Tlen. -->
+	</search>
+	<gateway>
+		<desc>Wprowadz login Tlen osoby z ktora chcesz sie skontaktowac.</desc>
+		<prompt>Login Tlen</prompt>
+	</gateway>
+	<vCard>
+		<FN>Tlen Transport</FN>
+		<DESC>To jest Tlen Transport - bramka miedzy Jabberem, a Tlenem </DESC>
+		<URL>http://foo.bar/</URL>
+	</vCard>
+	<!-- Logger configuration. 
+	You may configure one logger of type "syslog" and/or one of type "file".
+	You may also not configure logging at all. -->
+    <debug loglevel="3"/>
+	<!--<log type="file">~/tlentrans.log</log>
+	<log type="syslog" facility="local0"/>-->
+	<spool type="dir">/home/kg/tlen-spool</spool>
+	<pidfile>/home/kg/tlentrans.pid</pidfile>
+</tt>
+<!-- Kodowanie: UTF-8 -->

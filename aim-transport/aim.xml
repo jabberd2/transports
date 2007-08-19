@@ -1,0 +1,43 @@
+<jabber>
+
+  <!-- Some Jabber server implementations do not
+     provide XDB services (for example jabberd 2.0).
+     Configure XDB here to have the jabberd 1.4.x
+     AIM-t is loaded into handle all XDB requests.
+     This is strongly recommended if you use xdb_ldap,
+     xdb_sql or other non-file XDB implementations, too.
+  <xdb id="xdb">
+    <host/>
+    <load>
+      <xdb_file>xdb_file/xdb_file.so</xdb_file>
+    </load>
+    <xdb_file xmlns="jabber:config:xdb_file">
+      <spool><jabberd:cmdline flag='s'>./spool</jabberd:cmdline></spool>
+    </xdb_file>
+  </xdb> -->
+
+  <service id='aim.localhost'>
+    
+    <aimtrans xmlns='jabber:config:aimtrans'>
+      <vCard>
+        <FN>AIM/ICQ Transport</FN>
+        <DESC>An AIM/ICQ Transport</DESC>
+        <URL>http://aim-transport.jabberstudio.org/</URL>
+      </vCard>
+      <charset>cp1252</charset>
+    </aimtrans>
+
+    <load><aim_transport>path/to/your/aimtrans.so</aim_transport></load>
+
+  </service>
+
+  <service id="aimlinker">
+    <uplink/>
+    <connect>
+      <ip>127.0.0.1</ip>
+      <port>5555</port>
+      <secret>someSecret</secret>
+    </connect>
+  </service>
+
+</jabber>

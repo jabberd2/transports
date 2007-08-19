@@ -1,0 +1,9 @@
+THINGS TO FIX (IN ORDER):
+    - Auto save buddy list hourly
+    - Profile is status
+    - Merge libfaim in a bit more build system wise
+    - Searching support
+    - XHTML support
+    - Conferencing
+    - On login send headline with info such as evil level and everything else
+      not native to jabber

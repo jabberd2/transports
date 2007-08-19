@@ -1,0 +1,19 @@
+Connecting to the jabber server
+Servising multi users sessions, also from anothers jabber servers
+Full asynchronus
+Registring unregistered users
+Unregistring registred users
+Unicode conversions
+Logginig user to the tlen server
+Autologing users after transport start, and after registration
+Transporting presence
+Transporting messages
+Transporting authoryzation requests/replays
+Notification about email
+Roster importing
+Logginig to file, syslog, stderr, and debuging
+Act as a daemon, foreground
+User side configuration, saveing
+Searching
+jabber:iq:version
+jabber:x:event

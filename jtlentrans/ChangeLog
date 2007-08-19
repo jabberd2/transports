@@ -1,0 +1,162 @@
+08-07-2004 14:44 Witold Baryluk <movax@mpi.int.pl>
+	* First release (0.1.0)
+	* This is alpha version, becuse there are many bugs, but it can by
+	usefull for testing
+
+08-07-2004 14:48 Witold Baryluk <movax@mpi.int.pl>
+	* New release (0.1.1)
+	* added TODO, DONE files
+	* added informations in dependencies section of README
+
+08-07-2004 16:25 Witold Baryluk <movax@mpi.int.pl>
+	* New release (0.1.2) - "Hmm, sometime ago it's worked, now it's not"
+	* Removed xode_free() in many places
+	* Fixed null handshake problem
+	* Add simple handler for handshake error
+	* Exiting on closed jabber connection
+	* Minor bugfix
+	* Changed (*user) to user0 in many places
+
+10-07-2004 03:15 Witold Baryluk <movax@mpi.int.pl>
+	* New release (0.1.3) - "It's works"
+	* Added debuging symol, turned off optimalisation (gcc -g -O0)
+	* Change realloc to malloc in enc.h (becuse returned buf is freed later)
+	* Fix all jid_* request, the returned stings are freed (tlen.c, jabber.c)
+	* Freeing memory on signal (users_close, sid, encoding_done, many more)
+	* Tons of other memory (free/malloc) releated problems (tlen.c, jabber.c,
+	users.c, enc.c)
+	* Move some variables (from, to, ...) in jabber.c and tlen.c upper
+	* Ended changing (*user) to user0 almost evrywhere
+
+10-07-2004 05:05 Witold Baryluk <movax@mpi.int.pl>
+	* New release (0.1.4) - "It's magicly disapear"
+	* Better signals handling
+	* Added tlen-roster support (initialized after logging, and used for remove
+	users from jabber roster after logout)
+	* Few minor fixes (bad order of arguments in sndpresence in tlen_logout,
+	bad comparision tlen_loged in tlen_logut, etc.)
+	* Turned on optimalistaion (gcc -g -O2)
+
+12-07-2004 01:21 Witold Baryluk <movax@mpi.int.pl>
+	* New release (0.1.5)
+	* Searching (beta), vCard (alpha) (users.{c|h}, tlen.c, jabber.c) (JEP-0054,
+	JEP-0055)
+	* Optimalistaions in tlen.c (to = jid_my_tid2my_jid... -> user->jid)
+	* Bugfix in presence handling
+	* jabber_sndiq can handel extra data (ie. <error> tag)
+	* Many error handling (iq error, or error message from transport)
+	* Imporved register/unregister
+	* Few minor fixes (in one place wasn't freed memory, and some others bugs)
+
+12-07-2004 01:43 Witold Baryluk <movax@mpi.int.pl>
+	* New release (0.1.6)
+	* Talking with trasnport (showing avaible commands, printig debuging (my tid))
+	* Importing roster
+
+12-07-2004 14:47 Witold Baryluk <movax@mpi.int.pl>
+	* New release (0.1.7)
+	* Command line arguments (-c config.xml, -u user) (thanks to mic@elsat.net.pl)
+	* Talking with trasnport upgraded (listing roster, etc.)
+	* Importing roster upgraded
+	* Searching upgraded (search_id = id, email field, fixed)
+	* Added jabber:iq:version support (JEP-0092)
+	* Few minor fixes
+	* Updated README (about permisions to files)
+
+13-07-2004 15:30 Witold Baryluk <movax@mpi.int.pl>
+	* New release (0.2.0) - "Make a revolution"
+	* Autotool support (big thx to <wiget@pld-linux.org>)
+	* Deamon mode (see option -d, --debug)
+	* Very big logging rework (to file, to console, and to syslog, configurable)
+	* Fixed few bugs with dynamical variables (so it's compiling clearly on gcc-2.95)
+	* Few new command for taliknig with trasnport
+	* Mail/user notification is now configurable (fixes in tlen.c, jabber.c
+	(register), users.c (read), users.h (struct) and in jabber.c (handler, message)
+	* Fix in snddisco (uncommented iq:version) - works with psi 0.9.2
+	* After registring we send autorization of trasnport to user
+	* Changed body1/status1/... = malloc(1); = ""; if body/status/... is null in
+	sndmessage and sndpresence to my_strpcy
+	* Event notification (JEP-0022) in both way (not tested well)
+	* Fixed unicode conversion in search, fixed if null result
+	* New file DEBUG, updated README
+
+13-07-2004 15:30 Witold Baryluk <movax@mpi.int.pl>
+	* Fix release (0.2.0a)
+	* jabber.c:1318 - fix compilation in gcc 2.95
+	* config.c - remove warnings by adding extra brackets
+
+13-07-2004 23:36 Witold Baryluk <movax@mpi.int.pl>
+	* New release (0.3.0) - "Feel its power"
+	* Full asynchronus working (tlen.{c|h}, jabber.c, users.{h|c}, main.c), so
+	now loging to tlen is nonblocking
+	* Improved logginig subsystem
+	* Foreground mode (-f, --foreground)
+	* Imporved debug messages (chenged level, added "subsystem:")
+	* Now after loging to jabber server we send probes to all users, so we now
+	login to tlen automaticly after trasnport restart
+	* Message about errors to users ("You are not loged/registered", etc.) is now
+	sended as error type message
+
+13-07-2004 23:36 Witold Baryluk <movax@mpi.int.pl>
+	* Fix release (0.3.0a)
+	* Added simple check of given username, while registring (jid.{c|h}, jabber.c)
+
+14-07-2004 16:05 Witold Baryluk <movax@mpi.int.pl>
+	* New release (0.3.1)
+	* Fixed bad status transporting (away <-> xa)
+	* jabber.c is now in multiple files in src/jabber/
+	* Autodetections of libs (<wiget@pld-linux.org>)
+	* Remove config_connect_jid, and config_serverjid, we now use config_connect_id
+	* Added few words about jabberd2 in README
+	* Updated other text files
+
+11-08-2004 21:14 Witold Baryluk <movax@mpi.int.pl>
+	* New release (0.3.2)
+	* Fixed problems with jabber:x:event (typobug, and others)
+	* Some BSD problems fixed
+
+12-08-2004 16:39 Witold Baryluk <movax@mpi.int.pl>
+	* New release (0.3.3)
+	* Added /registred resource, changed many files (smoku)
+	* presence.c converted to xmlnode (smoku)
+	* version.c is now working lot better (smoku)
+	* message.c, iq.c converted to xmlnode
+
+09-09-2004 04:40 Witold Baryluk <movax@mpi.int.pl>
+	* New release (0.3.4)
+	* Automake rebuilded
+	* Some BSD problems fixed (use ./configure --enable-gnugetopt)
+	* Removed notification about TLEN_ERROR_NETWORK
+	* Fixed bugs with VERSION (in disco, and iq:version)
+	* disco.c rewriten to xmlnode
+	* Attribute id in iq tag is not mandatory (fix problems with jabberd2)
+	* Communication with transport via one message
+	* Fixed bug with reading saved users options
+	* Tested x:event stuff with orginal tlen and jajc
+	* Some search stuff in non-psi still borken
+	* Updated *BSD related stuff in README
+	* Chenged all C++ // comments to C /* */
+
+18-09-2004 23:23 Witold Baryluk <movax@mpi.int.pl>
+	* New release (0.3.5) - "kg release"
+	* Added experimental auto-re-login support in tlen.c (kg)
+	* Added support of WEBMSG libtlen event in tlen.c (kg)
+	* gate.c, register.c, search.c converted to xmlnode (kg, movax)
+	* Added results via jabber:x:data in search.c (works in tkabber and psi) (kg)
+	* Added missing subject support in message.c (kg)
+	* Fixed bad month presentation in debug.c (kg)
+	* Temporarly removed /registred resource in config.c (kg)
+	* Added /Tlen.pl resource in presence.c (kg)
+	* Added framework for resources handling, and reconnections (users.h)
+	* Changed all unicode_iso88592e_2_utf8d() to unicode_iso88592_2_utf8()
+	in tlen.c
+	* Added missing include in few files.
+
+24-11-2004 20:19 Mariusz Jakubowski <kg@alternatywa.info>
+    * New release (0.3.6)
+    * Added webmail link in email notify
+    * Fixed behavior of message with jabber:x:event
+25-11-2004 19:19 Mariusz Jakubowski <kg@alternatywa.info>
+    * presence?type=error instead message?type=error in reply to bad presence
+    * Rewrited jabber.c (presence and message part)
+    * Fixed subscription system 
