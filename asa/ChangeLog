@@ -1,0 +1,47 @@
+11.01.2005	Apatsch
+	* First public release (v0.1.2)
+
+14.01.2005	Apatsch
+	* Fixed loading admins from config.xml - no longer 2 or more entries
+	  needed (KG)
+	* Fixed conditional Net::Jabber::Stanza vs Net::Jabber::X with x:data
+	  in MiastoPlusa (depends on Net::Jabber module version) (KG, Apatsch)
+	* Fixed flash sms and archive sms bug in MiastoPlusa (Apatsch)
+	* Added more info on gateways (Apatsch)
+	* Added a few retries when getting sms stats from IdeaMbox - user
+	  (Axelf) reported frequent timeouts (Apatsch)
+	* Fixed connection issues with Net::Jabber 2.0 and jabberd2,
+	  conditional workaround for onauth/onconnect for N:J 1.3 (KG, Apatsch)
+	* Fixed dirty presence reactions (KG)
+	* Fixed vCard XML construction (KG)
+	* Some new remarks in README (Apatsch)
+	* Bumped agent version to 0.1.3, IdeaMbox to 0.3,
+	  MiastoPlusa to 0.4 (Apatsch)
+
+20.01.2005	Apatsch
+	* Fixed x:data boolean in MiastoPlusa (Apatsch/KG)
+	* Fixes Heyah prefixes in MiastoPlusa (Apatsch)
+	* Bumped agent version to 0.1.4, MiastoPlusa to 0.5 (Apatsch)
+
+27.02.2005	Apatsch
+	* Fixed MiastoPlusa plugin Idea 500 prefix (djrzulf)
+	* Fixed MiastoPlusa plugin x:data text "See URL for info" (Apatsch)
+	* Bumped MiastoPlusa plugin version to 0.6 (Apatsch)
+	* Plugin EraOmnix_Podstawowa now supports additional settings
+	  via x:data (contact, signature) - new version 0.2 (Apatsch)
+	* Plugin EraOmnix_Platna now supports additional settings
+	  via x:data (contact, signature, smart word breaking, EMS, alert
+	  mode, status to email) - new version 0.2 (Apatsch)
+	* Bumped ApaSMSAgent version to 0.1.5 (Apatsch)
+
+22.04.2005	Apatsch
+	* MiastoPlusa cookie parsing fix (Apatsch)
+	* MiastoPlusa account status parsing fix (Apatsch)
+	* MiastoPlusa now supports 880,887,888,889 prefixes (Apatsch)
+	* Misc fix for devel run iq:version storming (Apatsch)
+	* Agent version 0.1.5 -> 0.1.6, MiastoPlusa version 0.6 -> 0.7
+
+08.08.2005	Apatsch
+	* EraOmnix_Podstawowa now supports +48668 prefix (v0.3) (Apatsch)
+	* Fixed AUTHORS (Apatsch)
+

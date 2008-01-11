@@ -1,0 +1,36 @@
+ApaSMSAgent - Jabber server component agent for sending
+SMS messages to cellular networks. Targetted at polish users,
+but can be adopted for international use, because of it's
+plugin-based architecture.
+
+HowTo:
+
+vim config.xml
+./ApaSMSAgent.pl
+
+Tweaking:
+
+WwwPlusa plugin might need to be tweaked a little - it uses
+hardcoded anonymous proxy list to connect to the service website.
+The list evolves, and should be modified by hand if there are
+too many proxy errors reported. A nice list of proxies is located
+at http://www.atomintersoft.com/products/alive-proxy/proxy-list/
+
+Important:
+
+Don't forget to track http://forum.jabberpl.org for information
+on important updates to this software! I take no responsibility
+if your users cry because of an old agent;) 
+
+Users guide:
+
+Kolargol wrote a nice guide for ApaSMSAgent, located at
+http://jabber.autocom.pl/sms.php (in Polish, po polsku).
+
+Limitations:
+
+It's a perl application, so it eats CPU and RAM quite a bit.
+Kolargol reported problems with users above 500 or so. See TODO
+file to look-up the solution. Yes, it needs to be rewritten in
+Python.
+

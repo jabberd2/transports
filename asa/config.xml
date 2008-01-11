@@ -1,0 +1,50 @@
+<config>
+	<!-- service's name -->
+	<service_name>sms.jabber.server.somewhere</service_name>
+	<!-- server's address to connect to as a component -->
+	<server>127.0.0.1</server>
+	<!-- server port to connect to -->
+	<port>1234567</port>
+	<!-- component authentication password -->
+	<password></password>
+	<!-- agent's verbosity level -->
+	<verbose>4</verbose>
+	<!-- the directory where plugins for SMS gateways are placed -->
+	<plugin_dir>./plugins/</plugin_dir>
+	<!-- a filename prefix for files containing per-user phone numbers MLDBM/SDB database -->
+	<users_numbers_file>./storage/numbers-storage.mldbm</users_numbers_file>
+	<!-- above hash/file access cache size, higher values improve performance -->
+	<numbers_tiehash_cache>1024K</numbers_tiehash_cache>
+	<!-- a filename prefix for files containing per-user priority preferences MLDBM/SDB database -->
+	<users_prio_prefs_file>./storage/prio-prefs-storage.mldbm</users_prio_prefs_file>
+	<!-- above hash/file access cache size, higher values improve performance -->
+	<prio_prefs_tiehash_cache>1024K</prio_prefs_tiehash_cache>
+	<!-- ugly list of pretty admins :) -->
+	<admins>
+		<admin>apatsch@jabber.iron.wroc.biz</admin>
+		<admin>apatsch@jabber.aster.pl</admin>
+	</admins>
+	<!-- plugins to load, these are parts of filenames! like MiastoPlusa.pl but w/o .pl -->
+	<load>
+		<plugin>MiastoPlusa</plugin>
+		<plugin>WwwPlusa</plugin>
+		<plugin>OrangeMbox</plugin>
+		<plugin>EraOmnix_Sponsorowana</plugin>
+		<plugin>EraOmnix_Multimedialna</plugin>
+	</load>
+	<!-- plugins' own options and settings -->
+	<plugins>
+		<MiastoPlusa>
+			<accounts_file>./storage/accounts-MiastoPlusa.mldbm</accounts_file>
+		</MiastoPlusa>
+		<OrangeMbox>
+			<accounts_file>./storage/accounts-OrangeMbox.mldbm</accounts_file>
+		</OrangeMbox>
+		<EraOmnix_Sponsorowana>
+			<accounts_file>./storage/accounts-EraOmnix_Sponsorowana.mldbm</accounts_file>
+		</EraOmnix_Sponsorowana>
+		<EraOmnix_Multimedialna>
+			<accounts_file>./storage/accounts-EraOmnix_Multimedialna.mldbm</accounts_file>
+		</EraOmnix_Multimedialna>
+	</plugins>
+</config>
