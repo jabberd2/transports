@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-30 00:38+0100\n"
+"POT-Creation-Date: 2008-01-30 00:56+0100\n"
 "PO-Revision-Date: 03/04/04 13:02\n"
 "Last-Translator: Sander Devrieze <s.devrieze@pandora.be>\n"
 "Language-Team: Nederlands\n"
@@ -1283,14 +1283,16 @@ msgstr "Server Timeout"
 
 #: src/sessions.c:327
 #, c-format
-msgid "%s got notification from unknown contact %i, ignoring.."
+msgid ""
+"%s got notification from unknown contact %i. Converting to subscription "
+"request."
 msgstr ""
 
-#: src/sessions.c:331
+#: src/sessions.c:334
 #, c-format
 msgid ""
-"%s got notification from contact %i whose presence was not requested. "
-"Converting to subscription request."
+"%s got notification from contact %i, whose presence was not requested. "
+"Ignoring."
 msgstr ""
 
 #: src/sessions.c:428

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: jabber-gg-transport\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-30 00:39+0100\n"
+"POT-Creation-Date: 2008-01-30 00:58+0100\n"
 "PO-Revision-Date: 2004-03-10 13:15+0200\n"
 "Last-Translator: Tomasz Sterna <tomek@xiaoka.com>\n"
 "Language-Team: Polish <pl@li.org>\n"
@@ -1277,17 +1277,21 @@ msgstr "Przekroczenie limitu czasu połączenia ze zdalnym serwerem"
 
 #: src/sessions.c:327
 #, c-format
-msgid "%s got notification from unknown contact %i, ignoring.."
-msgstr "%s dostał powiadomienie od nieznanego kontaktu %i, ignoruję..."
+msgid ""
+"%s got notification from unknown contact %i. Converting to subscription "
+"request."
+msgstr ""
+"%s dostał powiadomienie od nieznanego kontaktu %i. Konwertuję na prośbę o "
+"obecność."
 
-#: src/sessions.c:331
+#: src/sessions.c:334
 #, c-format
 msgid ""
-"%s got notification from contact %i whose presence was not requested. "
-"Converting to subscription request."
+"%s got notification from contact %i, whose presence was not requested. "
+"Ignoring."
 msgstr ""
-"%s dostał powiadomienie od kontaktu %i którego obecności nie oczekuje. "
-"Konwertuję na prośbę o obecność."
+"%s dostał powiadomienie od kontaktu %i, którego obecności nie oczekuje. "
+"Ignoruję."
 
 #: src/sessions.c:428
 msgid "Checking error conditions..."
@@ -1772,6 +1776,9 @@ msgstr "%sStatus: %i"
 #, c-format
 msgid "%sLast update: %s"
 msgstr "%sOstatnia aktualizacja: %s"
+
+#~ msgid "%s got notification from unknown contact %i, ignoring.."
+#~ msgstr "%s dostał powiadomienie od nieznanego kontaktu %i, ignoruję..."
 
 #~ msgid "Not registered"
 #~ msgstr "Nie zarejestrowany"
