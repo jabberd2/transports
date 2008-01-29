@@ -427,9 +427,9 @@ time_t timestamp;
 	user_load_locale(s->user);
 	debug(L_("Checking error conditions..."));
 	if (condition&(G_IO_ERR|G_IO_NVAL)){
-		if (condition&G_IO_ERR) g_warning(N_("Error on connection for %s ,GGid: %i"),s->jid,s->ggs->uin);
+		if (condition&G_IO_ERR) g_warning(N_("Error on connection for %s, GGid: %i"),s->jid,s->ggs->uin);
 		if (condition&G_IO_HUP){
-			g_warning(N_("Hangup on connection for %s ,GGid: %i"),s->jid,s->ggs->uin);
+			g_warning(N_("Hangup on connection for %s, GGid: %i"),s->jid,s->ggs->uin);
 			s->current_server=g_list_next(s->current_server);
 			if(!s->connected && s->current_server!=NULL){
 				session_try_login(s);
@@ -445,7 +445,7 @@ time_t timestamp;
 	debug(L_("watching fd (gg_debug_level=%i)..."),gg_debug_level);
 	event=gg_watch_fd(s->ggs);
 	if (!event){
-		g_warning(N_("Connection broken. Session of %s ,GGid: %i"),s->jid,s->ggs->uin);
+		g_warning(N_("Connection broken. Session of %s, GGid: %i"),s->jid,s->ggs->uin);
 		session_broken(s);
 		return FALSE;
 	}
@@ -457,7 +457,7 @@ time_t timestamp;
 			gg_event_free(event);
 			return FALSE;
 		case GG_EVENT_CONN_FAILED:
-			g_warning(N_("Login failed for %s ,GGid: %i"),s->jid,s->ggs->uin);
+			g_warning(N_("Login failed for %s, GGid: %i"),s->jid,s->ggs->uin);
 			if (s->req_id)
 				jabber_iq_send_error(s->s,s->jid,NULL,s->req_id,401,_("Unauthorized"));
 			else presence_send(s->s,NULL,s->user->jid,0,NULL,"Login failed",0);
