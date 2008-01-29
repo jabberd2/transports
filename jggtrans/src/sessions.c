@@ -324,14 +324,14 @@ Contact *c;
 
 	c=user_get_contact(s->user,uin,FALSE);
 	if (c==NULL) {
-		debug(L_("%s got notification from unknown contact %i, ignoring.."),s->user->jid,uin);
-	       	return 0;
-	}
-	if (!c->got_probe && c->subscribe!=SUB_TO && c->subscribe!=SUB_BOTH) {
-		debug(L_("%s got notification from contact %i whose presence was not requested. Converting to subscription request."),s->user->jid,uin);
+		debug(L_("%s got notification from unknown contact %i. Converting to subscription request."),s->user->jid,uin);
 		ujid=jid_build(uin);
 		presence_send_subscribe(s->s,ujid,s->user->jid);
 		g_free(ujid);
+	       	return 0;
+	}
+	if (!c->got_probe && c->subscribe!=SUB_TO && c->subscribe!=SUB_BOTH) {
+		debug(L_("%s got notification from contact %i, whose presence was not requested. Ignoring."),s->user->jid,uin);
 	       	return 0;
 	}
 
