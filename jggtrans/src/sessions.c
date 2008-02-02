@@ -279,14 +279,17 @@ GgServer *serv;
 	serv=(GgServer*)s->current_server->data;
 	user_load_locale(s->user);
 
-	g_warning(N_("Timeout for server %u - failure count: %d"),
+	if(serv->port!=1){
+		g_warning(N_("Timeout for server %u - failure count: %d"),
 			g_list_position(gg_servers, s->current_server),
 			serv->error_count);
 
-	/* failure accounting for non-hubs */
-	if(serv->port!=1){
+		/* failure accounting for non-hubs */
 		serv->error_count+=1;
 		serv->error_time=time(NULL);
+	} else {
+		g_warning(N_("Timeout for hub %u"),
+			g_list_position(gg_servers, s->current_server));
 	}
 
 	/* find next server candidate */
