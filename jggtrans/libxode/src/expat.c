@@ -21,20 +21,33 @@
 
 void expat_startElement(void* userdata, const char* name, const char** atts)
 {
+    int i;
+    char elemname[256];
+
     /* get the xmlnode pointed to by the userdata */
     xmlnode *x = userdata;
     xmlnode current = *x;
 
+    /* emulate "some" xmlns handling */
+    strncpy(elemname, name, 256);
+    for (i = 0; atts[i] && i < 256; i += 2) {
+	if (!strncmp(atts[i], "xmlns:", 6) && !strncmp(name, atts[i]+6, strlen(atts[i]+6))) {
+            strncpy(elemname, name + strlen(atts[i]+6) + 1, 256);
+	    strcpy(atts[i], atts[i]+6);
+	}
+    }
+    elemname[255] = '\0';
+
     if (current == NULL)
     {
         /* allocate a base node */
-        current = xmlnode_new_tag(name);
+        current = xmlnode_new_tag(elemname);
         xmlnode_put_expat_attribs(current, atts);
         *x = current;
     }
     else
     {
-        *x = xmlnode_insert_tag(current, name);
+        *x = xmlnode_insert_tag(current, elemname);
         xmlnode_put_expat_attribs(*x, atts);
     }
 }
