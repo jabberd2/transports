@@ -150,6 +150,14 @@
  </servers>
  -->
 
+ <!-- after this number of connect errors, server will be temporarly
+      removed from the active server list -->
+ <server_cutoff>3</server_cutoff>
+
+ <!-- cutoff timeout - after this time (in seconds) server will be
+      back on active server list -->
+ <server_cutoff_timeout>3600</server_cutoff_timeout>
+
  <!-- Spool directory. This is the place, where user info will be stored. -->
  <!-- Be careful about permissions - users' GG passwords are stored there -->
  <spool>/var/lib/jabber/spool/gg.localhost/</spool>

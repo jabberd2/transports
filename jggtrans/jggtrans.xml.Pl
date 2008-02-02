@@ -164,6 +164,14 @@
  </servers>
 -->
 
+ <!-- po tylu nieudanych probach polaczenia, serwer zostanie tymczasowo usuniety
+      z listy aktywnych serwerow -->
+ <server_cutoff>3</server_cutoff>
+
+ <!-- po tylu sekundach po usunieciu, serwer zostanie przywrocony na liste
+      aktywnych serwerow -->
+ <server_cutoff_timeout>3600</server_cutoff_timeout>
+
  <!-- Gdzie zapisywać/sprawdzać plik z pid procesu ggtrans. -->
  <pidfile>/var/lib/jabber/ggtrans.pid</pidfile>
 

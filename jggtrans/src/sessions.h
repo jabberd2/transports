@@ -63,6 +63,8 @@ typedef struct gg_server_s {
 	struct in_addr addr;
 	int port;
 	int tls;
+	int error_count;	/** how many times there was a failure connecting the server */
+	time_t error_time;	/** when last failure happened */
 }GgServer;
 
 extern GHashTable *sessions_jid;

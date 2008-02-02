@@ -40,6 +40,8 @@ static int conn_timeout=30;
 static int pong_timeout=30;
 static int ping_interval=10;
 static int reconnect=0;
+static int cutoff=3;
+static int cutoff_timeout=3600;
 static GList *gg_servers=NULL;
 GHashTable *sessions_jid;
 
@@ -145,6 +147,10 @@ GgServer *server;
 	if (i>0) ping_interval=i;
 	i=config_load_int("reconnect",0);
 	if (i>0) reconnect=i;
+	i=config_load_int("server_cutoff",0);
+	if (i>0) cutoff=i;
+	i=config_load_int("server_cutoff_timeout",0);
+	if (i>0) cutoff_timeout=i;
 
 
 	parent=xmlnode_get_tag(config,"servers");
@@ -161,6 +167,7 @@ GgServer *server;
 			}
 			else if (strcmp(p, "server")==0){
 				server=g_new(GgServer, 1);
+				server->error_count=0;
 				r=xmlnode_get_attrib(tag, "port");
 				if (r)
 					server->port=atoi(r);
@@ -188,7 +195,8 @@ GgServer *server;
 		gg_servers=g_list_append(gg_servers, server);
 
 		server=g_new(GgServer, 1);
-		inet_aton("217.17.45.143", &server->addr);
+		server->error_count=0;
+		inet_aton("217.17.45.145", &server->addr);
 		server->port=8074;
 		server->tls=0;
 		gg_servers=g_list_append(gg_servers, server);
@@ -264,15 +272,39 @@ int t;
 
 gboolean session_timeout(gpointer data){
 Session *s;
+GgServer *serv;
 
 	g_assert(data!=NULL);
 	s=(Session *)data;
+	serv=(GgServer*)s->current_server->data;
 	user_load_locale(s->user);
 
-	g_warning(N_("Timeout for server %u"),
-			g_list_position(gg_servers, s->current_server));
+	g_warning(N_("Timeout for server %u - failure count: %d"),
+			g_list_position(gg_servers, s->current_server),
+			serv->error_count);
 
-	s->current_server=g_list_next(s->current_server);
+	/* failure accounting for non-hubs */
+	if(serv->port!=1){
+		serv->error_count+=1;
+		serv->error_time=time(NULL);
+	}
+
+	/* find next server candidate */
+	for(s->current_server=g_list_next(s->current_server), serv=(GgServer*)s->current_server->data;
+		s->current_server==NULL || serv->port==1;
+		s->current_server=g_list_next(s->current_server), serv=(GgServer*)s->current_server->data){
+		/* hubs are always good */
+		if(serv->port==1) break;
+		/* check if the server is good */
+		if(serv->error_count < cutoff) break;
+		/* check if the cutoff timed out */
+		if(serv->error_time + (time_t)cutoff_timeout <= time(NULL)){
+			/* clear the error counter */
+			serv->error_count = 0;
+			/* and take the server - it's now good (to try) */
+			break;
+		}
+	}
 	if(s->current_server!=NULL)
 		if(!session_try_login(s))
 			return FALSE;
