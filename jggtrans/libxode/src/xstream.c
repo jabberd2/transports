@@ -27,6 +27,9 @@
 void _xstream_startElement(xstream xs, const char* name, const char** atts)
 {
     pool p;
+    int i;
+    char elemname[256];
+    char *attribute;
 
     /* if xstream is bad, get outa here */
     if(xs->status > XSTREAM_NODE) return;
@@ -44,7 +47,18 @@ void _xstream_startElement(xstream xs, const char* name, const char** atts)
             xs->node = NULL;
         }
     }else{
-        xs->node = xmlnode_insert_tag(xs->node, name);
+        /* emulate "some" xmlns handling */
+        strncpy(elemname, name, 256);
+        for (i = 0; atts[i] && i < 256; i += 2) {
+            if (!strncmp(atts[i], "xmlns:", 6) && !strncmp(name, atts[i]+6, strlen(atts[i]+6))) {
+                strncpy(elemname, name + strlen(atts[i]+6) + 1, 256);
+		attribute = atts[i];
+		attribute[5] = '\0';
+            }
+        }
+        elemname[255] = '\0';
+
+        xs->node = xmlnode_insert_tag(xs->node, elemname);
         xmlnode_put_expat_attribs(xs->node, atts);
     }
 
