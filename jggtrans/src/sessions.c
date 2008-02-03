@@ -296,7 +296,7 @@ GgServer *serv;
 	for(s->current_server=g_list_next(s->current_server), serv=(GgServer*)s->current_server->data;
 		s->current_server!=NULL; s->current_server=g_list_next(s->current_server)){
 
-		serv=(GgServer*)s->current_server->data){
+		serv=(GgServer*)s->current_server->data;
 		/* hubs are always good */
 		if(serv->port==1) break;
 		/* check if the server is good */
