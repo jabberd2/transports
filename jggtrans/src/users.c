@@ -551,7 +551,7 @@ GList *it;
 int user_check_contact(User *u,Contact *c){
 
 	if (c->ignored || c->got_online || c->blocked
-			|| c->got_probe || c->subscribe!=SUB_UNDEFINED) return 0;
+			|| c->got_probe || c->subscribe!=SUB_NONE) return 0;
 	u->contacts=g_list_remove(u->contacts,c);
 	if (c->status_desc) free(c->status_desc);
 	g_free(c);

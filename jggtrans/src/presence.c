@@ -61,60 +61,36 @@ char *str;
 	return 0;
 }
 
-/**
- * SHOULD send a presence probe from the full JID <user@domain/resource> of the user to the bare JID <contact@domain> of the contact
- */
+
 int presence_send_probe(struct stream_s *stream,const char *from,const char *to){
 xmlnode pres;
-char *buf, *str;
 
 	pres=xmlnode_new_tag("presence");
-	if (from!=NULL) {
-		if(!strstr(from,"/")){
-			if(strstr(from,"@")){
-				buf = g_strdup_printf("%s/GG",from);
-			}else{
-				buf = g_strdup_printf("%s/registered",from);
-			}
-			xmlnode_put_attrib(pres,"from",buf);
-			g_free(buf);
-		}else
-			xmlnode_put_attrib(pres,"from",from);
-	}
+	if (from!=NULL)
+		xmlnode_put_attrib(pres,"from",from);
 	else{
 		char *jid;
-		jid=jid_my_registered(0);
+		jid=jid_my_registered(1);
 		xmlnode_put_attrib(pres,"from",jid);
 		g_free(jid);
 	}
-	if(strstr(to,"/")!=NULL){
-		buf = g_strdup(to);
-		str = strstr(buf, "/");
-		*str = '\0';
-		xmlnode_put_attrib(pres,"to",buf);
-		g_free(buf);
-	}else
-		xmlnode_put_attrib(pres,"to",to);
+	xmlnode_put_attrib(pres,"to",to);
 	xmlnode_put_attrib(pres,"type","probe");
 	stream_write(stream,pres);
 	xmlnode_free(pres);
 	return 0;
 }
 
-/**
- * MUST stamp the outbound subscription request with the bare JID <user@domain> of the user
- * and only sensible 'to' is also a bare JID
- */
 int presence_send_subscribe(struct stream_s *stream,const char *from,const char *to){
 xmlnode pres;
-char *buf, *str;
 
 	pres=xmlnode_new_tag("presence");
 	if (from!=NULL){
+		char *buf, *str;
 		buf = g_strdup(from);
 		str = strstr(buf, "/");
 		if (str!=NULL) *str='\0';
-		xmlnode_put_attrib(pres,"from",buf);
+		xmlnode_put_attrib(pres,"from",from);
 		g_free(buf);
 	}
 	else{
@@ -123,131 +99,70 @@ char *buf, *str;
 		xmlnode_put_attrib(pres,"from",jid);
 		g_free(jid);
 	}
-	if(strstr(to,"/")!=NULL){
-		buf = g_strdup(to);
-		str = strstr(buf, "/");
-		*str = '\0';
-		xmlnode_put_attrib(pres,"to",buf);
-		g_free(buf);
-	}else
-		xmlnode_put_attrib(pres,"to",to);
+	xmlnode_put_attrib(pres,"to",to);
 	xmlnode_put_attrib(pres,"type","subscribe");
 	stream_write(stream,pres);
 	xmlnode_free(pres);
 	return 0;
 }
 
-/**
- * MUST stamp the outbound stanza with the bare JID <contact@domain> of the contact
- * and only sensible 'to' is also a bare JID
- */
 int presence_send_subscribed(struct stream_s *stream,const char *from,const char *to){
 xmlnode pres;
-char *buf, *str;
 
 	pres=xmlnode_new_tag("presence");
-	if (from!=NULL){
-		buf = g_strdup(from);
-		str = strstr(buf, "/");
-		if (str!=NULL) *str='\0';
-		xmlnode_put_attrib(pres,"from",buf);
-		g_free(buf);
-	}
+	if (from!=NULL)
+		xmlnode_put_attrib(pres,"from",from);
 	else{
 		char *jid;
 		jid=jid_my_registered(1);
 		xmlnode_put_attrib(pres,"from",jid);
 		g_free(jid);
 	}
-	if(strstr(to,"/")!=NULL){
-		buf = g_strdup(to);
-		str = strstr(buf, "/");
-		*str = '\0';
-		xmlnode_put_attrib(pres,"to",buf);
-		g_free(buf);
-	}else
-		xmlnode_put_attrib(pres,"to",to);
+	xmlnode_put_attrib(pres,"to",to);
 	xmlnode_put_attrib(pres,"type","subscribed");
 	stream_write(stream,pres);
 	xmlnode_free(pres);
 	return 0;
 }
 
-/**
- * MUST stamp the outbound subscription cancellation with the bare JID <contact@domain> of the contact
- * and only sensible 'to' is also a bare JID
- */
 int presence_send_unsubscribed(struct stream_s *stream,const char *from,const char *to){
 xmlnode pres;
-char *buf, *str;
 
 	pres=xmlnode_new_tag("presence");
-	if (from!=NULL){
-		buf = g_strdup(from);
-		str = strstr(buf, "/");
-		if (str!=NULL) *str='\0';
-		xmlnode_put_attrib(pres,"from",buf);
-		g_free(buf);
-	}
+	if (from!=NULL)
+		xmlnode_put_attrib(pres,"from",from);
 	else{
 		char *jid;
 		jid=jid_my_registered(1);
 		xmlnode_put_attrib(pres,"from",jid);
 		g_free(jid);
 	}
-	if(strstr(to,"/")!=NULL){
-		buf = g_strdup(to);
-		str = strstr(buf, "/");
-		*str = '\0';
-		xmlnode_put_attrib(pres,"to",buf);
-		g_free(buf);
-	}else
-		xmlnode_put_attrib(pres,"to",to);
+	xmlnode_put_attrib(pres,"to",to);
 	xmlnode_put_attrib(pres,"type","unsubscribed");
 	stream_write(stream,pres);
 	xmlnode_free(pres);
 	return 0;
 }
 
-/**
- * MUST stamp the outbound unsubscribe with the bare JID <user@domain> of the user
- * and only sensible 'to' is also a bare JID
- */
 int presence_send_unsubscribe(struct stream_s *stream,const char *from,const char *to){
 xmlnode pres;
-char *buf, *str;
 
 	pres=xmlnode_new_tag("presence");
-	if (from!=NULL){
-		buf = g_strdup(from);
-		str = strstr(buf, "/");
-		if (str!=NULL) *str='\0';
-		xmlnode_put_attrib(pres,"from",buf);
-		g_free(buf);
-	}
+	if (from!=NULL)
+		xmlnode_put_attrib(pres,"from",from);
 	else{
 		char *jid;
 		jid=jid_my_registered(1);
 		xmlnode_put_attrib(pres,"from",jid);
 		g_free(jid);
 	}
-	if(strstr(to,"/")!=NULL){
-		buf = g_strdup(to);
-		str = strstr(buf, "/");
-		*str = '\0';
-		xmlnode_put_attrib(pres,"to",buf);
-		g_free(buf);
-	}else
-		xmlnode_put_attrib(pres,"to",to);
+	xmlnode_put_attrib(pres,"to",to);
 	xmlnode_put_attrib(pres,"type","unsubscribe");
 	stream_write(stream,pres);
 	xmlnode_free(pres);
 	return 0;
 }
 
-/**
- * all presence information is exchanged from the full JID
- */
 int presence_send(struct stream_s *stream,const char *from,
 		const char *to,int available,const char *show,
 		const char *status,GTime timestamp){
@@ -255,19 +170,8 @@ xmlnode pres;
 xmlnode n;
 
 	pres=xmlnode_new_tag("presence");
-	if (from!=NULL){
-		if(!strstr(from,"/")){
-			char *buf;
-			if(strstr(from,"@")){
-				buf = g_strdup_printf("%s/GG",from);
-			}else{
-				buf = g_strdup_printf("%s/registered",from);
-			}
-			xmlnode_put_attrib(pres,"from",buf);
-			g_free(buf);
-		}else
-			xmlnode_put_attrib(pres,"from",from);
-	}
+	if (from!=NULL)
+		xmlnode_put_attrib(pres,"from",from);
 	else{
 		char *jid;
 		jid=jid_my_registered(0);
