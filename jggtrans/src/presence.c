@@ -61,7 +61,6 @@ char *str;
 	return 0;
 }
 
-
 int presence_send_probe(struct stream_s *stream,const char *from,const char *to){
 xmlnode pres;
 
@@ -70,7 +69,7 @@ xmlnode pres;
 		xmlnode_put_attrib(pres,"from",from);
 	else{
 		char *jid;
-		jid=jid_my_registered(1);
+		jid=jid_my_registered(0);
 		xmlnode_put_attrib(pres,"from",jid);
 		g_free(jid);
 	}
@@ -430,7 +429,7 @@ GTime timestamp;
 			}
 			return 0;
 		}
-		else presence_send_unsubscribed(stream,NULL,from);
+		else presence_send_unsubscribed(stream,to,from);
 		return -1;
 	}
 
@@ -491,7 +490,6 @@ GTime timestamp;
 	
 	return 0;
 }
-
 
 int presence_direct_available(struct stream_s *stream,const char *from,const char *to){
 uin_t uin;
