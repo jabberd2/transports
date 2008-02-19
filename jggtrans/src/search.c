@@ -27,6 +27,7 @@
 #include "jid.h"
 #include "encoding.h"
 #include "gg_versions.h"
+#include "vcard_photo.h"
 #include "forms.h"
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -469,6 +470,12 @@ const char *uin, *first_name, *last_name, *nickname, *born, *city;
 		xmlnode_insert_cdata(n,str,-1);
 		g_free(str);
 	}
+
+	n1=xmlnode_insert_tag(vc,"PHOTO");
+	n=xmlnode_insert_tag(n1,"TYPE");
+	xmlnode_insert_cdata(n,VCARD_PHOTO_TYPE,-1);
+	n=xmlnode_insert_tag(n1,"BINVAL");
+	xmlnode_insert_cdata(n,VCARD_PHOTO_BINVAL,-1);
 
 	jabber_iq_send_result(r->stream,r->from,r->to,r->id,vc);
 	xmlnode_free(vc);
