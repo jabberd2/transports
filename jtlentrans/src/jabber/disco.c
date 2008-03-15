@@ -19,8 +19,8 @@ int jabber_snddisco(const char *id, const char *to) {
 
 	temp1 = xode_insert_tag(temp, "identity");
 	xode_put_attrib(temp1, "category", "gateway");
-	xode_put_attrib(temp1, "type", "x-tlen");
-	xode_put_attrib(temp1, "name", "Tlen Transport v"PACKAGE_VERSION);
+	xode_put_attrib(temp1, "type", "tlen");
+	xode_put_attrib(temp1, "name", "Tlen Transport");
 
 	temp1 = xode_insert_tag(temp, "feature");
 	xode_put_attrib(temp1, "var", "jabber:iq:register");
