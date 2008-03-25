@@ -228,7 +228,7 @@ sub ServiceInIQ {
 		if ($type eq 'get') { 
 			$iq->SetType('result');
 			if ($to eq $config{service_name}) { # main
-				$query->AddIdentity(category=>"service",type=>"sms",name=>"Bramka SMS");
+				$query->AddIdentity(category=>"gateway",type=>"sms",name=>"Bramka SMS");
 				$query->AddFeature(var=>'vcard-temp');
 				$query->AddFeature(var=>'jabber:iq:version');
 				$query->AddFeature(var=>'jabber:iq:gateway');
@@ -237,7 +237,7 @@ sub ServiceInIQ {
 				$query->AddFeature(var=>'http://jabber.org/protocol/disco#info');
 				$query->AddFeature(var=>'http://jabber.org/protocol/disco#items');
 			} elsif (my $p=(grep {$to eq $config{service_name}."/".$_ } keys %plugins)[0]) { # plugin - bare, w/o @
-				$query->AddIdentity(category=>"service",type=>"sms",name=>$p);
+				$query->AddIdentity(category=>"gateway",type=>"sms",name=>$p);
 				$query->AddFeature(var=>'vcard-temp');
 				$query->AddFeature(var=>'jabber:iq:version');
 				$query->AddFeature(var=>'http://jabber.org/protocol/disco#info');
