@@ -90,7 +90,7 @@ extern char *yahoo_crypt(const char *, const char *);
 #define USEROPT_PAGERPORT 4
 //  #define YAHOO_PAGER_PORT 5050
 
-#define YAHOO_PROTO_VER 0x000e
+#define YAHOO_PROTO_VER 0x000c
 
 //  enum yahoo_service { /* these are easier to see in hex */
 //  	YAHOO_SERVICE_LOGON = 1,
