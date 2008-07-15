@@ -193,7 +193,7 @@
 		<!-- pozwala na wykonywanie wszelki pozostały operacji użytkonikom 
 			z domeny "mydomain" -->
 
-	<!-- <deny what="iq/query?xmlns=jabber:x:register"/> --> 
+	<!-- <deny what="iq/query?xmlns=jabber:iq:register"/> --> 
 		<!-- zabrania rejestracji innym użytkownikom -->
 
 	<!-- <allow what="presence"/> --> 

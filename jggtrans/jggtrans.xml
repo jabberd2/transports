@@ -182,7 +182,7 @@
 	<!-- <allow who="*@mydomain"/> -->
 		<!-- will allow anything else to users from "mydomain" -->
 
-	<!-- <deny what="iq/query?xmlns=jabber:x:register"/> --> 
+	<!-- <deny what="iq/query?xmlns=jabber:iq:register"/> --> 
 		<!-- will deny registration for all other users -->
 
 	<!-- <allow what="presence"/> --> 
