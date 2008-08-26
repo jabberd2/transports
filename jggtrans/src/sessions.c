@@ -493,12 +493,22 @@ time_t timestamp;
 			gg_event_free(event);
 			return FALSE;
 		case GG_EVENT_CONN_FAILED:
-			g_warning(N_("Login failed for %s, GGid: %i"),s->jid,s->ggs->uin);
+			g_warning(N_("Login failed (%d) for %s, GGid: %i"),event->event.failure,s->jid,s->ggs->uin);
 			if (s->req_id)
 				jabber_iq_send_error(s->s,s->jid,NULL,s->req_id,401,_("Unauthorized"));
 			else presence_send(s->s,NULL,s->user->jid,0,NULL,"Login failed",0);
 			if (!s->req_id)
-				session_schedule_reconnect(s);
+				switch(event->event.failure){
+					case GG_FAILURE_RESOLVING:
+					case GG_FAILURE_CONNECTING:
+					case GG_FAILURE_INVALID:
+					case GG_FAILURE_READING:
+					case GG_FAILURE_WRITING:
+					case GG_FAILURE_TLS:
+						session_schedule_reconnect(s);
+					default:
+						break;
+				}
 			session_remove(s);
 			gg_event_free(event);
 			return FALSE;
