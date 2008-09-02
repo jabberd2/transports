@@ -331,10 +331,10 @@ uin_t uin;
 		return -1;
 	}
 	if (jid_is_me(to)){
+		debug(L_("Presence 'unsubscribed' sent to me"));
 		if (u->subscribe==SUB_FROM) u->subscribe=SUB_NONE;
 		else if (u->subscribe==SUB_BOTH || u->subscribe==SUB_UNDEFINED) u->subscribe=SUB_TO;
 		user_save(u);
-		debug(L_("Presence 'unsubscribed' sent to me"));
 		return 0;
 	}
 	if (!jid_has_uin(to) || !jid_is_my(to)){

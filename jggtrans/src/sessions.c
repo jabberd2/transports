@@ -685,7 +685,7 @@ GList *it;
 			if (!GG_S_NA(c->status) && c->status!=-1){
 				char *ujid;
 				ujid=jid_build_full(c->uin);
-				presence_send(s->s,ujid,s->user->jid,0,NULL,"Transport disconnected",0);
+				presence_send(s->s,ujid,s->user->jid,0,NULL,NULL,0);
 				g_free(ujid);
 			}
 		}
@@ -781,8 +781,8 @@ static int session_try_login(Session *s){
 struct gg_login_params login_params;
 GgServer *serv;
 
-	g_warning(N_("Trying to log in on server %u"),
-			g_list_position(gg_servers, s->current_server));
+	g_warning(N_("Trying to log in on server %u for %s"),
+			g_list_position(gg_servers, s->current_server), s->jid);
 
 	if (s->timeout_func) g_source_remove(s->timeout_func);
 	if (s->ggs) {
