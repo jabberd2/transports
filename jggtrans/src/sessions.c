@@ -992,8 +992,7 @@ int num_resources=0;
 		session_send_status(s);
 	}
 
-	if (s->connected) session_send_status(s);
-	else return session_try_login(s);
+	if (!s->ggs) return session_try_login(s);
 
 	return 0;
 }
@@ -1063,6 +1062,19 @@ char * session_split_message(const char **msg){
 const char *m;
 int i,len;
 
+ 	m = *msg;
+ 	if (strlen(*msg) <= 1989){
+ 		*msg = NULL;
+  		return g_strdup(m);
+  	}
+ 	for(i=1988; i >= 1000; i--){
+  		if (isspace(m[i])){
+ 			*msg = m + i + 1;
+ 			return g_strndup(m, i);
+ 		}
+ 	}
+ 	*msg = m + i;
+ 	return g_strndup(m, i);
 	m=*msg;
 	len=strlen(*msg);
 	if (len<=2000){
