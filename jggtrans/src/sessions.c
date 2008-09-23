@@ -1075,20 +1075,6 @@ int i,len;
  	}
  	*msg = m + i;
  	return g_strndup(m, i);
-	m=*msg;
-	len=strlen(*msg);
-	if (len<=2000){
-		*msg=NULL;
-		return g_strdup(m);
-	}
-	for(i=2000;i>1000&&i<len;i++){
-		if (isspace(m[i])){
-			*msg = m + i + 1;
-			return g_strndup(m, i);
-		}
-	}
-	*msg = m + i;
-	return g_strndup(m, i);
 }
 
 int session_send_message(Session *s,uin_t uin,int chat,const char *body){
