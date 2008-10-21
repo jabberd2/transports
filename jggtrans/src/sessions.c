@@ -1004,8 +1004,8 @@ static int compute_notify_type(Contact *c){
 int notify_type=0;
 
 	if (c->blocked) return GG_USER_BLOCKED;
-	if (c->got_online || c->subscribe==SUB_FROM || c->subscribe==SUB_BOTH) notify_type|=GG_USER_NORMAL;
-	if (c->got_probe || c->subscribe==SUB_TO || c->subscribe==SUB_BOTH) notify_type|=GG_USER_OFFLINE;
+	if (c->got_online || c->subscribe==SUB_FROM || c->subscribe==SUB_BOTH) return GG_USER_NORMAL;
+	if (c->got_probe || c->subscribe==SUB_TO || c->subscribe==SUB_BOTH) return GG_USER_OFFLINE;
 
 	return notify_type;
 }
@@ -1021,8 +1021,8 @@ int del,add;
 	del=c->gg_notify_type&(~new_notify_type);
 	add=new_notify_type&(~c->gg_notify_type);
 	
-	if (del) gg_remove_notify_ex(s->ggs,c->uin,del);
-	if (add) gg_add_notify_ex(s->ggs,c->uin,add);
+	if (del) gg_remove_notify_ex(s->ggs,c->uin,new_notify_type);
+	if (add) gg_add_notify_ex(s->ggs,c->uin,new_notify_type);
 
 	c->gg_notify_type=new_notify_type;
 	
@@ -1044,10 +1044,12 @@ int i;
 	i=0;
 	for(it=g_list_first(s->user->contacts);it;it=it->next){
 		Contact *c=(Contact *)it->data;
-		userlist[i]=c->uin;
 		c->gg_notify_type=compute_notify_type(c);
-		types[i]=c->gg_notify_type;
-		i++;	
+		if(c->gg_notify_type){
+			userlist[i]=c->uin;
+			types[i]=c->gg_notify_type;
+			i++;
+		}
 	}
 
 	userlist[i]=0;

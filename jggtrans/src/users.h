@@ -36,10 +36,10 @@ typedef struct contact_s{
 	uin_t uin;
 	gboolean ignored;
 	gboolean blocked;
-	SubscriptionType subscribe;
+	SubscriptionType subscribe;	/* copy of item s10n state from user roster */
 
-	gboolean got_online;
-	gboolean got_probe;
+	gboolean got_online;		/* user sent direct available presence to this user */
+	gboolean got_probe;			/* user server sent presence probe to this user */
 
 	int gg_notify_type;
 	
@@ -61,7 +61,7 @@ typedef struct user_s{
 	gboolean ignore_unknown;
 	char *locale;
 	char * status;
-	SubscriptionType subscribe;
+	SubscriptionType subscribe;	/* copy of transport item s10n state from user roster */
 
 	int confirmed;
 	int refcount;
