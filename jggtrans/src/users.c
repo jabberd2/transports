@@ -424,6 +424,7 @@ char *data;
 	u=g_new0(User,1);
 	u->uin=atoi(uin);
 	u->jid=g_strdup(jid);
+	u->subscribe=subscribe;
 	p=strchr(u->jid,'/');
 	if (p) *p=0;
 	u->password=g_strdup(password);
