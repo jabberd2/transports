@@ -489,7 +489,7 @@ time_t timestamp;
 	switch(event->type){
 		case GG_EVENT_DISCONNECT:
 			g_warning(N_("Server closed connection of %s, GGid: %i"),s->jid,s->ggs->uin);
-			session_broken(s);
+			session_timeout((gpointer) s);
 			gg_event_free(event);
 			return FALSE;
 		case GG_EVENT_CONN_FAILED:
