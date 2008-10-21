@@ -1,8 +1,8 @@
-/* $Id: common.c,v 1.70 2005/05/23 16:27:15 wojtekka Exp $ */
+/* $Id: common.c 504 2008-01-13 22:43:52Z wojtekka $ */
 
 /*
  *  (C) Copyright 2001-2002 Wojtek Kaniewski <wojtekka@irc.pl>
- *                          Robert J. Wo¼ny <speedy@ziew.org>
+ *                          Robert J. WoÅºny <speedy@ziew.org>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License Version
@@ -19,6 +19,11 @@
  *  USA.
  */
 
+/**
+ * \file common.c
+ *
+ * \brief Funkcje wykorzystywane przez rÃ³Å¼ne moduÅ‚y biblioteki
+ */
 #include <sys/types.h>
 #include <sys/ioctl.h>
 #include <sys/socket.h>
@@ -39,81 +44,120 @@
 
 #include "libgadu.h"
 
+/**
+ * Plik, do ktÃ³rego bÄ™dÄ… przekazywane informacje odpluskwiania.
+ *
+ * Funkcja \c gg_debug() i pochodne mogÄ… byÄ‡ przechwytywane przez aplikacjÄ™
+ * korzystajÄ…cÄ… z biblioteki, by wyÅ›wietliÄ‡ je na Å¼Ä…danie uÅ¼ytkownika lub
+ * zapisaÄ‡ do pÃ³Åºniejszej analizy. JeÅ›li nie okreÅ›lono pliku, wybrane
+ * informacje bÄ™dÄ… wysyÅ‚ane do standardowego wyjÅ›cia bÅ‚Ä™du (\c stderr).
+ *
+ * \ingroup debug
+ */
 FILE *gg_debug_file = NULL;
 
 #ifndef GG_DEBUG_DISABLE
 
-/*
- * gg_debug() // funkcja wewnêtrzna
+/**
+ * \internal Przekazuje informacje odpluskwiania do odpowiedniej funkcji.
  *
- * wy¶wietla komunikat o danym poziomie, o ile u¿ytkownik sobie tego ¿yczy.
+ * JeÅ›li aplikacja ustawiÅ‚a odpowiedniÄ… funkcjÄ™ obsÅ‚ugi w
+ * \c gg_debug_handler_session lub \c gg_debug_handler, jest ona wywoÅ‚ywana.
+ * W przeciwnym wypadku wynik jest wysyÅ‚any do standardowego wyjÅ›cia bÅ‚Ä™du.
  *
- *  - level - poziom wiadomo¶ci
- *  - format... - tre¶æ wiadomo¶ci (kompatybilna z printf())
+ * \param sess Struktura sesji (moÅ¼e byÄ‡ \c NULL)
+ * \param level Poziom informacji
+ * \param format Format wiadomoÅ›ci (zgodny z \c printf)
+ * \param ap Lista argumentÃ³w (zgodna z \c printf)
+ */
+void gg_debug_common(struct gg_session *sess, int level, const char *format, va_list ap)
+{
+	if (gg_debug_handler_session)
+		(*gg_debug_handler_session)(sess, level, format, ap);
+	else if (gg_debug_handler)
+		(*gg_debug_handler)(level, format, ap);
+	else if (gg_debug_level & level)
+		vfprintf(gg_debug_file ? gg_debug_file : stderr, format, ap);
+}
+
+
+/**
+ * Przekazuje informacjÄ™ odpluskawiania.
+ *
+ * \param level Poziom wiadomoÅ›ci
+ * \param format Format wiadomoÅ›ci (zgodny z \c printf)
+ *
+ * \ingroup debug
  */
 void gg_debug(int level, const char *format, ...)
 {
 	va_list ap;
 	int old_errno = errno;
-	
-	if (gg_debug_handler) {
-		va_start(ap, format);
-		(*gg_debug_handler)(level, format, ap);
-		va_end(ap);
+	va_start(ap, format);
+	gg_debug_common(NULL, level, format, ap);
+	va_end(ap);
+	errno = old_errno;
+}
 
-		goto cleanup;
-	}
-	
-	if ((gg_debug_level & level)) {
-		va_start(ap, format);
-		vfprintf((gg_debug_file) ? gg_debug_file : stderr, format, ap);
-		va_end(ap);
-	}
-
-cleanup:
+/**
+ * Przekazuje informacjÄ™ odpluskwiania zwiÄ…zanÄ… z sesjÄ….
+ *
+ * \param sess Struktura sesji
+ * \param level Poziom wiadomoÅ›ci
+ * \param format Format wiadomoÅ›ci (zgodny z \c printf)
+ *
+ * \ingroup debug
+ */
+void gg_debug_session(struct gg_session *sess, int level, const char *format, ...)
+{
+	va_list ap;
+	int old_errno = errno;
+	va_start(ap, format);
+	gg_debug_common(sess, level, format, ap);
+	va_end(ap);
 	errno = old_errno;
 }
 
 #endif
 
-/*
- * gg_vsaprintf() // funkcja pomocnicza
+/**
+ * Odpowiednik funkcji \c vsprintf alokujÄ…cy miejsce na wynik.
  *
- * robi dok³adnie to samo, co vsprintf(), tyle ¿e alokuje sobie wcze¶niej
- * miejsce na dane. powinno dzia³aæ na tych maszynach, które maj± funkcjê
- * vsnprintf() zgodn± z C99, jak i na wcze¶niejszych.
+ * Funkcja korzysta z funkcji \c vsnprintf, sprawdzajÄ…c czy dostÄ™pna funkcja
+ * systemowa jest zgodna ze standardem C99 czy wczeÅ›niejszymi.
  *
- *  - format - opis wy¶wietlanego tekstu jak dla printf()
- *  - ap - lista argumentów dla printf()
+ * \param format Format wiadomoÅ›ci (zgodny z \c printf)
+ * \param ap Lista argumentÃ³w (zgodna z \c printf)
  *
- * zaalokowany bufor, który nale¿y pó¼niej zwolniæ, lub NULL
- * je¶li nie uda³o siê wykonaæ zadania.
+ * \return Zaalokowany bufor lub NULL, jeÅ›li zabrakÅ‚o pamiÄ™ci.
+ *
+ * \ingroup helper
  */
 char *gg_vsaprintf(const char *format, va_list ap)
 {
 	int size = 0;
 	const char *start;
 	char *buf = NULL;
-	
-#ifdef __GG_LIBGADU_HAVE_VA_COPY
+
+#ifdef GG_CONFIG_HAVE_VA_COPY
 	va_list aq;
 
 	va_copy(aq, ap);
 #else
-#  ifdef __GG_LIBGADU_HAVE___VA_COPY
+#  ifdef GG_CONFIG_HAVE___VA_COPY
 	va_list aq;
 
 	__va_copy(aq, ap);
 #  endif
 #endif
 
-	start = format; 
+	start = format;
 
-#ifndef __GG_LIBGADU_HAVE_C99_VSNPRINTF
+#ifndef GG_CONFIG_HAVE_C99_VSNPRINTF
 	{
 		int res;
 		char *tmp;
-		
+
 		size = 128;
 		do {
 			size *= 2;
@@ -128,9 +172,9 @@ char *gg_vsaprintf(const char *format, va_list ap)
 #else
 	{
 		char tmp[2];
-		
-		/* libce Solarisa przy buforze NULL zawsze zwracaj± -1, wiêc
-		 * musimy podaæ co¶ istniej±cego jako cel printf()owania. */
+
+		/* libce Solarisa przy buforze NULL zawsze zwracajÄ… -1, wiÄ™c
+		 * musimy podaÄ‡ coÅ› istniejÄ…cego jako cel printf()owania. */
 		size = vsnprintf(tmp, sizeof(tmp), format, ap);
 		if (!(buf = malloc(size + 1)))
 			return NULL;
@@ -138,33 +182,33 @@ char *gg_vsaprintf(const char *format, va_list ap)
 #endif
 
 	format = start;
-	
-#ifdef __GG_LIBGADU_HAVE_VA_COPY
+
+#ifdef GG_CONFIG_HAVE_VA_COPY
 	vsnprintf(buf, size + 1, format, aq);
 	va_end(aq);
 #else
-#  ifdef __GG_LIBGADU_HAVE___VA_COPY
+#  ifdef GG_CONFIG_HAVE___VA_COPY
 	vsnprintf(buf, size + 1, format, aq);
 	va_end(aq);
 #  else
 	vsnprintf(buf, size + 1, format, ap);
 #  endif
 #endif
-	
+
 	return buf;
 }
 
-/*
- * gg_saprintf() // funkcja pomocnicza
+/**
+ * Odpowiednik funkcji \c sprintf alokujÄ…cy miejsce na wynik.
  *
- * robi dok³adnie to samo, co sprintf(), tyle ¿e alokuje sobie wcze¶niej
- * miejsce na dane. powinno dzia³aæ na tych maszynach, które maj± funkcjê
- * vsnprintf() zgodn± z C99, jak i na wcze¶niejszych.
+ * Funkcja korzysta z funkcji \c vsnprintf, sprawdzajÄ…c czy dostÄ™pna funkcja
+ * systemowa jest zgodna ze standardem C99 czy wczeÅ›niejszymi.
  *
- *  - format... - tre¶æ taka sama jak w funkcji printf()
+ * \param format Format wiadomoÅ›ci (zgodny z \c printf)
  *
- * zaalokowany bufor, który nale¿y pó¼niej zwolniæ, lub NULL
- * je¶li nie uda³o siê wykonaæ zadania.
+ * \return Zaalokowany bufor lub NULL, jeÅ›li zabrakÅ‚o pamiÄ™ci.
+ *
+ * \ingroup helper
  */
 char *gg_saprintf(const char *format, ...)
 {
@@ -178,18 +222,17 @@ char *gg_saprintf(const char *format, ...)
 	return res;
 }
 
-/*
- * gg_get_line() // funkcja pomocnicza
- * 
- * podaje kolejn± liniê z bufora tekstowego. niszczy go bezpowrotnie, dziel±c
- * na kolejne stringi. zdarza siê, nie ma potrzeby pisania funkcji dubluj±cej
- * bufor ¿eby tylko mieæ nieruszone dane wej¶ciowe, skoro i tak nie bêd± nam
- * po¼niej potrzebne. obcina `\r\n'.
- * 
- *  - ptr - wska¼nik do zmiennej, która przechowuje aktualn± pozycjê
- *    w przemiatanym buforze
- * 
- * wska¼nik do kolejnej linii tekstu lub NULL, je¶li to ju¿ koniec bufora.
+/**
+ * \internal Pobiera liniÄ™ tekstu z bufora.
+ *
+ * Funkcja niszczy bufor ÅºrÃ³dÅ‚owy bezpowrotnie, dzielÄ…c go na kolejne ciÄ…gi
+ * znakÃ³w i obcina znaki koÅ„ca linii.
+ *
+ * \param ptr WskaÅºnik do zmiennej, ktÃ³ra przechowuje aktualne poÅ‚oÅ¼enie
+ *            w analizowanym buforze
+ *
+ * \return WskaÅºnik do kolejnej linii tekstu lub NULL, jeÅ›li to juÅ¼ koniec
+ *         bufora.
  */
 char *gg_get_line(char **ptr)
 {
@@ -203,99 +246,30 @@ char *gg_get_line(char **ptr)
 	if (!(foo = strchr(*ptr, '\n')))
 		*ptr += strlen(*ptr);
 	else {
+		size_t len;
 		*ptr = foo + 1;
 		*foo = 0;
-		if (strlen(res) > 1 && res[strlen(res) - 1] == '\r')
-			res[strlen(res) - 1] = 0;
+
+		len = strlen(res);
+
+		if (len > 1 && res[len - 1] == '\r')
+			res[len - 1] = 0;
 	}
 
 	return res;
 }
 
-/*
- * gg_connect() // funkcja pomocnicza
+/**
+ * \internal Czyta liniÄ™ tekstu z gniazda.
  *
- * ³±czy siê z serwerem. pierwszy argument jest typu (void *), ¿eby nie
- * musieæ niczego inkludowaæ w libgadu.h i nie psuæ jaki¶ g³upich zale¿no¶ci
- * na dziwnych systemach.
+ * Funkcja czyta tekst znak po znaku, wiÄ™c nie jest efektywna, ale dziÄ™ki
+ * brakowi buforowania, nie koliduje z innymi funkcjami odczytu.
  *
- *  - addr - adres serwera (struct in_addr *)
- *  - port - port serwera
- *  - async - asynchroniczne po³±czenie
+ * \param sock Deskryptor gniazda
+ * \param buf WskaÅºnik do bufora
+ * \param length DÅ‚ugoÅ›Ä‡ bufora
  *
- * deskryptor gniazda lub -1 w przypadku b³êdu (kod b³êdu w zmiennej errno).
- */
-int gg_connect(void *addr, int port, int async)
-{
-	int sock, one = 1, errno2;
-	struct sockaddr_in sin;
-	struct in_addr *a = addr;
-	struct sockaddr_in myaddr;
-
-	gg_debug(GG_DEBUG_FUNCTION, "** gg_connect(%s, %d, %d);\n", inet_ntoa(*a), port, async);
-	
-	if ((sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) == -1) {
-		gg_debug(GG_DEBUG_MISC, "// gg_connect() socket() failed (errno=%d, %s)\n", errno, strerror(errno));
-		return -1;
-	}
-
-	memset(&myaddr, 0, sizeof(myaddr));
-	myaddr.sin_family = AF_INET;
-
-	myaddr.sin_addr.s_addr = gg_local_ip;
-
-	if (bind(sock, (struct sockaddr *) &myaddr, sizeof(myaddr)) == -1) {
-		gg_debug(GG_DEBUG_MISC, "// gg_connect() bind() failed (errno=%d, %s)\n", errno, strerror(errno));
-		return -1;
-	}
-
-#ifdef ASSIGN_SOCKETS_TO_THREADS
-	gg_win32_thread_socket(0, sock);
-#endif
-
-	if (async) {
-#ifdef FIONBIO
-		if (ioctl(sock, FIONBIO, &one) == -1) {
-#else
-		if (fcntl(sock, F_SETFL, O_NONBLOCK) == -1) {
-#endif
-			gg_debug(GG_DEBUG_MISC, "// gg_connect() ioctl() failed (errno=%d, %s)\n", errno, strerror(errno));
-			errno2 = errno;
-			close(sock);
-			errno = errno2;
-			return -1;
-		}
-	}
-
-	sin.sin_port = htons(port);
-	sin.sin_family = AF_INET;
-	sin.sin_addr.s_addr = a->s_addr;
-	
-	if (connect(sock, (struct sockaddr*) &sin, sizeof(sin)) == -1) {
-		if (errno && (!async || errno != EINPROGRESS)) {
-			gg_debug(GG_DEBUG_MISC, "// gg_connect() connect() failed (errno=%d, %s)\n", errno, strerror(errno));
-			errno2 = errno;
-			close(sock);
-			errno = errno2;
-			return -1;
-		}
-		gg_debug(GG_DEBUG_MISC, "// gg_connect() connect() in progress\n");
-	}
-	
-	return sock;
-}
-
-/*
- * gg_read_line() // funkcja pomocnicza
- *
- * czyta jedn± liniê tekstu z gniazda.
- *
- *  - sock - deskryptor gniazda
- *  - buf - wska¼nik do bufora
- *  - length - d³ugo¶æ bufora
- *
- * je¶li trafi na b³±d odczytu lub podano nieprawid³owe parametry, zwraca NULL.
- * inaczej zwraca buf.
+ * \return Zwraca \c buf jeÅ›li siÄ™ powiodÅ‚o, lub \c NULL w przypadku bÅ‚Ä™du.
  */
 char *gg_read_line(int sock, char *buf, int length)
 {
@@ -327,38 +301,116 @@ char *gg_read_line(int sock, char *buf, int length)
 	return buf;
 }
 
-/*
- * gg_chomp() // funkcja pomocnicza
+/**
+ * NawiÄ…zuje poÅ‚Ä…czenie TCP.
  *
- * ucina "\r\n" lub "\n" z koñca linii.
+ * \param addr WskaÅºnik na strukturÄ™ \c in_addr z adresem serwera
+ * \param port Port serwera
+ * \param async Flaga asynchronicznego poÅ‚Ä…czenia
  *
- *  - line - linia do przyciêcia
+ * \return Deskryptor gniazda lub -1 w przypadku bÅ‚Ä™du
+ *
+ * \ingroup helper
+ */
+int gg_connect(void *addr, int port, int async)
+{
+	int sock, one = 1, errno2;
+	struct sockaddr_in sin;
+	struct in_addr *a = addr;
+	struct sockaddr_in myaddr;
+
+	gg_debug(GG_DEBUG_FUNCTION, "** gg_connect(%s, %d, %d);\n", inet_ntoa(*a), port, async);
+
+	if ((sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) == -1) {
+		gg_debug(GG_DEBUG_MISC, "// gg_connect() socket() failed (errno=%d, %s)\n", errno, strerror(errno));
+		return -1;
+	}
+
+	memset(&myaddr, 0, sizeof(myaddr));
+	myaddr.sin_family = AF_INET;
+
+	myaddr.sin_addr.s_addr = gg_local_ip;
+
+	if (bind(sock, (struct sockaddr *) &myaddr, sizeof(myaddr)) == -1) {
+		gg_debug(GG_DEBUG_MISC, "// gg_connect() bind() failed (errno=%d, %s)\n", errno, strerror(errno));
+		errno2 = errno;
+		close(sock);
+		errno = errno2;
+		return -1;
+	}
+
+#ifdef ASSIGN_SOCKETS_TO_THREADS
+	gg_win32_thread_socket(0, sock);
+#endif
+
+	if (async) {
+#ifdef FIONBIO
+		if (ioctl(sock, FIONBIO, &one) == -1) {
+#else
+		if (fcntl(sock, F_SETFL, O_NONBLOCK) == -1) {
+#endif
+			gg_debug(GG_DEBUG_MISC, "// gg_connect() ioctl() failed (errno=%d, %s)\n", errno, strerror(errno));
+			errno2 = errno;
+			close(sock);
+			errno = errno2;
+			return -1;
+		}
+	}
+
+	sin.sin_port = htons(port);
+	sin.sin_family = AF_INET;
+	sin.sin_addr.s_addr = a->s_addr;
+
+	if (connect(sock, (struct sockaddr*) &sin, sizeof(sin)) == -1) {
+		if (errno && (!async || errno != EINPROGRESS)) {
+			gg_debug(GG_DEBUG_MISC, "// gg_connect() connect() failed (errno=%d, %s)\n", errno, strerror(errno));
+			errno2 = errno;
+			close(sock);
+			errno = errno2;
+			return -1;
+		}
+		gg_debug(GG_DEBUG_MISC, "// gg_connect() connect() in progress\n");
+	}
+
+	return sock;
+}
+
+/**
+ * Usuwa znaki koÅ„ca linii.
+ *
+ * Funkcja dziaÅ‚a bezpoÅ›rednio na buforze.
+ *
+ * \param line Bufor z tekstem
+ *
+ * \ingroup helper
  */
 void gg_chomp(char *line)
 {
 	int len;
-	
+
 	if (!line)
 		return;
 
 	len = strlen(line);
-	
+
 	if (len > 0 && line[len - 1] == '\n')
 		line[--len] = 0;
 	if (len > 0 && line[len - 1] == '\r')
 		line[--len] = 0;
 }
 
-/*
- * gg_urlencode() // funkcja wewnêtrzna
+/**
+ * Koduje ciÄ…g znakÃ³w do postacji adresu HTTP.
  *
- * zamienia podany tekst na ci±g znaków do formularza http. przydaje siê
- * przy ró¿nych us³ugach katalogu publicznego.
+ * Zamienia znaki niedrukowalne, spoza ASCII i majÄ…ce specjalne znaczenie
+ * dla protokoÅ‚u HTTP na encje postaci \c %XX, gdzie \c XX jest szesnastkowÄ…
+ * wartoÅ›ciÄ… znaku.
+ * 
+ * \param str CiÄ…g znakÃ³w do zakodowania
  *
- *  - str - ci±g znaków do zakodowania
+ * \return Zaalokowany bufor lub \c NULL w przypadku bÅ‚Ä™du.
  *
- * zaalokowany bufor, który nale¿y pó¼niej zwolniæ albo NULL
- * w przypadku b³êdu.
+ * \ingroup helper
  */
 char *gg_urlencode(const char *str)
 {
@@ -396,16 +448,19 @@ char *gg_urlencode(const char *str)
 	return buf;
 }
 
-/*
- * gg_http_hash() // funkcja wewnêtrzna
+/**
+ * \internal Wyznacza skrÃ³t dla usÅ‚ug HTTP.
  *
- * funkcja licz±ca hash dla adresu e-mail, has³a i paru innych.
+ * Funkcja jest wykorzystywana do wyznaczania skrÃ³tu adresu e-mail, hasÅ‚a
+ * i innych wartoÅ›ci przekazywanych jako parametry usÅ‚ug HTTP.
  *
- *  - format... - format kolejnych parametrów ('s' je¶li dany parametr jest
- *                ci±giem znaków lub 'u' je¶li numerem GG)
+ * W parametrze \c format naleÅ¼y umieÅ›ciÄ‡ znaki okreÅ›lajÄ…ce postaÄ‡ kolejnych
+ * parametrÃ³w: \c 's' jeÅ›li parametr jest ciÄ…giem znakÃ³w, \c 'u' jeÅ›li jest
+ * liczbÄ….
  *
- * hash wykorzystywany przy rejestracji i wszelkich manipulacjach w³asnego
- * wpisu w katalogu publicznym.
+ * \param format Format kolejnych parametrÃ³w (niezgodny z \c printf)
+ *
+ * \return WartoÅ›Ä‡ skrÃ³tu
  */
 int gg_http_hash(const char *format, ...)
 {
@@ -424,7 +479,7 @@ int gg_http_hash(const char *format, ...)
 		} else {
 			if (!(arg = va_arg(ap, char*)))
 				arg = "";
-		}	
+		}
 
 		i = 0;
 		while ((c = (unsigned char) arg[i++]) != 0) {
@@ -438,15 +493,15 @@ int gg_http_hash(const char *format, ...)
 	return (b < 0 ? -b : b);
 }
 
-/*
- * gg_gethostbyname() // funkcja pomocnicza
+/**
+ * \internal Odpowiednik \c gethostbyname zapewniajÄ…cy wspÃ³Å‚bieÅ¼noÅ›Ä‡.
  *
- * odpowiednik gethostbyname() troszcz±cy siê o wspó³bie¿no¶æ, gdy mamy do
- * dyspozycji funkcjê gethostbyname_r().
+ * JeÅ›li dany system dostarcza \c gethostbyname_r, uÅ¼ywa siÄ™ tej wersji, jeÅ›li
+ * nie, to zwykÅ‚ej \c gethostbyname.
  *
- *  - hostname - nazwa serwera
+ * \param hostname Nazwa serwera
  *
- * zwraca wska¼nik na strukturê in_addr, któr± nale¿y zwolniæ.
+ * \return Zaalokowana struktura \c in_addr lub NULL w przypadku bÅ‚Ä™du.
  */
 struct in_addr *gg_gethostbyname(const char *hostname)
 {
@@ -458,12 +513,12 @@ struct in_addr *gg_gethostbyname(const char *hostname)
 	int h_errnop, ret;
 	size_t buflen = 1024;
 	int new_errno;
-	
+
 	new_errno = ENOMEM;
-	
+
 	if (!(addr = malloc(sizeof(struct in_addr))))
 		goto cleanup;
-	
+
 	if (!(hp = calloc(1, sizeof(*hp))))
 		goto cleanup;
 
@@ -471,39 +526,39 @@ struct in_addr *gg_gethostbyname(const char *hostname)
 		goto cleanup;
 
 	tmpbuf = buf;
-	
+
 	while ((ret = gethostbyname_r(hostname, hp, buf, buflen, &hp2, &h_errnop)) == ERANGE) {
 		buflen *= 2;
-		
+
 		if (!(tmpbuf = realloc(buf, buflen)))
 			break;
-		
+
 		buf = tmpbuf;
 	}
-	
+
 	if (ret)
 		new_errno = h_errnop;
 
 	if (ret || !hp2 || !tmpbuf)
 		goto cleanup;
-	
+
 	memcpy(addr, hp->h_addr, sizeof(struct in_addr));
-	
+
 	free(buf);
 	free(hp);
-	
+
 	return addr;
-	
+
 cleanup:
 	errno = new_errno;
-	
+
 	if (addr)
 		free(addr);
 	if (hp)
 		free(hp);
 	if (buf)
 		free(buf);
-	
+
 	return NULL;
 #else
 	struct hostent *hp;
@@ -518,7 +573,7 @@ cleanup:
 	memcpy(addr, hp->h_addr, sizeof(struct in_addr));
 
 	return addr;
-	
+
 cleanup:
 	if (addr)
 		free(addr);
@@ -537,23 +592,22 @@ typedef struct gg_win32_thread {
 
 struct gg_win32_thread *gg_win32_threads = 0;
 
-/*
- * gg_win32_thread_socket() // funkcja pomocnicza, tylko dla win32
+/**
+ * \internal Zwraca deskryptor gniazda, ktÃ³re byÅ‚o ostatnio tworzone dla wÄ…tku.
  *
- * zwraca deskryptor gniazda, które by³o ostatnio tworzone dla w±tku
- * o podanym identyfikatorze.
+ * JeÅ›li na win32 przy poÅ‚Ä…czeniach synchronicznych zapamiÄ™tamy w jakim
+ * wÄ…tku uruchomiliÅ›my funkcjÄ™, ktÃ³ra siÄ™ z czymkolwiek Å‚Ä…czy, to z osobnego
+ * wÄ…tku moÅ¼emy anulowaÄ‡ poÅ‚Ä…czenie poprzez \c gg_win32_thread_socket(watek,-1)
  *
- * je¶li na win32 przy po³±czeniach synchronicznych zapamiêtamy w jakim
- * w±tku uruchomili¶my funkcjê, która siê z czymkolwiek ³±czy, to z osobnego
- * w±tku mo¿emy anulowaæ po³±czenie poprzez gg_win32_thread_socket(watek, -1);
- * 
- * - thread_id - id w±tku. je¶li jest równe 0, brany jest aktualny w±tek,
- *               je¶li równe -1, usuwa wpis o podanym sockecie.
- * - socket - deskryptor gniazda. je¶li równe 0, zwraca deskryptor gniazda
- *            dla podanego w±tku, je¶li równe -1, usuwa wpis, je¶li co¶
- *            innego, ustawia dla podanego w±tku dany numer deskryptora.
+ * \param thread_id Identyfikator wÄ…tku (jeÅ›li jest rÃ³wne 0, brany jest
+ *                  aktualny wÄ…tek, jeÅ›li rÃ³wne -1, usuwa wpis dotyczÄ…cy
+ *                  danego gniazda sockecie)
+ * \param socket Deskryptor gniazda (jeÅ›li rÃ³wne 0, zwraca deskryptor gniazda
+ *               dla podanego wÄ…tku, jeÅ›li rÃ³wne -1, usuwa wpis, jeÅ›li coÅ›
+ *               innego, ustawia dla podanego wÄ…tku dany numer deskryptora)
  *
- * je¶li socket jest równe 0, zwraca deskryptor gniazda dla podanego w±tku.
+ * \return JeÅ›li socket jest rÃ³wne 0, zwraca deskryptor gniazda dla podanego
+ *         wÄ…tku.
  */
 int gg_win32_thread_socket(int thread_id, int socket)
 {
@@ -563,7 +617,7 @@ int gg_win32_thread_socket(int thread_id, int socket)
 
 	if (!thread_id)
 		thread_id = GetCurrentThreadId();
-	
+
 	while (wsk) {
 		if ((thread_id == -1 && wsk->socket == socket) || wsk->id == thread_id) {
 			if (close) {
@@ -589,7 +643,7 @@ int gg_win32_thread_socket(int thread_id, int socket)
 		closesocket(socket);
 	if (close || !socket)
 		return 0;
-	
+
 	/* Dodaje nowy element */
 	wsk = malloc(sizeof(gg_win32_thread));
 	wsk->id = thread_id;
@@ -602,28 +656,33 @@ int gg_win32_thread_socket(int thread_id, int socket)
 
 #endif /* ASSIGN_SOCKETS_TO_THREADS */
 
+/**
+ * \internal Zestaw znakÃ³w kodowania base64.
+ */
 static char gg_base64_charset[] =
 	"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-/*
- * gg_base64_encode()
+/**
+ * Koduje ciÄ…g znakÃ³w do base64.
  *
- * zapisuje ci±g znaków w base64.
+ * Wynik funkcji naleÅ¼y zwolniÄ‡ za pomocÄ… \c free.
  *
- *  - buf - ci±g znaków.
+ * \param buf Bufor z danami do zakodowania
  *
- * zaalokowany bufor.
+ * \return Zaalokowany bufor z zakodowanymi danymi
+ *
+ * \ingroup helper
  */
 char *gg_base64_encode(const char *buf)
 {
 	char *out, *res;
 	unsigned int i = 0, j = 0, k = 0, len = strlen(buf);
-	
+
 	res = out = malloc((len / 3 + 1) * 4 + 2);
 
 	if (!res)
 		return NULL;
-	
+
 	while (j <= len) {
 		switch (i % 4) {
 			case 0:
@@ -656,20 +715,22 @@ char *gg_base64_encode(const char *buf)
 	if (i % 4)
 		for (j = 0; j < 4 - (i % 4); j++, out++)
 			*out = '=';
-	
+
 	*out = 0;
-	
+
 	return res;
 }
 
-/*
- * gg_base64_decode()
+/**
+ * Dekoduje ciÄ…g znakÃ³w zapisany w base64.
  *
- * dekoduje ci±g znaków z base64.
+ * Wynik funkcji naleÅ¼y zwolniÄ‡ za pomocÄ… \c free.
  *
- *  - buf - ci±g znaków.
+ * \param buf Bufor ÅºrÃ³dÅ‚owy z danymi do zdekodowania
  *
- * zaalokowany bufor.
+ * \return Zaalokowany bufor ze zdekodowanymi danymi
+ *
+ * \ingroup helper
  */
 char *gg_base64_decode(const char *buf)
 {
@@ -679,7 +740,7 @@ char *gg_base64_decode(const char *buf)
 
 	if (!buf)
 		return NULL;
-	
+
 	save = res = calloc(1, (strlen(buf) / 4 + 1) * 3 + 2);
 
 	if (!save)
@@ -716,23 +777,24 @@ char *gg_base64_decode(const char *buf)
 		index %= 4;
 	}
 	*res = 0;
-	
+
 	return save;
 }
 
-/*
- * gg_proxy_auth() // funkcja wewnêtrzna
+/**
+ * \internal Tworzy nagÅ‚Ã³wek autoryzacji serwera poÅ›redniczÄ…cego.
  *
- * tworzy nag³ówek autoryzacji dla proxy.
- * 
- * zaalokowany tekst lub NULL, je¶li proxy nie jest w³±czone lub nie wymaga
- * autoryzacji.
+ * Dane pobiera ze zmiennych globalnych \c gg_proxy_username i
+ * \c gg_proxy_password.
+ *
+ * \return Zaalokowany bufor z tekstem lub NULL, jeÅ›li serwer poÅ›redniczÄ…cy
+ *         nie jest uÅ¼ywany lub nie wymaga autoryzacji.
  */
 char *gg_proxy_auth()
 {
 	char *tmp, *enc, *out;
 	unsigned int tmp_size;
-	
+
 	if (!gg_proxy_enabled || !gg_proxy_username || !gg_proxy_password)
 		return NULL;
 
@@ -745,14 +807,14 @@ char *gg_proxy_auth()
 		free(tmp);
 		return NULL;
 	}
-	
+
 	free(tmp);
 
 	if (!(out = malloc(strlen(enc) + 40))) {
 		free(enc);
 		return NULL;
 	}
-	
+
 	snprintf(out, strlen(enc) + 40,  "Proxy-Authorization: Basic %s\r\n", enc);
 
 	free(enc);
@@ -760,13 +822,21 @@ char *gg_proxy_auth()
 	return out;
 }
 
+/**
+ * \internal Tablica pomocnicza do wyznaczania sumy kontrolnej.
+ */
 static uint32_t gg_crc32_table[256];
+
+/**
+ * \internal Flaga wypeÅ‚nienia tablicy pomocniczej do wyznaczania sumy
+ * kontrolnej.
+ */
 static int gg_crc32_initialized = 0;
 
-/*
- * gg_crc32_make_table()  // funkcja wewnêtrzna
+/**
+ * \internal Tworzy tablicÄ™ pomocniczÄ… do wyznaczania sumy kontrolnej.
  */
-static void gg_crc32_make_table()
+static void gg_crc32_make_table(void)
 {
 	uint32_t h = 1;
 	unsigned int i, j;
@@ -783,16 +853,15 @@ static void gg_crc32_make_table()
 	gg_crc32_initialized = 1;
 }
 
-/*
- * gg_crc32()
+/**
+ * Wyznacza sumÄ™ kontrolnÄ… CRC32.
  *
- * wyznacza sumê kontroln± CRC32 danego bloku danych.
+ * \param crc Suma kontrola poprzedniego bloku danych lub 0 jeÅ›li liczona
+ *            jest suma kontrolna pierwszego bloku
+ * \param buf Bufor danych
+ * \param len DÅ‚ugoÅ›Ä‡ bufora danych
  *
- *  - crc - suma kontrola poprzedniego bloku danych lub 0 je¶li pierwszy
- *  - buf - bufor danych
- *  - size - ilo¶æ danych
- *
- * suma kontrolna CRC32.
+ * \return Suma kontrolna.
  */
 uint32_t gg_crc32(uint32_t crc, const unsigned char *buf, int len)
 {

@@ -1,13 +1,52 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Defined if libgadu was compiled for bigendian machine. */
+#undef GG_CONFIG_BIGENDIAN
+
+/* Defined if this machine has C99-compiliant vsnprintf(). */
+#undef GG_CONFIG_HAVE_C99_VSNPRINTF
+
+/* Defined if this machine has gethostbyname_r(). */
+#undef GG_CONFIG_HAVE_GETHOSTBYNAME_R
+
+/* Defined if uintX_t types are defined in <inttypes.h>. */
+#undef GG_CONFIG_HAVE_INTTYPES_H
+
+/* Defined if this machine supports long long. */
+#undef GG_CONFIG_HAVE_LONG_LONG
+
+/* Defined if libgadu was compiled and linked with TLS support. */
+#undef GG_CONFIG_HAVE_OPENSSL
+
+/* Defined if libgadu was compiled and linked with pthread support. */
+#undef GG_CONFIG_HAVE_PTHREAD
+
+/* Defined if uintX_t types are defined in <stdint.h>. */
+#undef GG_CONFIG_HAVE_STDINT_H
+
+/* Defined if uintX_t types are defined in <sys/inttypes.h>. */
+#undef GG_CONFIG_HAVE_SYS_INTTYPES_H
+
+/* Defined if uintX_t types are defined in <sys/int_types.h>. */
+#undef GG_CONFIG_HAVE_SYS_INT_TYPES_H
+
+/* Defined if uintX_t types are defined in <sys/types.h>. */
+#undef GG_CONFIG_HAVE_SYS_TYPES_H
+
+/* Defined if this machine has va_copy(). */
+#undef GG_CONFIG_HAVE_VA_COPY
+
+/* Defined if this machine has __va_copy(). */
+#undef GG_CONFIG_HAVE___VA_COPY
+
+/* Library version */
+#undef GG_LIBGADU_VERSION
+
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
 /* Define to 1 if you have the `gethostbyname_r' function. */
 #undef HAVE_GETHOSTBYNAME_R
-
-/* Define to 1 if you have the `inet_pton' function. */
-#undef HAVE_INET_PTON
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
@@ -41,9 +80,6 @@
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
-
-/* Define to 1 if your C compiler doesn't accept -c and -o together. */
-#undef NO_MINUS_C_MINUS_O
 
 /* Name of package */
 #undef PACKAGE

@@ -642,6 +642,9 @@ time_t timestamp;
 		case GG_EVENT_NONE:
 			debug("GG_EVENT_NONE");
 			break;
+		case GG_EVENT_XML_EVENT:
+			debug("GG_EVENT_XML_EVENT");
+			break;
 		case GG_EVENT_USERLIST:
 			if(event->event.userlist.type==GG_USERLIST_GET_REPLY)
 				get_roster_done(s,event);

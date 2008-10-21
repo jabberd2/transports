@@ -1,4 +1,4 @@
-/* $Id: http.c,v 1.47 2005/04/14 18:55:05 wojtekka Exp $ */
+/* $Id: http.c 504 2008-01-13 22:43:52Z wojtekka $ */
 
 /*
  *  (C) Copyright 2001-2002 Wojtek Kaniewski <wojtekka@irc.pl>
@@ -18,43 +18,59 @@
  *  USA.
  */
 
+/**
+ * \file http.c
+ *
+ * \brief ObsÅ‚uga poÅ‚Ä…czeÅ„ HTTP
+ */
+
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-#include "libgadu-config.h"
+#include "compat.h"
+#include "libgadu.h"
 
 #include <ctype.h>
 #include <errno.h>
 #include <netdb.h>
-#ifdef __GG_LIBGADU_HAVE_PTHREAD
+#ifdef GG_CONFIG_HAVE_PTHREAD
 #  include <pthread.h>
 #endif
+#include <signal.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
-#include "compat.h"
-#include "libgadu.h"
-
-/*
- * gg_http_connect() // funkcja pomocnicza
+/**
+ * Rozpoczyna poÅ‚Ä…czenie HTTP.
  *
- * rozpoczyna po³±czenie po http.
+ * Funkcja przeprowadza poÅ‚Ä…czenie HTTP przy poÅ‚Ä…czeniu synchronicznym,
+ * zwracajÄ…c wynik w polach struktury \c gg_http, lub bÅ‚Ä…d, gdy sesja siÄ™
+ * nie powiedzie.
  *
- *  - hostname - adres serwera
- *  - port - port serwera
- *  - async - asynchroniczne po³±czenie
- *  - method - metoda http (GET, POST, cokolwiek)
- *  - path - ¶cie¿ka do zasobu (musi byæ poprzedzona ,,/'')
- *  - header - nag³ówek zapytania plus ewentualne dane dla POST
+ * Przy poÅ‚Ä…czeniu asynchronicznym, funkcja rozpoczyna poÅ‚Ä…czenie, a dalsze
+ * etapy bÄ™dÄ… przeprowadzane po wykryciu zmian (\c watch) na obserwowanym
+ * deskryptorze (\c fd) i wywoÅ‚aniu funkcji \c gg_http_watch_fd().
  *
- * zaalokowana struct gg_http, któr± po¼niej nale¿y
- * zwolniæ funkcj± gg_http_free(), albo NULL je¶li wyst±pi³ b³±d.
+ * Po zakoÅ„czeniu, naleÅ¼y zwolniÄ‡ strukturÄ™ za pomocÄ… funkcji
+ * \c gg_http_free(). PoÅ‚Ä…czenie asynchroniczne moÅ¼na zatrzymaÄ‡ w kaÅ¼dej
+ * chwili za pomocÄ… \c gg_http_stop().
+ *
+ * \param hostname Adres serwera
+ * \param port Port serwera
+ * \param async Flaga asynchronicznego poÅ‚Ä…czenia
+ * \param method Metoda HTTP
+ * \param path ÅšcieÅ¼ka do zasobu (musi byÄ‡ poprzedzona znakiem '/')
+ * \param header NagÅ‚Ã³wek zapytania plus ewentualne dane dla POST
+ *
+ * \return Zaalokowana struktura \c gg_http lub NULL, jeÅ›li wystÄ…piÅ‚ bÅ‚Ä…d.
+ *
+ * \ingroup http
  */
 struct gg_http *gg_http_connect(const char *hostname, int port, int async, const char *method, const char *path, const char *header)
 {
@@ -65,7 +81,7 @@ struct gg_http *gg_http_connect(const char *hostname, int port, int async, const
 		errno = EFAULT;
 		return NULL;
 	}
-	
+
 	if (!(h = malloc(sizeof(*h))))
 		return NULL;
 	memset(h, 0, sizeof(*h));
@@ -97,11 +113,11 @@ struct gg_http *gg_http_connect(const char *hostname, int port, int async, const
 		errno = ENOMEM;
 		return NULL;
 	}
-	
+
 	gg_debug(GG_DEBUG_MISC, "=> -----BEGIN-HTTP-QUERY-----\n%s\n=> -----END-HTTP-QUERY-----\n", h->query);
 
 	if (async) {
-#ifndef __GG_LIBGADU_HAVE_PTHREAD
+#ifndef GG_CONFIG_HAVE_PTHREAD
 		if (gg_resolve(&h->fd, &h->pid, hostname)) {
 #else
 		if (gg_resolve_pthread(&h->fd, &h->resolver, hostname)) {
@@ -152,9 +168,11 @@ struct gg_http *gg_http_connect(const char *hostname, int port, int async, const
 
 	h->callback = gg_http_watch_fd;
 	h->destroy = gg_http_free;
-	
+
 	return h;
 }
+
+#ifndef DOXYGEN
 
 #define gg_http_error(x) \
 	close(h->fd); \
@@ -163,17 +181,22 @@ struct gg_http *gg_http_connect(const char *hostname, int port, int async, const
 	h->error = x; \
 	return 0;
 
-/*
- * gg_http_watch_fd()
+#endif /* DOXYGEN */
+
+/**
+ * Funkcja wywoÅ‚ywana po zaobserwowaniu zmian na deskryptorze poÅ‚Ä…czenia.
  *
- * przy asynchronicznej obs³udze HTTP funkcjê t± nale¿y wywo³aæ, je¶li
- * zmieni³o siê co¶ na obserwowanym deskryptorze.
+ * Operacja bÄ™dzie zakoÅ„czona, gdy pole \c state bÄ™dzie rÃ³wne
+ * \c GG_STATE_PARSING. W tym miejscu dziaÅ‚anie przejmuje zwykle funkcja
+ * korzystajÄ…ca z \c gg_http_watch_fd(). W przypadku bÅ‚Ä™du poÅ‚Ä…czenia,
+ * pole \c state bÄ™dzie rÃ³wne \c GG_STATE_ERROR, a kod bÅ‚Ä™du znajdzie siÄ™
+ * w polu \c error.
  *
- *  - h - struktura opisuj±ca po³±czenie
+ * \param h Struktura poÅ‚Ä…czenia
  *
- * je¶li wszystko posz³o dobrze to 0, inaczej -1. po³±czenie bêdzie
- * zakoñczone, je¶li h->state == GG_STATE_PARSING. je¶li wyst±pi jaki¶
- * b³±d, to bêdzie tam GG_STATE_ERROR i odpowiedni kod b³êdu w h->error.
+ * \return \return 0 jeÅ›li siÄ™ powiodÅ‚o, -1 w przypadku bÅ‚Ä™du
+ *
+ * \ingroup http
  */
 int gg_http_watch_fd(struct gg_http *h)
 {
@@ -198,12 +221,11 @@ int gg_http_watch_fd(struct gg_http *h)
 		close(h->fd);
 		h->fd = -1;
 
-#ifndef __GG_LIBGADU_HAVE_PTHREAD
+#ifndef GG_CONFIG_HAVE_PTHREAD
 		waitpid(h->pid, NULL, 0);
 #else
 		if (h->resolver) {
-			pthread_cancel(*((pthread_t *) h->resolver));
-			free(h->resolver);
+			gg_resolve_pthread_cleanup(h->resolver, 0);
 			h->resolver = NULL;
 		}
 #endif
@@ -332,7 +354,7 @@ int gg_http_watch_fd(struct gg_http *h)
 			h->body_size = 0;
 			line = h->header;
 			*tmp = 0;
-                        
+
 			gg_debug(GG_DEBUG_MISC, "=> -----BEGIN-HTTP-HEADER-----\n%s\n=> -----END-HTTP-HEADER-----\n", h->header);
 
 			while (line) {
@@ -435,7 +457,7 @@ int gg_http_watch_fd(struct gg_http *h)
 
 		return 0;
 	}
-	
+
 	if (h->fd != -1)
 		close(h->fd);
 
@@ -446,14 +468,14 @@ int gg_http_watch_fd(struct gg_http *h)
 	return -1;
 }
 
-#undef gg_http_error
-
-/*
- * gg_http_stop()
+/**
+ * KoÅ„czy asynchroniczne poÅ‚Ä…czenie HTTP.
  *
- * je¶li po³±czenie jest w trakcie, przerywa je. nie zwalnia h->data.
- * 
- *  - h - struktura opisuj±ca po³±czenie
+ * Po zatrzymaniu naleÅ¼y zwolniÄ‡ zasoby funkcjÄ… \c gg_http_free().
+ *
+ * \param h Struktura poÅ‚Ä…czenia
+ *
+ * \ingroup http
  */
 void gg_http_stop(struct gg_http *h)
 {
@@ -463,15 +485,31 @@ void gg_http_stop(struct gg_http *h)
 	if (h->state == GG_STATE_ERROR || h->state == GG_STATE_DONE)
 		return;
 
-	if (h->fd != -1)
+	if (h->fd != -1) {
 		close(h->fd);
-	h->fd = -1;
+		h->fd = -1;
+	}
+
+#ifdef GG_CONFIG_HAVE_PTHREAD
+	if (h->resolver) {
+		gg_resolve_pthread_cleanup(h->resolver, 0);
+		h->resolver = NULL;
+	}
+#else
+	if (h->pid != -1) {
+		kill(h->pid, SIGKILL);
+		waitpid(h->pid, NULL, 0);
+		h->pid = -1;
+	}
+#endif
 }
 
-/*
- * gg_http_free_fields() // funkcja wewnêtrzna
+/**
+ * \internal Zwalnia pola struktury \c gg_http.
  *
- * zwalnia pola struct gg_http, ale nie zwalnia samej struktury.
+ * Funkcja zwalnia same pola, nie zwalnia struktury.
+ *
+ * \param h Struktura poÅ‚Ä…czenia
  */
 void gg_http_free_fields(struct gg_http *h)
 {
@@ -487,19 +525,21 @@ void gg_http_free_fields(struct gg_http *h)
 		free(h->query);
 		h->query = NULL;
 	}
-	
+
 	if (h->header) {
 		free(h->header);
 		h->header = NULL;
 	}
 }
 
-/*
- * gg_http_free()
+/**
+ * Zwalnia zasoby po poÅ‚Ä…czeniu HTTP.
  *
- * próbuje zamkn±æ po³±czenie i zwalnia pamiêæ po nim.
+ * JeÅ›li poÅ‚Ä…czenie nie zostaÅ‚o jeszcze zakoÅ„czone, jest przerywane.
  *
- *  - h - struktura, któr± nale¿y zlikwidowaæ
+ * \param h Struktura poÅ‚Ä…czenia
+ *
+ * \ingroup http
  */
 void gg_http_free(struct gg_http *h)
 {
