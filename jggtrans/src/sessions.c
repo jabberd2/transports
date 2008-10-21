@@ -493,7 +493,7 @@ time_t timestamp;
 			gg_event_free(event);
 			return FALSE;
 		case GG_EVENT_CONN_FAILED:
-			g_warning(N_("Login failed (%d) for %s, GGid: %i"),event->event.failure,s->jid,s->ggs->uin);
+			g_message(N_("Login failed (%d) for %s, GGid: %i"),event->event.failure,s->jid,s->ggs->uin);
 			if (s->req_id)
 				jabber_iq_send_error(s->s,s->jid,NULL,s->req_id,401,_("Unauthorized"));
 			else presence_send(s->s,NULL,s->user->jid,0,NULL,"Login failed",0);
@@ -784,7 +784,7 @@ static int session_try_login(Session *s){
 struct gg_login_params login_params;
 GgServer *serv;
 
-	g_warning(N_("Trying to log in on server %u for %s"),
+	g_message(N_("Trying to log in on server %u for %s"),
 			g_list_position(gg_servers, s->current_server), s->jid);
 
 	if (s->timeout_func) g_source_remove(s->timeout_func);
