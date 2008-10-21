@@ -15,9 +15,6 @@
 /* Defined if this machine supports long long. */
 #undef GG_CONFIG_HAVE_LONG_LONG
 
-/* Defined if libgadu was compiled and linked with TLS support. */
-#undef GG_CONFIG_HAVE_OPENSSL
-
 /* Defined if libgadu was compiled and linked with pthread support. */
 #undef GG_CONFIG_HAVE_PTHREAD
 
@@ -53,9 +50,6 @@
 
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
-
-/* define if you have OpenSSL */
-#undef HAVE_OPENSSL
 
 /* Define if you have POSIX threads libraries and header files. */
 #undef HAVE_PTHREAD

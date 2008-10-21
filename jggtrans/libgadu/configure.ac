@@ -173,20 +173,6 @@ AC_TRY_COMPILE([],
 	AC_DEFINE([GG_CONFIG_HAVE_LONG_LONG], [], [Defined if this machine supports long long.])
 ])
 
-dnl
-dnl  Sprawdzamy OpenSSL
-dnl
-
-AC_CHECK_OPENSSL
-
-if test "x$have_openssl" = "xyes"; then
-	LIBS="$LIBS $OPENSSL_LIBS"
-	CFLAGS="$CFLAGS $OPENSSL_INCLUDES"
-	INCLUDES="$INCLUDES $OPENSSL_INCLUDES"
-	REQUIRES="$REQUIRES openssl"
-	AC_DEFINE([GG_CONFIG_HAVE_OPENSSL], [], [Defined if libgadu was compiled and linked with TLS support.])
-fi
-
 AC_CONFIG_FILES([Makefile src/Makefile include/Makefile])
 
 AC_OUTPUT
