@@ -5,6 +5,7 @@ AM_INIT_AUTOMAKE(libgadu, 1.8.1)
 
 AC_PREREQ(2.50)
 AC_CANONICAL_HOST
+AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_HEADERS(config.h include/libgadu.h)
 
 AC_PROG_CC
