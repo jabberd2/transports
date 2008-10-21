@@ -635,9 +635,11 @@ int r;
 		}
 		if (S_ISREG(st.st_mode) && strchr(de->d_name,'@')){
 			u=user_get_by_jid(de->d_name);
-			if(u && (u->subscribe==SUB_FROM || u->subscribe==SUB_BOTH))
-				presence_send_probe(s,NULL,de->d_name);
-			user_free(u);
+			if(u){
+				if(u->subscribe==SUB_FROM || u->subscribe==SUB_BOTH))
+					presence_send_probe(s,NULL,de->d_name);
+				user_free(u);
+			}
 		}
 	}
 	closedir(dir);
