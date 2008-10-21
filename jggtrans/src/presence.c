@@ -246,6 +246,18 @@ Contact *c;
 			presence_send_subscribe(stream,to,from);
 		}
 		user_save(u);
+		s=session_get_by_jid(from,NULL,0);
+		if (s){
+			if (!s->connected){
+				presence_send(stream,NULL,s->user->jid,0,NULL,"Disconnected",0);
+			}
+			else{
+				Resource *r=session_get_cur_resource(s);
+				if (r) presence_send(stream,NULL,s->user->jid,s->user->invisible?-1:r->available,
+							r->show,r->status,0);
+			}
+			return 0;
+		}
 		return 0;
 	}
 	if (!u){
@@ -429,7 +441,14 @@ GTime timestamp;
 			}
 			return 0;
 		}
-		else presence_send_unsubscribed(stream,to,from);
+		else{
+			u=user_get_by_jid(from);
+			if(!u)
+				presence_send_unsubscribed(stream,to,from);
+			else
+				/* treat as subscribe */
+				return presence_subscribe(stream,from,to);
+		}
 		return -1;
 	}
 
