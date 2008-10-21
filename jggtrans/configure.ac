@@ -8,6 +8,7 @@ AM_CONFIG_HEADER([config.h])
 
 # Checks for programs.
 AC_PROG_CC
+AM_PROG_CC_C_O
 AC_C_BIGENDIAN
 AC_PROG_MAKE_SET
 AM_PROG_LIBTOOL

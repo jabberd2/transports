@@ -505,7 +505,7 @@ time_t timestamp;
 					case GG_FAILURE_READING:
 					case GG_FAILURE_WRITING:
 					case GG_FAILURE_TLS:
-						session_schedule_reconnect(s);
+						session_timeout((gpointer) s);
 					default:
 						break;
 				}
@@ -1004,8 +1004,8 @@ static int compute_notify_type(Contact *c){
 int notify_type=0;
 
 	if (c->blocked) return GG_USER_BLOCKED;
-	if (c->got_online || c->subscribe==SUB_FROM || c->subscribe==SUB_BOTH) notify_type|=GG_USER_FRIEND;
-	if (c->got_probe || c->subscribe==SUB_TO || c->subscribe==SUB_BOTH) notify_type|=GG_USER_BUDDY;
+	if (c->got_online || c->subscribe==SUB_FROM || c->subscribe==SUB_BOTH) notify_type|=GG_USER_NORMAL;
+	if (c->got_probe || c->subscribe==SUB_TO || c->subscribe==SUB_BOTH) notify_type|=GG_USER_OFFLINE;
 
 	return notify_type;
 }
