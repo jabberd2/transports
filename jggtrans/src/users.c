@@ -306,6 +306,7 @@ char *p;
 char *data;
 
 	uin=ujid=name=password=email=NULL;
+	if(!strchr(jid,'@')) return NULL;
 	debug(L_("Loading user '%s'"),jid);
 	fn=jid_normalized(jid,0);
 	if (fn==NULL){
@@ -458,7 +459,7 @@ static int user_destroy(User *u){
 GList *it;
 Contact *c;
 
-	g_message(L_("Destroying user '%s'"),u->jid);
+	debug(L_("Destroying user '%s'"),u->jid);
 
 	g_assert(u!=NULL);
 	for(it=u->contacts;it;it=it->next){
@@ -613,6 +614,7 @@ void user_load_locale(User *u){
 int users_probe_all(){
 DIR *dir;
 Stream *s;
+User *u;
 struct dirent *de;
 struct stat st;
 int r;
@@ -630,8 +632,12 @@ int r;
 			g_warning(L_("Couldn't stat '%s': %s"),de->d_name,g_strerror(errno));
 			continue;
 		}
-		if (S_ISREG(st.st_mode) && strchr(de->d_name,'@')) 
-			presence_send_probe(s,NULL,de->d_name);
+		if (S_ISREG(st.st_mode) && strchr(de->d_name,'@')){
+			u=user_get_by_jid(de->d_name);
+			if(u && (u->subscribe==SUB_FROM || u->subscribe==SUB_BOTH))
+				presence_send_probe(s,NULL,de->d_name);
+			user_free(u);
+		}
 	}
 	closedir(dir);
 	return 0;
