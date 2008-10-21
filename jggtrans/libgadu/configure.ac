@@ -1,129 +1,235 @@
-dnl $Id: configure.ac 614 2008-06-02 21:16:59Z wojtekka $
+dnl $Id: configure.in,v 1.154 2004/06/28 10:13:09 deletek Exp $
 
-AC_INIT(src/libgadu.c)
-AM_INIT_AUTOMAKE(libgadu, 1.8.1)
+AC_INIT([libgadu],[20050128.jggtrans.1],[])
+AC_CONFIG_SRCDIR([lib/libgadu.h])
+AM_INIT_AUTOMAKE
 
 AC_PREREQ(2.50)
 AC_CANONICAL_HOST
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_HEADERS(config.h include/libgadu.h)
 
+AC_SUBST(CFLAGS_LIBGADU)
+AC_SUBST(LIBS_LIBGADU)
+AC_SUBST(OBJS)
+AC_SUBST(IOCTLD_OBJS)
+AC_SUBST(PC_REQUIRES)
+
+AC_SUBST(strip_ekg, "")
+AC_SUBST(strip_ioctld, "")
+AC_SUBST(strip_libgadu_so, "")
+
+AC_SUBST(ioctld, "")
+AC_SUBST(install_ioctld, "")
+
+AC_SUBST(shared, "")
+AC_SUBST(install_shared, "")
+
+AC_SUBST(lgadu, "")
+AC_SUBST(libgadu_a, "")
+
+AC_SUBST(static, "static")
+AC_SUBST(install_static, "install-static")
+
+AC_SUBST(ekg, "")
+AC_SUBST(install_ekg, "")
+AC_SUBST(clean_ekg, "")
+AC_SUBST(distclean_ekg, "")
+AC_SUBST(uninstall_ekg, "")
+AC_SUBST(dep_ekg, "")
+
+AC_SUBST(make_ekgwap, "")
+AC_SUBST(install_ekgwap, "")
+
+dnl
+dnl  Zaczynamy testy...
+dnl
+
 AC_PROG_CC
 AC_PROG_CPP
+AM_PROG_CC_C_O
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_C_CONST
 AC_PROG_LIBTOOL
 
-AC_SUBST(REQUIRES)
-AC_SUBST(INCLUDES)
+AC_PATH_PROG(GMAKE, gmake, no)
 
-if test "$GCC"; then
-	CFLAGS="$CFLAGS -Wall"
+if test "x$GMAKE" = "xno"; then
+	AC_PATH_PROG(MAKE, make, no)
+
+	if test "x$MAKE" = "xno"; then
+		AC_MSG_ERROR([make ])
+	fi
+else
+	MAKE="$GMAKE"
 fi
+
+AC_CHECK_TOOL(AR, ar, no)
+
+if test "x$AR" = "xno"; then
+	AC_MSG_ERROR([ar ])
+fi
+
+AC_CHECK_TOOL(STRIP, strip, :)
+
+dnl
+dnl  Tworzymy osobny plik lib/libgadu-config.h niezale?ny od autoconfa
+dnl  z w?asn? przestrzeni? nazw (__GG_LIBGADU), ?eby m?c go spokojnie
+dnl  w??czy? w <libgadu.h>
+dnl
+
+mkdir -p lib
+
+AC_DEFUN([AC_LIBGADU_DEFINE],
+[
+	sed 's/#undef __GG_LIBGADU_$1/#define __GG_LIBGADU_$1/' < lib/libgadu-config.h > lib/libgadu-config.h-
+	mv -f lib/libgadu-config.h- lib/libgadu-config.h
+])
+
+AC_DEFUN([AC_LIBGADU_UNDEF],
+[
+	sed 's/#undef __GG_LIBGADU_$1.*/\/* & *\//' < lib/libgadu-config.h > lib/libgadu-config.h-
+	mv -f lib/libgadu-config.h- lib/libgadu-config.h
+])
+
+echo "/* Generated automatically by configure. Do not edit. */" > lib/libgadu-config.h
+cat ${srcdir}/lib/libgadu-config.h.in >> lib/libgadu-config.h
+
+dnl
+dnl  Najpierw sprawdzamy te opcje, kt?re s? wsp?lne dla libgadu i ekg.
+dnl
 
 AC_C_BIGENDIAN
 
 if test "x$ac_cv_c_bigendian" = "xyes"; then
-	AC_DEFINE([GG_CONFIG_BIGENDIAN], [], [Defined if libgadu was compiled for bigendian machine.])
+	AC_LIBGADU_DEFINE([BIGENDIAN])
 fi
 
 AC_NEED_STDINT_H
 
-if test "x$STDINT_H" = "xstdint.h"; then
-	AC_DEFINE([GG_CONFIG_HAVE_STDINT_H], [], [Defined if uintX_t types are defined in <stdint.h>.])
+if test "x$STDINT_H" = "x"; then
+	cp stdint.h lib/libgadu-stdint.h
+	STDINT_H=libgadu-stdint.h 
 fi
 
-if test "x$STDINT_H" = "xinttypes.h"; then
-	AC_DEFINE([GG_CONFIG_HAVE_INTTYPES_H], [], [Defined if uintX_t types are defined in <inttypes.h>.])
-fi
-
-if test "x$STDINT_H" = "xsys/inttypes.h"; then
-	AC_DEFINE([GG_CONFIG_HAVE_SYS_INTTYPES_H], [], [Defined if uintX_t types are defined in <sys/inttypes.h>.])
-fi
-
-if test "x$STDINT_H" = "xsys/int_types.h"; then
-	AC_DEFINE([GG_CONFIG_HAVE_SYS_INT_TYPES_H], [], [Defined if uintX_t types are defined in <sys/int_types.h>.])
-fi
-
-if test "x$STDINT_H" = "xsys/types.h"; then
-	AC_DEFINE([GG_CONFIG_HAVE_SYS_TYPES_H], [], [Defined if uintX_t types are defined in <sys/types.h>.])
-fi
-
-AC_DEFINE([GG_LIBGADU_VERSION], [], [Library version])
-AC_DEFINE_UNQUOTED(GG_LIBGADU_VERSION, "${VERSION}")
+sed "s/#include <stdint.h>/#include <$STDINT_H>/" < lib/libgadu-config.h > lib/libgadu-config.h-
+mv -f lib/libgadu-config.h- lib/libgadu-config.h
 
 dnl SunOS
-
 AC_CHECK_LIB(nsl, t_accept, LIBS="$LIBS -lnsl")
 AC_CHECK_LIB(socket, socket, LIBS="$LIBS -lsocket")
 
 dnl BeOS
 
 AC_ARG_WITH(bind,
-	[  --without-bind          Disable linking with libbind when found])
+  [  --without-bind          Disable linking with libbind when found])
 
 if test "x$with_bind" != "xno"; then
 	AC_CHECK_LIB(bind, __inet_addr, LIBS="$LIBS -lbind")
 fi
 
 dnl threadsafe
+AC_CHECK_FUNCS([gethostbyname_r], [AC_LIBGADU_DEFINE([HAVE_GETHOSTBYNAME_R])])
 
-AC_CHECK_FUNCS([gethostbyname_r], [AC_DEFINE([GG_CONFIG_HAVE_GETHOSTBYNAME_R], [], [Defined if this machine has gethostbyname_r().])])
+dnl inet_pton
+AC_CHECK_FUNCS(inet_pton)
 
 AC_MSG_CHECKING([for va_copy])
-AC_TRY_LINK([#include <stdarg.h>], [va_list a, b; va_copy(a, b);], 
-[
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <stdarg.h>]], [[va_list a, b; va_copy(a, b);]])],[
 	AC_MSG_RESULT([yes])
-	AC_DEFINE([GG_CONFIG_HAVE_VA_COPY], [], [Defined if this machine has va_copy().])
-], [
+	AC_LIBGADU_DEFINE([HAVE_VA_COPY])
+],[
 	AC_MSG_RESULT([no])
 ])
 
 AC_MSG_CHECKING([for __va_copy])
-AC_TRY_LINK([#include <stdarg.h>], [va_list a, b; __va_copy(a, b);], 
-[
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <stdarg.h>]], [[va_list a, b; __va_copy(a, b);]])],[
 	AC_MSG_RESULT([yes])
-	AC_DEFINE([GG_CONFIG_HAVE___VA_COPY], [], [Defined if this machine has __va_copy().])
-], [
+	AC_LIBGADU_DEFINE([HAVE___VA_COPY])
+],[
 	AC_MSG_RESULT([no])
 ])
 
 AC_ARG_ENABLE(debug, 
 	[  --disable-debug         Compile without debugging support])
 
-if test "x$enable_debug" = "xno"; then 
+if test "x$enable_debug" = "xno"; then
 	AC_MSG_WARN([--disable-debug is obsolete.])
 fi
 
+dnl if test "x$enable_debug" = "xno"; then 
+dnl 	CFLAGS="$CFLAGS -DGG_DEBUG_DISABLE"
+dnl 	CFLAGS_LIBGADU="$CFLAGS_LIBGADU -DGG_DEBUG_DISABLE"
+dnl 	strip_ekg="strip-ekg"
+dnl 	strip_ioctld="strip-ioctld"
+dnl 	strip_libgadu_so="strip-libgadu-so"
+dnl else
+dnl 	CFLAGS="$CFLAGS -g" 
+dnl fi
+
+dnl 
+dnl  Jak? wersj? libgadu kompilujemy?
 dnl
-dnl  Sprawd¼my, jak± wersjê vsnprintf() dostajemy. Dodatkowa opcja jest
-dnl  dla kompilacji skro¶nej, bo nie mo¿na wtedy korzystaæ z AC_TRY_RUN().
+
+AC_ARG_ENABLE(shared,
+	[  --enable-shared         Compile shared version of libgadu])
+
+lib_shared_enabled=no
+  
+if test "x$enable_shared" = "xyes"; then
+	shared="shared"
+	install_shared="install-shared"
+	lib_shared_enabled=yes
+fi
+
+AC_ARG_ENABLE(static,
+	[  --disable-static        Don't compile static version of libgadu
+
+Optional ekg Features:])
+
+lib_static_enabled=yes
+
+if test "x$enable_static" = "xno"; then
+	static=""
+	install_static=""
+	lib_static_enabled=no
+fi
+
+if test "x$enable_static" = "xno" -a "x$enable_shared" != "xyes"; then
+  AC_MSG_ERROR([You must choose either static or shared version of libgadu.])
+fi
+
+AC_ARG_ENABLE(dynamic,
+  [  --enable-dynamic        Link ekg dynamically with libgadu])
+
+dnl
+dnl  Sprawd?my, jak? wersj? vsnprintf() dostajemy. Dodatkowa opcja jest
+dnl  dla crosskompilacji, bo nie mo?na wtedy korzysta? z AC_RUN_IFELSE([AC_LANG_SOURCE([[]])],[],[],[]).
 dnl
 
 AC_ARG_WITH(c99-vsnprintf,
-	[  --with-c99-vsnprintf    Target system has C99-compatible vsnprintf()])
+  [  --with-c99-vsnprintf    Target system has C99-compatible vsnprintf()])
 
 if test "x$with_c99_vsnprintf" = "xyes"; then
-	AC_DEFINE([GG_CONFIG_HAVE_C99_VSNPRINTF], [], [Defined if this machine has C99-compiliant vsnprintf().])
+	AC_LIBGADU_DEFINE([HAVE_C99_VSNPRINTF])
 fi
 
 if test "x$with_c99_vsnprintf" = "x"; then
 	AC_MSG_CHECKING([for C99-compatible vsnprintf()])
-	AC_TRY_RUN(
-	[
+	AC_RUN_IFELSE([AC_LANG_SOURCE([[
 		#include <stdio.h>
 		int main()
 		{
 			char tmp;
 			return (snprintf(&tmp, sizeof(tmp), "test") != 4);
 		}
-	], [
+	]])],[
 		AC_MSG_RESULT([yes])
-		AC_DEFINE([GG_CONFIG_HAVE_C99_VSNPRINTF], [], [Defined if this machine has C99-compiliant vsnprintf().])
-	], [
+		AC_LIBGADU_DEFINE([HAVE_C99_VSNPRINTF])
+	],[
 		AC_MSG_RESULT([no])
-	])
+	],[])
 fi
 
 dnl
@@ -134,45 +240,71 @@ AC_ARG_WITH(pthread,
   [  --with-pthread          Use pthread in resolver])
 
 if test "x$with_pthread" = "xyes"; then
-	dnl najpierw sprawdzamy czy pomijaæ testy pthreads/shared
-	pthreads_shared_skip=0
-	if test "x$lib_shared_enabled" = "xno"; then
-		pthreads_shared_skip=1
-	fi
 	ACX_PTHREAD(
 	[
-		dnl workaround dla pkgconfiga
+	 	dnl workaround dla pkconfiga
 		if test "x$PTHREAD_CFLAGS" = "x-pthread"; then
 			PTHREAD_LIBS="$PTHREAD_LIBS -pthread"
 		fi
 
 		LIBS="$PTHREAD_LIBS $LIBS"
 		CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
-		INCLUDES="$INCLUDES $PTHREAD_CFLAGS"
+		CFLAGS_LIBGADU="$CFLAGS_LIBGADU $PTHREAD_CFLAGS"
 		CC="$PTHREAD_CC"
 		have_pthread=yes
 
-		AC_DEFINE([GG_CONFIG_HAVE_PTHREAD], [], [Defined if libgadu was compiled and linked with pthread support.])
+		AC_LIBGADU_DEFINE([HAVE_PTHREAD])
 	], [
 		AC_MSG_ERROR([Your system is not supporting pthreads])
-	], [$pthreads_shared_skip])
+	])
 fi
 
 dnl
-dnl  Sprawdzamy, czy jest ,,long long'' na potrzeby obliczeñ czasów DCC
+dnl  Sprawdzamy, czy jest ,,long long'' na potrzeby oblicze? czas?w DCC
 dnl
 
 AC_MSG_CHECKING([for long long])
 
-AC_TRY_COMPILE([],
-[
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[
 	long long a = 1LL;
 	unsigned long long b = 1LL;
-], [
+]])],[
 	AC_MSG_RESULT([yes])
-	AC_DEFINE([GG_CONFIG_HAVE_LONG_LONG], [], [Defined if this machine supports long long.])
-])
+	AC_LIBGADU_DEFINE([HAVE_LONG_LONG])
+],[])
 
-AC_CONFIG_FILES([Makefile src/Makefile include/Makefile])
+dnl
+dnl  Zachowujemy opcje dla libgadu
+dnl
+
+LIBS_LIBGADU="$LIBS_LIBGADU $LIBS"
+
+
+AC_CONFIG_FILES(Makefile lib/Makefile lib/libgadu.pc)
 
 AC_OUTPUT
+
+echo
+echo "configured options:"
+
+if test "x$lib_static_enabled" = "xyes"; then
+	if test "x$lib_static_default" = "xyes"; then
+		echo " - static libgadu: enabled (default)"
+	else
+		echo " - static libgadu: enabled"
+	fi
+else
+	echo " - static libgadu: disabled"
+fi
+
+if test "x$lib_shared_enabled" = "xyes"; then
+	if test "x$lib_shared_default" = "xyes"; then
+		echo " - shared libgadu: enabled (default)"
+	else
+		echo " - shared libgadu: enabled"
+	fi
+else
+	echo " - shared libgadu: disabled"
+fi
+
+

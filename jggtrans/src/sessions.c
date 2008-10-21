@@ -642,9 +642,6 @@ time_t timestamp;
 		case GG_EVENT_NONE:
 			debug("GG_EVENT_NONE");
 			break;
-		case GG_EVENT_XML_EVENT:
-			debug("GG_EVENT_XML_EVENT");
-			break;
 		case GG_EVENT_USERLIST:
 			if(event->event.userlist.type==GG_USERLIST_GET_REPLY)
 				get_roster_done(s,event);
@@ -800,7 +797,7 @@ GgServer *serv;
 	login_params.async=1;
 	login_params.last_sysmsg=s->user->last_sys_msg;
 	login_params.protocol_version=GG_DEFAULT_PROTOCOL_VERSION;
-	login_params.hash_type=0;
+	login_params.client_version=GG_DEFAULT_CLIENT_VERSION;
 	login_params.status=GG_STATUS_INVISIBLE;
 	if(s->user->status)
 		login_params.status_descr=s->user->status;
