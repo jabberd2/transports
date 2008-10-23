@@ -622,6 +622,9 @@ int r;
 
 	s=jabber_stream();
 	if (!s) return -1;
+
+	g_message(L_("Probing all registered users"));
+
 	dir=opendir(".");
 	if (!dir){
 		g_warning(L_("Couldn't open '%s' directory: %s"),spool_dir,g_strerror(errno));
@@ -643,6 +646,9 @@ int r;
 		}
 	}
 	closedir(dir);
+
+	g_message(L_("Done probing all registered users"));
+
 	return 0;
 }
 

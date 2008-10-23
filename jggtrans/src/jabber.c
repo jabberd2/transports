@@ -63,7 +63,7 @@ void jabber_handshake(Stream *s,xmlnode x){
 		return;
 	}
 
-	g_message(L_("handshake OK"));
+	g_message(L_("Server handshake OK"));
 	jabber_state=JS_CONNECTED;
 	users_probe_all();
 }
