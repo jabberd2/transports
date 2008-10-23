@@ -233,19 +233,31 @@ uin_t uin;
 Contact *c;
 
 	u=user_get_by_jid(from);
+
 	if (jid_is_me(to)){
+
 		debug(L_("Presence subscribe request sent to me"));
+
 		if (!u) {
 			presence_send_unsubscribed(stream,to,from);
 			return 0;
 		}
-		presence_send_subscribed(stream,to,from);
-		if (u->subscribe==SUB_UNDEFINED || u->subscribe==SUB_NONE) u->subscribe=SUB_TO;
-		else if (u->subscribe==SUB_FROM) u->subscribe=SUB_BOTH;
+
+		if (u->subscribe==SUB_UNDEFINED || u->subscribe==SUB_NONE){
+			u->subscribe=SUB_TO;
+			presence_send_subscribed(stream,to,from);
+		}
+		else if (u->subscribe==SUB_FROM){
+			u->subscribe=SUB_BOTH;
+			presence_send_subscribed(stream,to,from);
+		}
+
 		if (u->subscribe!=SUB_FROM && u->subscribe!=SUB_BOTH){
 			presence_send_subscribe(stream,to,from);
 		}
+
 		user_save(u);
+
 		s=session_get_by_jid(from,NULL,0);
 		if (s){
 			if (!s->connected){
@@ -258,6 +270,7 @@ Contact *c;
 			}
 			return 0;
 		}
+
 		return 0;
 	}
 	if (!u){
