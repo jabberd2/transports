@@ -510,7 +510,7 @@ time_t timestamp;
 		case GG_EVENT_CONN_FAILED:
 			g_message(N_("Login failed (%d:%s) for %s, GGid: %i"),
 					event->event.failure,
-					(event->event.failure<GG_FAILURE_NUM_REASONS)?gg_failure_reason[event->event.failure]:"-UNKNOWN-",
+					(event->event.failure>GG_FAILURE_NUM_REASONS||event->event.failure<1)?"-UNKNOWN-":gg_failure_reason[event->event.failure-1],
 					s->jid,
 					s->ggs->uin);
 			if (s->req_id)
