@@ -69,7 +69,7 @@ xmlnode pres;
 		xmlnode_put_attrib(pres,"from",from);
 	else{
 		char *jid;
-		jid=jid_my_registered(1);
+		jid=jid_my_registered(0);
 		xmlnode_put_attrib(pres,"from",jid);
 		g_free(jid);
 	}
