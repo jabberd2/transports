@@ -285,26 +285,15 @@ int t;
 	g_timeout_add(t*1000,sessions_reconnect,g_strdup(s->jid));
 }
 
-gboolean session_timeout(gpointer data){
-Session *s;
+gboolean session_error(Session *s){
 GgServer *serv;
 
-	g_assert(data!=NULL);
-	s=(Session *)data;
 	serv=(GgServer*)s->current_server->data;
-	user_load_locale(s->user);
 
 	if(serv->port!=1){
-		g_warning(N_("Timeout for server %u - failure count: %d"),
-			g_list_position(gg_servers, s->current_server),
-			serv->error_count);
-
 		/* failure accounting for non-hubs */
 		serv->error_count+=1;
 		serv->error_time=time(NULL);
-	} else {
-		g_warning(N_("Timeout for hub %u"),
-			g_list_position(gg_servers, s->current_server));
 	}
 
 	/* find next server candidate */
@@ -331,17 +320,55 @@ GgServer *serv;
 	s->timeout_func=0;
 	g_warning(N_("Session timeout for %s"),s->jid);
 
-	if (s->req_id){
-		jabber_iq_send_error(s->s,s->jid,NULL,s->req_id,504,_("Remote Server Timeout"));
-	}
-	else{
-		presence_send(s->s,NULL,s->user->jid,0,NULL,"Connection Timeout",0);
-	}
-
-	session_schedule_reconnect(s);
-	session_remove(s);
+	session_broken(s);
 	return FALSE;
 }
+
+gboolean session_timeout(gpointer data){
+Session *s;
+GgServer *serv;
+
+	g_assert(data!=NULL);
+	s=(Session *)data;
+	serv=(GgServer*)s->current_server->data;
+	user_load_locale(s->user);
+
+	if(serv->port!=1){
+		g_warning(N_("Timeout for server %u - failure count: %d"),
+			g_list_position(gg_servers, s->current_server),
+			serv->error_count);
+	} else {
+		g_warning(N_("Timeout for hub %u"),
+			g_list_position(gg_servers, s->current_server));
+	}
+
+	return session_error(s);
+}
+
+void session_broken(Session *s){
+
+	if (s->req_id){
+		jabber_iq_send_error(s->s,s->jid,NULL,s->req_id,502,_("Remote Server Error"));
+	}
+	else{
+		GList *it;
+		presence_send(s->s,NULL,s->user->jid,0,NULL,"Connection broken",0);
+		for(it=s->user->contacts;it;it=it->next){
+			Contact *c=(Contact *)it->data;
+
+			if (!GG_S_NA(c->status) && c->status!=-1){
+				char *ujid;
+				ujid=jid_build_full(c->uin);
+				presence_send(s->s,ujid,s->user->jid,0,NULL,"Transport disconnected",0);
+				g_free(ujid);
+			}
+		}
+	}
+	s->connected=0;
+	session_schedule_reconnect(s);
+	session_remove(s);
+}
+
 
 gboolean session_ping(gpointer data){
 Session *s;
@@ -443,31 +470,6 @@ int i;
 	return 0;
 }
 
-void session_broken(Session *s){
-
-	if (s->req_id){
-		jabber_iq_send_error(s->s,s->jid,NULL,s->req_id,502,_("Remote Server Error"));
-	}
-	else{
-		GList *it;
-		presence_send(s->s,NULL,s->user->jid,0,NULL,"Connection broken",0);
-		for(it=s->user->contacts;it;it=it->next){
-			Contact *c=(Contact *)it->data;
-
-			if (!GG_S_NA(c->status) && c->status!=-1){
-				char *ujid;
-				ujid=jid_build_full(c->uin);
-				presence_send(s->s,ujid,s->user->jid,0,NULL,"Transport disconnected",0);
-				g_free(ujid);
-			}
-		}
-	}
-	s->connected=0;
-	session_schedule_reconnect(s);
-	session_remove(s);
-}
-
-
 int session_io_handler(Session *s){
 struct gg_event *event;
 char *jid,*str;
@@ -481,11 +483,7 @@ time_t timestamp;
 		if (condition&G_IO_ERR) g_warning(N_("Error on connection for %s, GGid: %i"),s->jid,s->ggs->uin);
 		if (condition&G_IO_HUP){
 			g_warning(N_("Hangup on connection for %s, GGid: %i"),s->jid,s->ggs->uin);
-			s->current_server=g_list_next(s->current_server);
-			if(!s->connected && s->current_server!=NULL){
-				session_try_login(s);
-				return FALSE;
-			}
+			return session_error(s);
 		}
 		if (condition&G_IO_NVAL) g_warning(N_("Invalid channel on connection for %s"),s->jid);
 
@@ -497,14 +495,13 @@ time_t timestamp;
 	event=gg_watch_fd(s->ggs);
 	if (!event){
 		g_warning(N_("Connection broken. Session of %s, GGid: %i"),s->jid,s->ggs->uin);
-		session_broken(s);
-		return FALSE;
+		return session_error(s);
 	}
 
 	switch(event->type){
 		case GG_EVENT_DISCONNECT:
 			g_warning(N_("Server closed connection of %s, GGid: %i"),s->jid,s->ggs->uin);
-			session_timeout((gpointer) s);
+			session_error(s);
 			gg_event_free(event);
 			return FALSE;
 		case GG_EVENT_CONN_FAILED:
@@ -524,7 +521,7 @@ time_t timestamp;
 					case GG_FAILURE_READING:
 					case GG_FAILURE_WRITING:
 					case GG_FAILURE_TLS:
-						session_timeout((gpointer) s);
+						session_error(s);
 					default:
 						break;
 				}
