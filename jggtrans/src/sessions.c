@@ -63,6 +63,7 @@ char* gg_failure_reason[] = {
     "INTRUDER",        /* za dużo prób połączenia się z nieprawidłowym hasłem */
     "UNAVAILABLE"      /* serwery są wyłączone */
 };
+#define GG_FAILURE_NUM_REASONS 11
 
 static void session_stream_destroyed(gpointer key,gpointer value,gpointer user_data){
 Session *s=(Session *)value;
@@ -507,7 +508,11 @@ time_t timestamp;
 			gg_event_free(event);
 			return FALSE;
 		case GG_EVENT_CONN_FAILED:
-			g_message(N_("Login failed (%d:%s) for %s, GGid: %i"),event->event.failure,gg_failure_reason[event->event.failure],s->jid,s->ggs->uin);
+			g_message(N_("Login failed (%d:%s) for %s, GGid: %i"),
+					event->event.failure,
+					(event->event.failure<GG_FAILURE_NUM_REASONS)?gg_failure_reason[event->event.failure]:"-UNKNOWN-",
+					s->jid,
+					s->ggs->uin);
 			if (s->req_id)
 				jabber_iq_send_error(s->s,s->jid,NULL,s->req_id,401,_("Unauthorized"));
 			else presence_send(s->s,NULL,s->user->jid,0,NULL,"Login failed",0);
