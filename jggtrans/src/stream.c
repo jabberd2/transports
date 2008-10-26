@@ -334,10 +334,10 @@ GError *err=NULL;
 	}
 	if (s->err_watch) g_source_remove(s->err_watch);
 	if (s->read_watch) g_source_remove(s->read_watch);
-	if (s->read_buf) free(s->read_buf);
+	if (s->read_buf) g_free(s->read_buf);
 	pool_free(s->xs->p);
 	g_io_channel_shutdown(s->ioch,TRUE,&err);
-	free(s);
+	g_free(s);
 	return 0;
 }
 

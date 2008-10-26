@@ -532,7 +532,7 @@ time_t timestamp;
 			if (s->req_id)
 				jabber_iq_send_result(s->s,s->jid,NULL,s->req_id,NULL);
 			if (s->req_id){
-				free(s->req_id);
+				g_free(s->req_id);
 				s->req_id=NULL;
 			}
 			if (s->query){
