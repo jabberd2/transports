@@ -433,7 +433,7 @@ char *data;
 	u->invisible=invisible;
 	u->ignore_unknown=ignore_unknown;
 	u->locale=g_strdup(locale);
-	u->status=g_strdup(from_utf8(status));
+	u->status=g_strndup(from_utf8(status),GG_STATUS_DESCR_MAXSIZE);
 	u->contacts=contacts;
 	xmlnode_free(xml);
 	g_assert(users_jid!=NULL);
