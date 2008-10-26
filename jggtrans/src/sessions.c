@@ -285,6 +285,30 @@ int t;
 	g_timeout_add(t*1000,sessions_reconnect,g_strdup(s->jid));
 }
 
+void session_broken(Session *s){
+
+	if (s->req_id){
+		jabber_iq_send_error(s->s,s->jid,NULL,s->req_id,502,_("Remote Server Error"));
+	}
+	else{
+		GList *it;
+		presence_send(s->s,NULL,s->user->jid,0,NULL,"Connection broken",0);
+		for(it=s->user->contacts;it;it=it->next){
+			Contact *c=(Contact *)it->data;
+
+			if (!GG_S_NA(c->status) && c->status!=-1){
+				char *ujid;
+				ujid=jid_build_full(c->uin);
+				presence_send(s->s,ujid,s->user->jid,0,NULL,"Transport disconnected",0);
+				g_free(ujid);
+			}
+		}
+	}
+	s->connected=0;
+	session_schedule_reconnect(s);
+	session_remove(s);
+}
+
 gboolean session_error(Session *s){
 GgServer *serv;
 
@@ -317,9 +341,6 @@ GgServer *serv;
 		if(!session_try_login(s))
 			return FALSE;
 
-	s->timeout_func=0;
-	g_warning(N_("Session timeout for %s"),s->jid);
-
 	session_broken(s);
 	return FALSE;
 }
@@ -333,6 +354,9 @@ GgServer *serv;
 	serv=(GgServer*)s->current_server->data;
 	user_load_locale(s->user);
 
+	s->timeout_func=0;
+	g_warning(N_("Session timeout for %s"),s->jid);
+
 	if(serv->port!=1){
 		g_warning(N_("Timeout for server %u - failure count: %d"),
 			g_list_position(gg_servers, s->current_server),
@@ -344,31 +368,6 @@ GgServer *serv;
 
 	return session_error(s);
 }
-
-void session_broken(Session *s){
-
-	if (s->req_id){
-		jabber_iq_send_error(s->s,s->jid,NULL,s->req_id,502,_("Remote Server Error"));
-	}
-	else{
-		GList *it;
-		presence_send(s->s,NULL,s->user->jid,0,NULL,"Connection broken",0);
-		for(it=s->user->contacts;it;it=it->next){
-			Contact *c=(Contact *)it->data;
-
-			if (!GG_S_NA(c->status) && c->status!=-1){
-				char *ujid;
-				ujid=jid_build_full(c->uin);
-				presence_send(s->s,ujid,s->user->jid,0,NULL,"Transport disconnected",0);
-				g_free(ujid);
-			}
-		}
-	}
-	s->connected=0;
-	session_schedule_reconnect(s);
-	session_remove(s);
-}
-
 
 gboolean session_ping(gpointer data){
 Session *s;

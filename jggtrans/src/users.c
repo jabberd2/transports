@@ -213,7 +213,7 @@ xmlnode xml,tag,ctag,userlist;
 		Contact *c;
 
 		userlist=xmlnode_insert_tag(xml,"userlist");
-		for(it=g_list_first(u->contacts);it;it=it->next){
+		for(it=g_list_first(u->contacts);it;it=g_list_next(it)){
 			c=(Contact *)it->data;
 			ctag=xmlnode_insert_tag(userlist,"contact");
 			str=g_strdup_printf("%lu",(unsigned long)c->uin);
@@ -535,7 +535,7 @@ Contact *c;
 GList *it;
 
 	g_assert(u!=NULL);
-	for(it=g_list_first(u->contacts);it;it=it->next){
+	for(it=g_list_first(u->contacts);it;it=g_list_next(it)){
 		c=(Contact *)it->data;
 		if (c->uin==uin) return c;
 	}
@@ -639,15 +639,14 @@ int r;
 		if (S_ISREG(st.st_mode) && strchr(de->d_name,'@')){
 			u=user_get_by_jid(de->d_name);
 			if(u){
-				if(u->subscribe==SUB_FROM || u->subscribe==SUB_BOTH)
+				if(u->subscribe==SUB_FROM || u->subscribe==SUB_BOTH){
 					presence_send_probe(s,NULL,de->d_name);
+				}
 				user_free(u);
 			}
 		}
 	}
 	closedir(dir);
-
-	g_message(L_("Done probing all registered users"));
 
 	return 0;
 }
@@ -722,7 +721,7 @@ Contact *c;
 	g_message(L_("%sLast sys message: %i"),space,u->last_sys_msg);
 	g_message(L_("%sConfirmed: %i"),space,u->confirmed);
 	g_message(L_("%sContacts:"),space);
-	for(it=g_list_first(u->contacts);it;it=it->next){
+	for(it=g_list_first(u->contacts);it;it=g_list_next(it)){
 		c=(Contact *)it->data;
 		g_message(L_("%sContact: %p"),space1,c);
 		g_message(L_("%sUin: %u"),space1,(unsigned)c->uin);
