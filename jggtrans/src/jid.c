@@ -78,7 +78,7 @@ char *inbuf,*outbuf;
 	}
 
 	g_free(inbuf);
-	g_free(outbuf);
+	free(outbuf);
 
 	return ret;
 }
@@ -117,7 +117,7 @@ char *inbuf,*outbuf;
 	}
 
 	g_free(inbuf);
-	g_free(outbuf);
+	free(outbuf);
 
 	return ret;
 }
@@ -242,7 +242,7 @@ char *domainbuf;
 		return NULL;
 	}
 	strcpy(domain,domainbuf);
-	g_free(domainbuf);
+	free(domainbuf);
 
 	if (!full || !resource[0]){
 		if (node[0])
