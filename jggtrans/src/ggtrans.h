@@ -32,6 +32,10 @@
                                        format)
 #endif
 
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
+
 #ifdef ENABLE_NLS
 /* gettext shortcut for translating messages */
 #  define _(String) gettext (String)

@@ -27,12 +27,20 @@ AC_ARG_ENABLE([debug],AC_HELP_STRING([--disable-debug],[Disable debugging code])
 
 AC_ARG_WITH([efence],AC_HELP_STRING([--with-efence],[Link against ElectricFence library]))
 
+AC_ARG_WITH([dmalloc],AC_HELP_STRING([--with-dmalloc],[Link against dmalloc library]))
+
 if test "x$enable_debug" != "xno" ; then
 	AC_DEFINE(DEBUG,1,[Define to enable debugging code])
 fi
 
 if test "x$with_efence" = "xyes" ; then
 	AC_CHECK_LIB([efence], [malloc])
+fi
+
+if test "x$with_dmalloc" = "xyes" ; then
+	AC_CHECK_LIB([dmalloc], [malloc])
+	AC_DEFINE(DMALLOC,1,[Define to enable dmalloc])
+	AC_DEFINE(DMALLOC_FUNC_CHECK,1,[Define to enable dmalloc function arguments check])
 fi
 
 # Checks for header files.
