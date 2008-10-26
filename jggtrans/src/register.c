@@ -401,8 +401,7 @@ Session *session;
 		if (!strcmp(tmp,"get")) get_roster=1;
 	}
 
-	user=user_get_by_jid(from);
-	if (!user) user=user_create(from,uin,password);
+	user=user_create(from,uin,password);
 	if (!user){
 		g_warning(N_("Couldn't create user %s"),from);
 		jabber_iq_send_error(s,from,to,id,500,_("Internal Server Error"));
