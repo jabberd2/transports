@@ -163,7 +163,7 @@ sub sendSmsViaOrange
     my $sms_zostalo = 666;
     my $cnt = $res->content;
 
-    if ($res->content =~ /<span class=\"label\">bezp..atne :<\/span>\n<span class=\"value\">([0-9]+)<\/span>/) { $sms_zostalo = eval ($1); }
+    if ($res->content =~ /<span class=\"label\">bezp..atne :<\/span>\s*<span class=\"value\">([0-9]+)<\/span>/) { $sms_zostalo = eval ($1); }
 
     return "Nie mog\xc4\x99 odczyta\xc4\x87 ilo\xc5\x9bci dost\xc4\x99pnych SMS\xc3\xb3w" if $sms_zostalo == 666;
     return "Limit wiadomo\xc5\x9bci na ten miesi\xc4\x85c przekroczony" if $sms_zostalo == 0;
@@ -203,7 +203,7 @@ sub sendSmsViaOrange
     if ($cnt =~ /<span class=\"label\">bezp..atne :<\/span>\n.*<span class=\"value\">([0-9]+)<\/span>/) { $sms_zostalo2 = eval ($1); }
    
     return "Nie mog\xc4\x99 odczyta\xc4\x87 ilo\xc5\x9bci dost\xc4\x99pnych SMS\xc3\xb3w" if $sms_zostalo2 == 666;
-   if ($cnt =~ /Nie mo..esz wys..a.. SMS..w poza sie.. Orange/) { return "Nieprawid³owy numer - bramka wysy³a SMSy tylko do Orange (pozosta³y limit: ".$sms_zostalo2.")", 2; }
+   if ($cnt =~ /Nie mo..esz wys..a.. SMS..w poza sie.. Orange/) { return "Nieprawid\xc5\x82owy numer - bramka wysy\xc5\x82a SMSy tylko do Orange (pozosta\xc5\x82y limit: ".$sms_zostalo2.")", 2; }
 
     if ($sms_zostalo > $sms_zostalo2) {
         return "Wszystko OK; pozosta\xc5\x82y limit wiadomo\xc5\x9bci: ".$sms_zostalo2; 
