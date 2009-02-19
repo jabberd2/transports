@@ -28,7 +28,7 @@ int status_jabber_to_gg(int available,const char *show,const char *status){
 		if (!available) return GG_STATUS_NOT_AVAIL_DESCR;
 		else if (!show) return GG_STATUS_AVAIL_DESCR;
 		else if (!strcmp(show,"away")) return GG_STATUS_BUSY_DESCR;
-		else if (!strcmp(show,"dnd")) return GG_STATUS_BUSY_DESCR;
+		else if (!strcmp(show,"dnd")) return GG_STATUS_INVISIBLE_DESCR;
 		else if (!strcmp(show,"xa")) return GG_STATUS_BUSY_DESCR;
 		return GG_STATUS_AVAIL_DESCR;
 	}
@@ -37,7 +37,7 @@ int status_jabber_to_gg(int available,const char *show,const char *status){
 		if (!available) return GG_STATUS_NOT_AVAIL;
 		else if (!show) return GG_STATUS_AVAIL;
 		else if (!strcmp(show,"away")) return GG_STATUS_BUSY;
-		else if (!strcmp(show,"dnd")) return GG_STATUS_BUSY;
+		else if (!strcmp(show,"dnd")) return GG_STATUS_INVISIBLE;
 		else if (!strcmp(show,"xa")) return GG_STATUS_BUSY;
 	}
 
