@@ -424,7 +424,6 @@ char *data;
 	u=g_new0(User,1);
 	u->uin=atoi(uin);
 	u->jid=g_strdup(jid);
-	u->subscribe=subscribe;
 	p=strchr(u->jid,'/');
 	if (p) *p=0;
 	u->password=g_strdup(password);
@@ -441,6 +440,7 @@ char *data;
 	g_assert(njid!=NULL);
 	g_hash_table_insert(users_jid,(gpointer)njid,(gpointer)u);
 	u->confirmed=1;
+	u->subscribe=subscribe;
 	return u;
 }
 
