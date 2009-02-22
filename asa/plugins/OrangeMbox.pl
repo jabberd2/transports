@@ -173,6 +173,12 @@ sub sendSmsViaOrange
     $res = $ua->request (GET 'http://www.orange.pl/portal/map/map/message_box?mbox_view=newsms&mbox_edit=new');
     return "B\xc5\x82\xc4\x85d przy otwarciu formularza SMS [4]" unless $res->is_success;
 
+    $cnt = $res->content;
+    my $token=666;
+    if ($cnt =~ /<input value=\"(.*)\" type=\"hidden\" name=\"\/amg\/ptk\/map\/messagebox\/formhandlers\/MessageFormHandler\.token\"/) { $token=$1; }
+
+    return "Nie mogę odczytać tokenu" if $token == 666;
+
     # _DARGS=/gear/mapmessagebox/smsform.jsp na WWW jest i w GET string i w POST :)
     $req = POST 'http://www.orange.pl/portal/map/map/message_box?_DARGS=/gear/mapmessagebox/smsform.jsp', [
     '_dyncharset' => 'UTF-8',
@@ -186,7 +192,9 @@ sub sendSmsViaOrange
 	'_D:/amg/ptk/map/messagebox/formhandlers/MessageFormHandler.to' => ' ',
 	'_D:/amg/ptk/map/messagebox/formhandlers/MessageFormHandler.body' => ' ',
 	'/amg/ptk/map/messagebox/formhandlers/MessageFormHandler.body' => $message,
-	'counter' => (640 - length($message)),
+	'/amg/ptk/map/messagebox/formhandlers/MessageFormHandler.token' => $token,
+	'_D:/amg/ptk/map/messagebox/formhandlers/MessageFormHandler.token' => ' ',
+	#'counter' => (640 - length($message)),
 	'/amg/ptk/map/messagebox/formhandlers/MessageFormHandler.create.x' => 0,
 	'/amg/ptk/map/messagebox/formhandlers/MessageFormHandler.create.y' => 0,
 	'_D:/amg/ptk/map/messagebox/formhandlers/MessageFormHandler.create' => ' ',
