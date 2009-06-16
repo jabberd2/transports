@@ -28,8 +28,9 @@ int status_jabber_to_gg(int available,const char *show,const char *status){
 		if (!available) return GG_STATUS_NOT_AVAIL_DESCR;
 		else if (!show) return GG_STATUS_AVAIL_DESCR;
 		else if (!strcmp(show,"away")) return GG_STATUS_BUSY_DESCR;
-		else if (!strcmp(show,"dnd")) return GG_STATUS_INVISIBLE_DESCR;
+		else if (!strcmp(show,"dnd")) return GG_STATUS_DND_DESCR;
 		else if (!strcmp(show,"xa")) return GG_STATUS_BUSY_DESCR;
+		else if (!strcmp(show,"chat")) return GG_STATUS_FFC_DESCR;
 		return GG_STATUS_AVAIL_DESCR;
 	}
 	else{
@@ -37,8 +38,9 @@ int status_jabber_to_gg(int available,const char *show,const char *status){
 		if (!available) return GG_STATUS_NOT_AVAIL;
 		else if (!show) return GG_STATUS_AVAIL;
 		else if (!strcmp(show,"away")) return GG_STATUS_BUSY;
-		else if (!strcmp(show,"dnd")) return GG_STATUS_INVISIBLE;
+		else if (!strcmp(show,"dnd")) return GG_STATUS_DND;
 		else if (!strcmp(show,"xa")) return GG_STATUS_BUSY;
+		else if (!strcmp(show,"chat")) return GG_STATUS_FFC;
 	}
 
 	return GG_STATUS_AVAIL;
@@ -47,7 +49,7 @@ int status_jabber_to_gg(int available,const char *show,const char *status){
 int status_gg_to_jabber(int ggstatus,char **show,char **status){
 int available;
 
-	switch(ggstatus){
+	switch(GG_S(ggstatus)){
 		case GG_STATUS_NOT_AVAIL:
 		case GG_STATUS_NOT_AVAIL_DESCR:
 			available=0;
@@ -62,6 +64,16 @@ int available;
 		case GG_STATUS_BUSY_DESCR:
 			available=1;
 			*show="xa";
+			break;
+		case GG_STATUS_DND:
+		case GG_STATUS_DND_DESCR:
+			available=1;
+			*show="dnd";
+			break;
+		case GG_STATUS_FFC:
+		case GG_STATUS_FFC_DESCR:
+			available=1;
+			*show="chat";
 			break;
 		default:
 			available=1;

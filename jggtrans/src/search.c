@@ -96,10 +96,20 @@ const char *val;
 		val=gg_pubdir50_get(results, i, GG_PUBDIR50_STATUS);
 		switch((val)?(atoi(val) & ~GG_SEARCH_FRIENDS_MASK):-1){
 			case GG_STATUS_AVAIL:
+			case GG_STATUS_AVAIL_DESCR:
 				form_add_result_value(item,"status",_("Available"));
 				break;
 			case GG_STATUS_BUSY:
+			case GG_STATUS_BUSY_DESCR:
 				form_add_result_value(item,"status",_("Away"));
+				break;
+			case GG_STATUS_FFC:
+			case GG_STATUS_FFC_DESCR:
+				form_add_result_value(item,"status",_("FFC"));
+				break;
+			case GG_STATUS_DND:
+			case GG_STATUS_DND_DESCR:
+				form_add_result_value(item,"status",_("DND"));
 				break;
 			default:
 				form_add_result_value(item,"status",_("Unavailable"));

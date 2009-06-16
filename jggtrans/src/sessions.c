@@ -813,8 +813,9 @@ GgServer *serv;
 	login_params.password=from_utf8(s->user->password);
 	login_params.async=1;
 	login_params.last_sysmsg=s->user->last_sys_msg;
-	login_params.protocol_version=GG_DEFAULT_PROTOCOL_VERSION;
-	login_params.client_version=GG_DEFAULT_CLIENT_VERSION;
+	login_params.protocol_version=0x2e/*GG_DEFAULT_PROTOCOL_VERSION*/;
+	login_params.protocol_features=GG_FEATURE_ALL;
+	login_params.client_version="8.0.0.8713"/*GG_DEFAULT_CLIENT_VERSION*/;
 	login_params.status=GG_STATUS_INVISIBLE;
 	if(s->user->status)
 		login_params.status_descr=s->user->status;
