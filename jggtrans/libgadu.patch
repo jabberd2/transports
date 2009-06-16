@@ -1,0 +1,28 @@
+Index: include/Makefile.am
+===================================================================
+--- include/Makefile.am	(revision 741)
++++ include/Makefile.am	(working copy)
+@@ -1,2 +1 @@
+-nodist_include_HEADERS = libgadu.h
+-noinst_HEADERS = compat.h protocol.h
++noinst_HEADERS = compat.h protocol.h libgadu.h
+Index: src/Makefile.am
+===================================================================
+--- src/Makefile.am	(revision 741)
++++ src/Makefile.am	(working copy)
+@@ -1,4 +1,4 @@
+-lib_LTLIBRARIES = libgadu.la
++noinst_LTLIBRARIES = libgadu.la
+ libgadu_la_SOURCES = common.c dcc.c dcc7.c events.c http.c obsolete.c pubdir.c pubdir50.c libgadu.c sha1.c resolver.c
+ libgadu_la_CFLAGS = -I$(top_srcdir) -I$(top_srcdir)/include
+ libgadu_la_LDFLAGS = -version-number 3:10
+Index: Makefile.am
+===================================================================
+--- Makefile.am	(revision 741)
++++ Makefile.am	(working copy)
+@@ -1,4 +1,4 @@
+-SUBDIRS = include src pkgconfig docs test examples
++SUBDIRS = include src
+ 
+ LIBTOOL_DEPS = @LIBTOOL_DEPS@                                                   
+ libtool:	$(LIBTOOL_DEPS)
