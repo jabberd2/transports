@@ -615,7 +615,7 @@ gchar *m;
 	if (uin<=0) {
 		GList *it;
 		m=g_strdup(_("\nMessages from the following GG numbers will be ignored:"));
-		for(it=user->contacts;it;it=it->next){
+		for(it=g_list_first(user->contacts);it;it=g_list_next(it)){
 			c=(Contact *)it->data;
 			if (!c->ignored) continue;
 			m=g_strdup_printf(_("%s\n  %li"),m,(long)c->uin);
@@ -734,7 +734,7 @@ GList *it;
 	t=g_strdup_printf(_("%s\n  locale: %s"),msg,user->locale?user->locale:_("_default_"));
 	g_free(msg); msg=t;
 	ignored=0;
-	for(it=user->contacts;it;it=it->next){
+	for(it=g_list_first(user->contacts);it;it=g_list_next(it)){
 		Contact * c=(Contact *)it->data;
 		if (c->ignored) ignored++;
 	}

@@ -45,8 +45,9 @@ User *u=(User *)value;
 	if (u->refcount==0) {
 		user_destroy(u);
 		g_free(key);
+		return TRUE;
 	}
-	return TRUE;
+	return FALSE;
 }
 
 int users_gc(){
@@ -463,7 +464,7 @@ Contact *c;
 	debug(L_("Destroying user '%s'"),u->jid);
 
 	g_assert(u!=NULL);
-	for(it=u->contacts;it;it=it->next){
+	for(it=g_list_first(u->contacts);it;it=g_list_next(it)){
 		c=(Contact *)it->data;
 		g_free(c->status_desc);
 		g_free(c);
@@ -567,7 +568,7 @@ GList *it;
 Contact *c;
 
 	g_assert(u!=NULL);
-	for(it=u->contacts;it;it=it->next){
+	for(it=g_list_first(u->contacts);it;it=g_list_next(it)){
 		c=(Contact *)it->data;
 		if (c->uin==uin){
 			c->status=status;
@@ -592,7 +593,7 @@ GList *it;
 Contact *c;
 
 	g_assert(u!=NULL);
-	for(it=u->contacts;it;it=it->next){
+	for(it=g_list_first(u->contacts);it;it=g_list_next(it)){
 		c=(Contact *)it->data;
 		if (c->uin==uin) return c->status;
 	}

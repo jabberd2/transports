@@ -306,7 +306,7 @@ void session_broken(Session *s){
 	else{
 		GList *it;
 		presence_send(s->s,NULL,s->user->jid,0,NULL,"Connection broken",0);
-		for(it=s->user->contacts;it;it=it->next){
+		for(it=g_list_first(s->user->contacts);it;it=g_list_next(it)){
 			Contact *c=(Contact *)it->data;
 
 			if (!GG_S_NA(c->status) && c->status!=-1){
@@ -708,7 +708,7 @@ GList *it;
 		gg_free_session(s->ggs);
 	}
 	if (s->connected && s->s && s->jid){
-		for(it=s->user->contacts;it;it=it->next){
+		for(it=g_list_first(s->user->contacts);it;it=g_list_next(it)){
 			Contact *c=(Contact *)it->data;
 
 			if (!GG_S_NA(c->status) && c->status!=-1){
@@ -917,7 +917,7 @@ GList *it;
 	if (!u) return NULL;
 
 	debug(L_("User loaded, processing his subscriptions."));
-	for(it=u->contacts;it;it=it->next){
+	for(it=g_list_first(u->contacts);it;it=g_list_next(it)){
 		Contact *c;
 		char *c_jid;
 		c=(Contact *)it->data;
@@ -983,7 +983,7 @@ GList *it;
 int num_resources=0;
 
 	r=NULL;
-	for(it=g_list_first(s->resources);it;it=it->next){
+	for(it=g_list_first(s->resources);it;it=g_list_next(it)){
 		Resource *r1=(Resource *)it->data;
 		if ( (!r1->name && !resource) || (r1->name && resource && !strcmp(r1->name,resource)) ){
 			r=r1;
@@ -1072,7 +1072,7 @@ int i;
 	types=g_new(char,userlist_len+1);
 
 	i=0;
-	for(it=g_list_first(s->user->contacts);it;it=it->next){
+	for(it=g_list_first(s->user->contacts);it;it=g_list_next(it)){
 		Contact *c=(Contact *)it->data;
 		c->gg_notify_type=compute_notify_type(c);
 		if(c->gg_notify_type){
@@ -1145,7 +1145,7 @@ char *njid;
 	user_print(s->user,indent+1);
 	g_message(L_("%sResources:"),space);
 	cr=session_get_cur_resource(s);
-	for(it=g_list_first(s->resources);it;it=it->next){
+	for(it=g_list_first(s->resources);it;it=g_list_next(it)){
 		r=(Resource *)it->data;
 		g_message(L_("%sResource: %p%s"),space1,r,(r==cr)?N_(" (current)"):"");
 		if (njid && r->name) g_message("%sJID: %s/%s",space1,njid,r->name);

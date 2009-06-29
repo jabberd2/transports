@@ -197,7 +197,7 @@ int version;
 	uin=jid_get_uin(to);
 	sprintf(verstring, "%s", _(verstring));
 	ver=verstring;
-	for(it=u->contacts;it;it=it->next){
+	for(it=g_list_first(u->contacts);it;it=g_list_next(it)){
 		c=(Contact *)it->data;
 		version=c->version & 0xff;
 		if (c->uin==uin && version){

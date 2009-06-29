@@ -454,7 +454,7 @@ const char *uin, *first_name, *last_name, *nickname, *born, *city;
 	c=NULL;
 	u=user_get_by_jid(r->from);
 	if (u){
-		for(it=g_list_first(u->contacts);it;it=it->next){
+		for(it=g_list_first(u->contacts);it;it=g_list_next(it)){
 			c=(Contact *)it->data;
 			if (c->uin==atoi(uin)) break;
 		}

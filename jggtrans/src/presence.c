@@ -495,7 +495,7 @@ GTime timestamp;
 	status=0;
 	stat=NULL;
 	timestamp=0;
-	for(it=u->contacts;it;it=it->next){
+	for(it=g_list_first(u->contacts);it;it=g_list_next(it)){
 		Contact *c=(Contact *)it->data;
 
 		if (c && c->uin==uin){

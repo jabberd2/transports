@@ -538,7 +538,7 @@ char *jid;
 		GList *it;
 		Contact *c;
 		char *ujid;
-		for(it=g_list_first(u->contacts);it;it=it->next){
+		for(it=g_list_first(u->contacts);it;it=g_list_next(it)){
 			c=(Contact *)it->data;
 			ujid=jid_build(c->uin);
 			presence_send_unsubscribed(s,ujid,u->jid);
