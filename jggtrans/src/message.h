@@ -35,6 +35,9 @@ int message_send_rich(struct stream_s *stream,const char *from,
 int message_send_subject(struct stream_s *stream,const char *from,
 		const char *to,const char *subject,const char *message, time_t timestamp);
 
+int message_xhtml_send_subject(struct stream_s *stream,const char *from,
+		const char *to,const char *subject,const char *message, time_t timestamp);
+
 int message_error(struct stream_s *stream,const char *from,
 		const char *to,const char *body,int code, time_t timestamp);
 
