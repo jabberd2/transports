@@ -63,6 +63,19 @@ char* gg_failure_reason[] = {
     "INTRUDER",        /* za dużo prób połączenia się z nieprawidłowym hasłem */
     "UNAVAILABLE"      /* serwery są wyłączone */
 };
+char* gg_failure_reason_txt[] = {
+    "nie znaleziono serwera",
+    "nie można się połączyć",
+    "serwer zwrócił nieprawidłowe dane",
+    "zerwano połączenie podczas odczytu",
+    "zerwano połączenie podczas zapisu",
+    "nieprawidłowe hasło",
+    "???",
+    "błąd negocjacji TLS",
+    "serwer rozłączył się z prośbą o zmianę emaila",
+    "za dużo prób połączenia się z nieprawidłowym hasłem",
+    "serwery są wyłączone"
+};
 #define GG_FAILURE_NUM_REASONS 11
 
 static void session_stream_destroyed(gpointer key,gpointer value,gpointer user_data){
@@ -512,7 +525,7 @@ time_t timestamp;
 					s->ggs->uin);
 			if (s->req_id)
 				jabber_iq_send_error(s->s,s->jid,NULL,s->req_id,401,_("Unauthorized"));
-			else presence_send(s->s,NULL,s->user->jid,0,NULL,"Login failed",0);
+			else presence_send(s->s,NULL,s->user->jid,0,NULL,gg_failure_reason_txt[event->event.failure-1],0);
 			if (!s->req_id)
 				switch(event->event.failure){
 					case GG_FAILURE_RESOLVING:
