@@ -585,6 +585,7 @@ User *u;
 	if (from) u=user_get_by_jid(from);
 	else u=NULL;
 	user_load_locale(u);
+	if (u) user_free(u);
 
 	if (!acl_is_allowed(from,tag)){
 		if (type && !strcmp(type,"error")){
