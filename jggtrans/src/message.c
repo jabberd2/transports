@@ -105,6 +105,48 @@ char buf[101];
 	return 0;
 }
 
+int message_xhtml_send_subject(struct stream_s *stream,const char *from,
+		const char *to,const char *subject,const char *message,time_t timestamp){
+xmlnode msg;
+xmlnode n;
+struct tm *tm;
+char buf[101];
+char *html;
+
+	html=g_strrstr(message,"<body");
+	if (!html || !(n=xmlnode_str(html, strlen(html))))
+		return message_send_subject(stream,from,to,subject,message,timestamp);
+
+	xmlnode_put_attrib(n,"xmlns","http://www.w3.org/1999/xhtml");
+	n=xmlnode_wrap(n,"html");
+	xmlnode_put_attrib(n,"xmlns","http://jabber.org/protocol/xhtml-im");
+
+	msg=xmlnode_wrap(n,"message");
+	
+	if (from!=NULL)
+		xmlnode_put_attrib(msg,"from",from);
+	else{
+		char *jid;
+		jid=jid_my_registered(0);
+		xmlnode_put_attrib(msg,"from",jid);
+		g_free(jid);
+	}
+	xmlnode_put_attrib(msg,"to",to);
+	n=xmlnode_insert_tag(msg,"subject");
+	xmlnode_insert_cdata(n,subject,-1);
+	if (timestamp){
+		n=xmlnode_insert_tag(msg,"x");
+		xmlnode_put_attrib(n,"xmlns","jabber:x:delay");
+		tm=gmtime(&timestamp);
+		strftime(buf,100,"%Y%m%dT%H:%M:%S",tm);
+		xmlnode_put_attrib(n,"stamp",buf);
+		xmlnode_insert_cdata(n,"Delayed message",-1);
+	}
+	stream_write(stream,msg);
+	xmlnode_free(n);
+	return 0;
+}
+
 int message_send(struct stream_s *stream,const char *from,
 		const char *to,int chat,const char *message,time_t timestamp){
 xmlnode msg;

@@ -81,6 +81,7 @@ int session_send_status(Session *s);
 int session_update_contact(Session *s, Contact *c);
 
 int session_send_message(Session *s,uin_t uin,int chat,const char *body);
+int session_xhtml_send_message(Session *s,uin_t uin,int chat,const char *body);
 int session_send_notify(Session *s);
 
 /* Finds resource representing current state,

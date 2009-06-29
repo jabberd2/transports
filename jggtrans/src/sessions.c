@@ -607,7 +607,7 @@ time_t timestamp;
 				timestamp=event->event.msg.time;
 				str=g_strdup_printf(_("GG System message #%i"),
 							event->event.msg.msgclass);
-				message_send_subject(s->s,NULL,s->user->jid,str,
+				message_xhtml_send_subject(s->s,NULL,s->user->jid,str,
 						to_utf8((char *)event->event.msg.message),timestamp);
 				g_free(str);
 				break;
