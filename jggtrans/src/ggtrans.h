@@ -20,7 +20,7 @@
 #ifndef ggtrans_h
 #define ggtrans_h
 
-#include <libxode.h>
+#include "../libxode/include/libxode.h"
 #include <libintl.h>
 #include <glib.h>
 #include "../config.h"
