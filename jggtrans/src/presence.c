@@ -215,7 +215,7 @@ User *u;
 	s=session_get_by_jid(from,available?stream:NULL,1);
 	if (!s){
 		debug(L_("presence: No such session: %s"),from);
-		presence_send_error(stream,NULL,from,407,_("Not logged in"));
+		if (available) presence_send_error(stream,NULL,from,407,_("Not logged in"));
 		u=user_get_by_jid(from);
 		if (u==NULL) presence_send_unsubscribed(stream,to,from);
 		return -1;
