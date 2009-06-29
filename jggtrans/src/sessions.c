@@ -401,10 +401,11 @@ Contact *c;
 
 	c=user_get_contact(s->user,uin,FALSE);
 	if (c==NULL) {
-		debug(L_("%s got notification from unknown contact %i. Converting to subscription request."),s->user->jid,uin);
+/*		debug(L_("%s got notification from unknown contact %i. Converting to subscription request."),s->user->jid,uin);
 		ujid=jid_build(uin);
 		presence_send_subscribe(s->s,ujid,s->user->jid);
 		g_free(ujid);
+*/		debug(L_("%s got notification from unknown contact %i."),s->user->jid,uin);
 	       	return 0;
 	}
 	if (!c->got_probe && c->subscribe!=SUB_TO && c->subscribe!=SUB_BOTH) {
