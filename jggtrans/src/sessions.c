@@ -721,7 +721,7 @@ GList *it;
 	}
 	if (s->query) xmlnode_free(s->query);
 	if (s->user) user_unref(s->user);
-	if (s->gg_status_descr) g_free(s->gg_status_descr);
+	g_free(s->gg_status_descr);
 	g_free(s);
 	return 0;
 }

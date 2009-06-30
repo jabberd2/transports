@@ -43,7 +43,7 @@ static gboolean users_gc_hash_func(gpointer key,gpointer value,gpointer udata){
 User *u=(User *)value;
 
 	if (u->refcount==0) {
-		user_destroy(u);
+		user_free(u);
 		g_free(key);
 		return TRUE;
 	}
@@ -556,7 +556,7 @@ int user_check_contact(User *u,Contact *c){
 	if (c->ignored || c->got_online || c->blocked
 			|| c->got_probe || c->subscribe!=SUB_NONE) return 0;
 	u->contacts=g_list_remove(u->contacts,c);
-	if (c->status_desc) g_free(c->status_desc);
+	g_free(c->status_desc);
 	g_free(c);
 	user_save(u);
 	return 0;
