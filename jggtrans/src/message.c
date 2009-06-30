@@ -661,8 +661,8 @@ gchar *m;
 	c=user_get_contact(user,uin,FALSE);
 	if (c) {
 		c->ignored=FALSE;
-		user_check_contact(user,c);
 		if (session) session_update_contact(session,c);
+		user_check_contact(user,c);
 	}
 		
 	m=g_strdup_printf(_("\nMessages from GG number %li will NOT be ignored."),(long)uin);

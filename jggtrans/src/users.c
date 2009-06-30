@@ -554,7 +554,7 @@ int user_check_contact(User *u,Contact *c){
 
 	if (c->ignored || c->got_online || c->blocked
 			|| c->got_probe || c->subscribe!=SUB_NONE) return 0;
-	u->contacts=g_list_remove(u->contacts,c);
+	u->contacts=g_list_remove_all(u->contacts,c);
 	g_free(c->status_desc);
 	g_free(c);
 	user_save(u);
