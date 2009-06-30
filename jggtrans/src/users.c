@@ -43,7 +43,8 @@ static gboolean users_gc_hash_func(gpointer key,gpointer value,gpointer udata){
 User *u=(User *)value;
 
 	if (u->refcount==0) {
-		user_free(u);
+		user_destroy(u);
+		g_free(key);
 		return TRUE;
 	}
 	return FALSE;
@@ -469,7 +470,6 @@ Contact *c;
 		g_free(c);
 	}
 	g_list_free(u->contacts);
-	u->contacts=NULL;
 
 	g_free(u->jid);
 	g_free(u->password);
