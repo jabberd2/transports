@@ -889,7 +889,10 @@ char *njid;
 	s->current_server=g_list_first(gg_servers);
 	s->g_pollfd.fd=-1;
 
-	if (!delay_login && session_try_login(s)) return NULL;
+	if (!delay_login && session_try_login(s)){
+		session_destroy(s);
+		return NULL;
+	}
 
 	s->s=stream;
 
