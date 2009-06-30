@@ -317,7 +317,10 @@ char *data;
 	errno=0;
 	xml=xmlnode_file(fn);
 	if (xml==NULL){
-		debug(L_("Couldn't read or parse '%s': %s"),fn,errno?g_strerror(errno):N_("XML parse error"));
+		if(errno)
+			debug(L_("Couldn't read '%s': %s"),fn,g_strerror(errno));
+		else
+			g_warning(L_("Couldn't parse XML file '%s'"),fn);
 		g_free(fn);
 		return NULL;
 	}
