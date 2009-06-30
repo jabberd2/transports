@@ -795,7 +795,10 @@ User *u;
 	if (!type || !strcmp(type,"normal")) chat=0;
 	else if (!strcmp(type,"chat")) chat=1;
 	else if (!strcmp(type,"error")){
-		g_warning(N_("Error message received: %s"),xmlnode2str(tag));
+		/* do not log that server is gone */
+		if(xmlnode_get_tag(tag,"error/service-unavailable") == NULL
+		&& xmlnode_get_tag(tag,"error/remote-server-not-found") == NULL)
+			g_warning(N_("Error message received: %s"),xmlnode2str(tag));
 		return 0;
 	}
 	else{

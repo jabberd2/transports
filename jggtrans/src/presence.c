@@ -657,7 +657,10 @@ User *u;
 	else if (!strcmp(type,"probe"))
 		return presence_probe(stream,from,to);
 	else if (!strcmp(type,"error")){
-		g_warning(N_("Error presence received: %s"),xmlnode2str(tag));
+		/* do not log that server is gone */
+		if(xmlnode_get_tag(tag,"error/service-unavailable") == NULL
+		&& xmlnode_get_tag(tag,"error/remote-server-not-found") == NULL)
+			g_warning(N_("Error presence received: %s"),xmlnode2str(tag));
 		return 0;
 	}
 
