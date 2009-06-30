@@ -131,6 +131,7 @@ char *data;
 	xmlnode_insert_tag(query,"search");
 
 	jabber_iq_send_result(s,from,to,id,query);
+	xmlnode_free(query);
 }
 
 void jabber_iq_get_gateway(Stream *s,const char *from,const char * to,const char *id,xmlnode q){
@@ -141,6 +142,7 @@ xmlnode query;
 	xmlnode_insert_cdata(xmlnode_insert_tag(query,"desc"),gateway_desc,-1);
 	xmlnode_insert_cdata(xmlnode_insert_tag(query,"prompt"),gateway_prompt,-1);
 	jabber_iq_send_result(s,from,to,id,query);
+	xmlnode_free(query);
 }
 
 void jabber_iq_get_server_version(Stream *s,const char *from,const char * to,const char *id,xmlnode q){
@@ -168,6 +170,7 @@ struct utsname un;
 	xmlnode_insert_cdata(os,rel,-1);
 	g_free(rel);
 	jabber_iq_send_result(s,from,to,id,query);
+	xmlnode_free(query);
 }
 
 void jabber_iq_get_client_version(Stream *s,const char *from,const char * to,const char *id,xmlnode q){
@@ -243,6 +246,7 @@ xmlnode query;
 	xmlnode_insert_cdata(xmlnode_insert_tag(query,"jid"),str,-1);
 	g_free(str);
 	jabber_iq_send_result(s,from,to,id,query);
+	xmlnode_free(query);
 }
 
 void jabber_iq_get_server_vcard(Stream *s,const char *from,const char *to,const char *id,xmlnode q){
@@ -333,8 +337,10 @@ void jabber_iq_not_implemented(Stream *s,const char *from,const char * to,const 
 void jabber_iq_result(Stream *s,xmlnode x){}
 
 void jabber_iq_error(Stream *s,xmlnode x){
-
-	g_warning(N_("Error iq received: %s"),xmlnode2str(x));
+	/* do not log that server is gone */
+	if(xmlnode_get_tag(x,"error/service-unavailable") == NULL
+	&& xmlnode_get_tag(x,"error/remote-server-not-found") == NULL)
+		g_warning(N_("Error iq received: %s"),xmlnode2str(x));
 }
 
 void jabber_iq(Stream *s,xmlnode x){
