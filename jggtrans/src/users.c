@@ -44,7 +44,6 @@ User *u=(User *)value;
 
 	if (u->refcount==0) {
 		user_free(u);
-		g_free(key);
 		return TRUE;
 	}
 	return FALSE;
