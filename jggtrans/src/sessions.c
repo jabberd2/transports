@@ -563,8 +563,9 @@ time_t timestamp;
 			presence_send(s->s,NULL,s->user->jid,s->user->invisible?-1:1,NULL,s->gg_status_descr,0);
 
 			if (s->timeout_func) g_source_remove(s->timeout_func);
-			s->ping_timeout_func=
-				g_timeout_add(ping_interval*1000,session_ping,s);
+			s->timeout_func=NULL;
+			if (s->ping_timeout_func) g_source_remove(s->ping_timeout_func);
+			s->ping_timeout_func=g_timeout_add(ping_interval*1000,session_ping,s);
 			if (s->pubdir_change){
 				add_request(RT_CHANGE,s->jid,NULL,s->req_id,
 							NULL,s->pubdir_change,s->s);
@@ -658,6 +659,7 @@ time_t timestamp;
 						g_timer_elapsed(s->ping_timer,NULL));
 			}
 			if (s->timeout_func) g_source_remove(s->timeout_func);
+			s->timeout_func=NULL;
 			break;
 		case GG_EVENT_PUBDIR50_SEARCH_REPLY:
 			request_response_search(event);
@@ -814,8 +816,11 @@ GgServer *serv;
 			g_list_position(gg_servers, s->current_server), s->jid);
 
 	if (s->ping_timeout_func) g_source_remove(s->ping_timeout_func);
+	s->ping_timeout_func=NULL;
 	if (s->timeout_func) g_source_remove(s->timeout_func);
+	s->timeout_func=NULL;
 	if (s->ping_timer) g_timer_destroy(s->ping_timer);
+	s->ping_timer=NULL;
 	if (s->ggs) {
 		gg_free_session(s->ggs);
 		s->ggs=NULL;
