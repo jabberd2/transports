@@ -525,7 +525,11 @@ time_t timestamp;
 					s->ggs->uin);
 			if (s->req_id)
 				jabber_iq_send_error(s->s,s->jid,NULL,s->req_id,401,_("Unauthorized"));
-			else presence_send(s->s,NULL,s->user->jid,0,NULL,gg_failure_reason_txt[event->event.failure-1],0);
+			else {
+				str=g_strdup(from_utf8(gg_failure_reason_txt[event->event.failure-1]));
+				presence_send(s->s,NULL,s->user->jid,0,NULL,str,0);
+				g_free(str);
+			}
 			if (!s->req_id)
 				switch(event->event.failure){
 					case GG_FAILURE_RESOLVING:
