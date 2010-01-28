@@ -243,19 +243,11 @@ Contact *c;
 			return 0;
 		}
 
-		if (u->subscribe==SUB_UNDEFINED || u->subscribe==SUB_NONE){
-			u->subscribe=SUB_TO;
-			presence_send_subscribed(stream,to,from);
-		}
-		else if (u->subscribe==SUB_FROM){
-			u->subscribe=SUB_BOTH;
-			presence_send_subscribed(stream,to,from);
-		}
+		presence_send_subscribed(stream,to,from);
+		presence_send_subscribe(stream,to,from); /* always ask for both in return - resync */
 
-		if (u->subscribe!=SUB_FROM && u->subscribe!=SUB_BOTH){
-			presence_send_subscribe(stream,to,from);
-		}
-
+		if (u->subscribe==SUB_UNDEFINED || u->subscribe==SUB_NONE) u->subscribe=SUB_TO;
+		else if (u->subscribe==SUB_FROM) u->subscribe=SUB_BOTH;
 		user_save(u);
 
 		s=session_get_by_jid(from,NULL,0);
