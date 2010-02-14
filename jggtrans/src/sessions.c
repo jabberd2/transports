@@ -334,9 +334,9 @@ GgServer *serv;
 	}
 
 	/* find next server candidate */
-	for(s->current_server=g_list_next(s->current_server), serv=(GgServer*)s->current_server->data;
-		s->current_server!=NULL; s->current_server=g_list_next(s->current_server)){
-
+	s->current_server=g_list_next(s->current_server);
+	
+	while(s->current_server!=NULL){
 		serv=(GgServer*)s->current_server->data;
 		/* hubs are always good */
 		if(serv->port==1) break;
@@ -349,6 +349,7 @@ GgServer *serv;
 			/* and take the server - it's now good (to try) */
 			break;
 		}
+		s->current_server=g_list_next(s->current_server);
 	}
 	if(s->current_server!=NULL)
 		if(!session_try_login(s))
