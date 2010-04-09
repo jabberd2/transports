@@ -225,7 +225,7 @@ User *u;
 	return 0;
 }
 
-int presence_subscribe(struct stream_s *stream,const char *from,const char *to){
+int presence_subscribe(struct stream_s *stream,const char *from,const char *to, gboolean probe){
 User *u;
 Session *s;
 char *bare;
@@ -243,8 +243,10 @@ Contact *c;
 			return 0;
 		}
 
-		presence_send_subscribed(stream,to,from);
-		presence_send_subscribe(stream,to,from); /* always ask for both in return - resync */
+		if (!probe) {
+			presence_send_subscribed(stream,to,from);
+			presence_send_subscribe(stream,to,from); /* always ask for both in return - resync */
+		}
 
 		if (u->subscribe==SUB_UNDEFINED || u->subscribe==SUB_NONE) u->subscribe=SUB_TO;
 		else if (u->subscribe==SUB_FROM) u->subscribe=SUB_BOTH;
@@ -288,7 +290,7 @@ Contact *c;
 
 	if (s) session_update_contact(s,c);	
 	debug(L_("Subscribed."));
-	presence_send_subscribed(stream,to,from);
+	if (!probe) presence_send_subscribed(stream,to,from);
 	bare=jid_normalized(from,FALSE);
 	if (c->subscribe!=SUB_FROM && c->subscribe!=SUB_BOTH) {
 		presence_send_subscribe(stream,to,bare);
@@ -452,7 +454,7 @@ GTime timestamp;
 				presence_send_unsubscribed(stream,to,from);
 			else
 				/* treat as subscribe */
-				return presence_subscribe(stream,from,to);
+				return presence_subscribe(stream,from,to,TRUE);
 		}
 		return -1;
 	}
@@ -477,7 +479,7 @@ GTime timestamp;
 		/* we've got a probe, for user not in our contact list */
 		/* probably server and transport rosters desynced */
 		/* process it like subscription request */
-	       	return presence_subscribe(stream,from,to);
+	       	return presence_subscribe(stream,from,to,TRUE);
 	}
 
 	c->got_probe=TRUE;
@@ -639,7 +641,7 @@ User *u;
 			return presence(stream,from,to,-1,show,status,priority);
 	}
 	else if (!strcmp(type,"subscribe"))
-		return presence_subscribe(stream,from,to);
+		return presence_subscribe(stream,from,to,FALSE);
 	else if (!strcmp(type,"unsubscribe"))
 		return presence_unsubscribe(stream,from,to);
 	else if (!strcmp(type,"subscribed"))
