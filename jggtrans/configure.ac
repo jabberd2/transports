@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT([jggtrans], [2.2.2], [jajcus@jajcus.net])
+AC_INIT([jggtrans], [2.2.2+xk1], [tomek@xiaoka.com])
 
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SRCDIR([src/ggtrans.h])
