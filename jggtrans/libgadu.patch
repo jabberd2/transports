@@ -1,28 +1,68 @@
-Index: include/Makefile.am
+Index: libgadu/include/libgadu.h.in
 ===================================================================
---- include/Makefile.am	(revision 741)
-+++ include/Makefile.am	(working copy)
-@@ -1,2 +1 @@
--nodist_include_HEADERS = libgadu.h
--noinst_HEADERS = compat.h protocol.h
-+noinst_HEADERS = compat.h protocol.h libgadu.h
-Index: src/Makefile.am
+--- libgadu/include/libgadu.h.in	(wersja 964)
++++ libgadu/include/libgadu.h.in	(kopia robocza)
+@@ -1332,6 +1332,7 @@
+ #define fix32 gg_fix32
+ char *gg_proxy_auth(void) GG_DEPRECATED;
+ char *gg_base64_encode(const char *buf) GG_DEPRECATED;
++char *gg_base64_encode_raw(const char *buf, unsigned int len) GG_DEPRECATED;
+ char *gg_base64_decode(const char *buf) GG_DEPRECATED;
+ int gg_image_queue_remove(struct gg_session *s, struct gg_image_queue *q, int freeq) GG_DEPRECATED;
+ 
+Index: libgadu/src/libgadu.c
 ===================================================================
---- src/Makefile.am	(revision 741)
-+++ src/Makefile.am	(working copy)
+--- libgadu/src/libgadu.c	(wersja 964)
++++ libgadu/src/libgadu.c	(kopia robocza)
+@@ -513,14 +513,16 @@
+ 				if (errno == EAGAIN) {
+ 					gg_debug_session(sess, GG_DEBUG_MISC, "// gg_recv_packet() header recv() incomplete header received\n");
+ 
+-					if (!(sess->header_buf = malloc(sess->header_done))) {
+-						gg_debug_session(sess, GG_DEBUG_MISC, "// gg_recv_packet() header recv() not enough memory\n");
+-						return NULL;
+-					}
++					if (sess->header_done > 0) {
++						if (!(sess->header_buf = malloc(sess->header_done))) {
++							gg_debug_session(sess, GG_DEBUG_MISC, "// gg_recv_packet() header recv() not enough memory\n");
++							return NULL;
++						}
+ 
+-					memcpy(sess->header_buf, &h, sess->header_done);
++						memcpy(sess->header_buf, &h, sess->header_done);
+ 
+-					errno = EAGAIN;
++						errno = EAGAIN;
++					}
+ 
+ 					return NULL;
+ 				}
+Index: libgadu/src/Makefile.am
+===================================================================
+--- libgadu/src/Makefile.am	(wersja 964)
++++ libgadu/src/Makefile.am	(kopia robocza)
 @@ -1,4 +1,4 @@
 -lib_LTLIBRARIES = libgadu.la
 +noinst_LTLIBRARIES = libgadu.la
  libgadu_la_SOURCES = common.c dcc.c dcc7.c events.c http.c obsolete.c pubdir.c pubdir50.c libgadu.c sha1.c resolver.c
- libgadu_la_CFLAGS = -I$(top_srcdir) -I$(top_srcdir)/include
- libgadu_la_LDFLAGS = -version-number 3:10
-Index: Makefile.am
+ libgadu_la_CFLAGS = -I$(top_srcdir) -I$(top_srcdir)/include -DGG_IGNORE_DEPRECATED
+ libgadu_la_LDFLAGS = -version-number 3:10 -export-symbols libgadu.sym
+Index: libgadu/src/common.c
 ===================================================================
---- Makefile.am	(revision 741)
-+++ Makefile.am	(working copy)
-@@ -1,4 +1,4 @@
--SUBDIRS = include src pkgconfig docs test examples
-+SUBDIRS = include src
+--- libgadu/src/common.c	(wersja 964)
++++ libgadu/src/common.c	(kopia robocza)
+@@ -635,8 +635,13 @@
+  */
+ char *gg_base64_encode(const char *buf)
+ {
++	return gg_base64_encode_raw(buf, strlen(buf));
++}
++
++char *gg_base64_encode_raw(const char *buf, unsigned int len)
++{
+ 	char *out, *res;
+-	unsigned int i = 0, j = 0, k = 0, len = strlen(buf);
++	unsigned int i = 0, j = 0, k = 0;
  
- LIBTOOL_DEPS = @LIBTOOL_DEPS@                                                   
- libtool:	$(LIBTOOL_DEPS)
+ 	res = out = malloc((len / 3 + 1) * 4 + 2);
+ 
