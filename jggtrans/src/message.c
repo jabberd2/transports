@@ -182,16 +182,21 @@ char buf[101];
 
 void message_xhtml_break_cdata(xmlnode n, char *cdata, unsigned int length){
 char *br,*sp;
+unsigned char *local_buf;
 
 	while((br = g_strstr_len(cdata, length, "\r\n"))){
 		for(sp=cdata;sp<br&&*sp==' ';sp++) *sp=(char)0xa0; /* replace leading spaces with non-breaking spaces */
-		xmlnode_insert_cdata(n, to_utf8_len(cdata, br-cdata), -1);
+		local_buf = g_strndup(cdata, br-cdata);
+		xmlnode_insert_cdata(n, string_from_gg(local_buf), -1);
+		g_free(local_buf);
 		xmlnode_insert_tag(n, "br");
 		length -= (br-cdata) + 2;
 		cdata = br + 2;
 	}
 	if(length){
-		xmlnode_insert_cdata(n, to_utf8_len(cdata, length), -1);
+		local_buf = g_strndup(cdata, length);
+		xmlnode_insert_cdata(n, string_from_gg(local_buf), -1);
+		g_free(local_buf);
 	}
 }
 
@@ -221,7 +226,7 @@ char color[15], style[76];
 	xmlnode_put_attrib(msg,"to",to);
 	if (chat) xmlnode_put_attrib(msg,"type","chat");
 	n=xmlnode_insert_tag(msg,"body");
-	xmlnode_insert_cdata(n,to_utf8(message),-1);
+	xmlnode_insert_cdata(n,string_from_gg(message),-1);
 	if (timestamp){
 		n=xmlnode_insert_tag(msg,"x");
 		xmlnode_put_attrib(n,"xmlns","jabber:x:delay");
