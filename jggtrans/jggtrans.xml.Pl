@@ -92,7 +92,7 @@
  </gateway>
 
  <!-- Tutaj definiuje się "wizytówkę" (vCard) transportu. -->
- <vCard>
+ <vCard xmlns="vcard-temp">
      <FN>GaduGadu Transport</FN>
      <DESC>To jest bramka pomiędzy Jabberem a GaduGadu.</DESC>
      <URL>http://jggtrans.jajcus.net/</URL>

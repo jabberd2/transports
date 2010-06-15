@@ -85,7 +85,7 @@
  </gateway>
 
  <!-- Contains the vCard of this transport. -->
- <vCard>
+ <vCard xmlns="vcard-temp">
      <FN>GaduGadu Transport</FN>
      <DESC>This is GaduGadu Transport</DESC>
 	 <URL>http://jggtrans.jajcus.net/</URL>

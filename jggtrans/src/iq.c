@@ -258,6 +258,7 @@ xmlnode n;
 		g_warning(N_("No vcard for server defined"));
 		return;
 	}
+	xmlnode_put_attrib(n,"xmlns","vcard-temp");
 	jabber_iq_send_result(s,from,to,id,n);
 }
 
