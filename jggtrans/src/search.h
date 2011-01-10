@@ -20,6 +20,8 @@
 #ifndef search_h
 #define search_h
 
+#define GG_API_HOST "api.gadu-gadu.pl"
+
 struct request_s;
 struct stream_s;
 

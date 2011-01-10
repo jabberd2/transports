@@ -17,6 +17,8 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#define _GNU_SOURCE
+#include <stdio.h>
 #include "ggtrans.h"
 #include <libgadu.h>
 #include "search.h"
@@ -360,7 +362,11 @@ char *data;
 	gg_pubdir50_free(sr);
 }
 
+void jabber_iq_get_user_vcard_api(Stream *s,const char *from,const char * to,const char *id,xmlnode q);
 void jabber_iq_get_user_vcard(Stream *s,const char *from,const char * to,const char *id,xmlnode q){
+#ifdef GG_FEATURE_MSG80
+	jabber_iq_get_user_vcard_api(s,from,to,id,q);
+#else
 int i=0;
 char *uin;
 gg_pubdir50_t sr;
@@ -378,6 +384,7 @@ gg_pubdir50_t sr;
 
 	gg_pubdir50_free(sr);
 	g_free(uin);
+#endif
 }
 
 int vcard_done(struct request_s *r, gg_pubdir50_t results){
@@ -492,3 +499,138 @@ const char *uin, *first_name, *last_name, *nickname, *born, *city;
 	return 0;
 }
 
+void jabber_iq_get_user_vcard_api(Stream *s,const char *from,const char * to,const char *id,xmlnode q){
+uin_t uin;
+struct gg_http *h;
+const char *query;
+char *uri, *jid, *url, *host, *data;
+xmlnode xml,user,vc,n,m,m1;
+int len;
+
+	query = "Host: " GG_API_HOST "\r\n"
+		"Content-Type: application/x-www-form-urlencoded\r\n"
+		"User-Agent: " GG_HTTP_USERAGENT "\r\n"
+		"Content-Length: 0\r\n"
+		"Pragma: no-cache\r\n"
+		"\r\n";
+
+	uin=jid_get_uin(to);
+	asprintf(&uri, "/users/%d.xml", uin);
+
+	if (!(h = gg_http_connect(GG_API_HOST, GG_PUBDIR_PORT, FALSE, "GET", uri, query))) {
+		gg_debug(GG_DEBUG_MISC, "=> users/xml, gg_http_connect() failed mysteriously\n");
+		jabber_iq_send_error(s,from,to,id,404,_("Not Found"));
+		return;
+	}
+
+	debug("API xml: %s", (char *) h->body);
+
+	xml = xmlnode_str(h->body, h->body_size);
+		
+	if (!xml || g_strcmp0(xmlnode_get_name(xml),"result")!=0
+	 || !(user = xmlnode_get_tag(xml,"users/user"))) {
+		jabber_iq_send_error(s,from,to,id,404,_("Not Found"));
+		return;
+	}
+
+	vc = xmlnode_new_tag("vCard");
+	xmlnode_put_attrib(vc, "xmlns", "vcard-temp");
+	xmlnode_put_attrib(vc, "version", "2.0");
+
+	if ( (n=xmlnode_get_tag(user, "name")) ) {
+		m = xmlnode_insert_tag(vc, "FN");
+		xmlnode_insert_cdata(m, xmlnode_get_data(n), -1);
+	}
+	
+	if ( (n=xmlnode_get_tag(user, "nick")) ) {
+		m = xmlnode_insert_tag(vc, "NICKNAME");
+		xmlnode_insert_cdata(m, xmlnode_get_data(n), -1);
+	}
+	
+	if ( (n=xmlnode_get_tag(user, "birth")) ) {
+		m = xmlnode_insert_tag(vc, "BDAY");
+		xmlnode_insert_cdata(m, xmlnode_get_data(n), -1);
+	}
+	
+	if ( (n=xmlnode_get_tag(user, "gender")) ) {
+		m = xmlnode_insert_tag(vc, "GENDER");
+		xmlnode_insert_cdata(m, xmlnode_get_data(n), -1);
+	}
+	
+	if ( (n=xmlnode_get_tag(user, "city")) ) {
+		m1 = xmlnode_insert_tag(vc, "ADR");
+		xmlnode_insert_tag(m1, "HOME");
+		m = xmlnode_insert_tag(m1, "LOCALITY");
+		xmlnode_insert_cdata(m, xmlnode_get_data(n), -1);
+	}
+	
+	if ( (n=xmlnode_get_tag(user, "wwwUrl")) ) {
+		m = xmlnode_insert_tag(vc, "URL");
+		xmlnode_insert_cdata(m, xmlnode_get_data(n), -1);
+	}
+	
+	if ( (n=xmlnode_get_tag(user, "email")) ) {
+		m1 = xmlnode_insert_tag(vc, "EMAIL");
+		xmlnode_insert_tag(m1, "INTERNET");
+		xmlnode_insert_tag(m1, "PREF");
+		m = xmlnode_insert_tag(m1, "USERID");
+		xmlnode_insert_cdata(m, xmlnode_get_data(n), -1);
+	}
+	
+	if (uin) {
+		jid = jid_build(uin);
+		n = xmlnode_insert_tag(vc, "JABBERID");
+		xmlnode_insert_cdata(n, jid, -1);
+		g_free(jid);
+	}
+
+	m = xmlnode_insert_tag(vc, "DESC");
+	xmlnode_insert_cdata(m, _("GG user\n"), -1);
+
+	if ( (n=xmlnode_get_tag(user, "avatars/avatar?order=0")) && (n=xmlnode_get_tag(n, "originSmallAvatar")) ) {
+		url = g_strdup(xmlnode_get_data(n));
+		debug("Avatar URL: %s", url);
+
+		if ( url && (host = strstr(url, "://")) ) {
+			host += 3;
+			if ( (uri = strchr(host, '/')) ) {
+				*uri = '\0';
+				host = g_strdup(host);
+				*uri = '/';
+
+				asprintf(&query, "Host: %s\r\n"
+					"Content-Type: application/x-www-form-urlencoded\r\n"
+					"User-Agent: " GG_HTTP_USERAGENT "\r\n"
+					"Content-Length: 0\r\n"
+					"\r\n", host);
+
+				if ( (h = gg_http_connect(host, GG_APPMSG_PORT, FALSE, "GET", uri, query)) ) {
+					m1=xmlnode_insert_tag(vc,"PHOTO");
+					m=xmlnode_insert_tag(m1,"TYPE");
+					len=strlen(uri);
+					if(uri[len-3] == 'g') xmlnode_insert_cdata(m,"image/gif",-1);
+					if(uri[len-3] == 'j' || uri[len-4] == 'j') xmlnode_insert_cdata(m,"image/jpeg",-1);
+					if(uri[len-3] == 'p') xmlnode_insert_cdata(m,"image/png",-1);
+					m=xmlnode_insert_tag(m1,"BINVAL");
+					data = gg_base64_encode_raw(h->body, h->body_size);
+					xmlnode_insert_cdata(m,data,-1);
+					g_free(data);
+				}
+
+				g_free(host);
+			}
+		}
+		g_free(url);
+	}
+	else {
+		m1=xmlnode_insert_tag(vc,"PHOTO");
+		m=xmlnode_insert_tag(m1,"TYPE");
+		xmlnode_insert_cdata(m,VCARD_PHOTO_TYPE,-1);
+		m=xmlnode_insert_tag(m1,"BINVAL");
+		xmlnode_insert_cdata(m,VCARD_PHOTO_BINVAL,-1);
+	}
+
+	jabber_iq_send_result(s,from,to,id,vc);
+	xmlnode_free(vc);
+	xmlnode_free(xml);
+}

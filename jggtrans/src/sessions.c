@@ -41,6 +41,11 @@ static int pong_timeout=30;
 static int ping_interval=10;
 static int reconnect=0;
 static int cutoff=3;
+static enum {
+	ISM_IGNORE_NONE = 0,
+        ISM_IGNORE_ALL,
+	ISM_IGNORE_HTML
+		} ignore_system_messages;
 static int cutoff_timeout=3600;
 static GList *gg_servers=NULL;
 GHashTable *sessions_jid;
@@ -153,6 +158,19 @@ static void session_remove_g_source(Session *s) {
 	s->g_source=NULL;
 }
 
+	tag = xmlnode_get_tag(config, "ignore_system_messages");
+	if (!tag) {
+		ignore_system_messages = ISM_IGNORE_NONE;
+	}
+	else {
+		r=xmlnode_get_attrib(tag, "which");
+		if (r && !g_strcasecmp(r,"html")) {
+			ignore_system_messages = ISM_IGNORE_HTML;
+		}
+		else {
+			ignore_system_messages = ISM_IGNORE_ALL;
+		}
+	}
 
 int sessions_init(){
 char *proxy_ip,*proxy_username,*proxy_password,*proxy_http_only;
@@ -322,7 +340,7 @@ void session_broken(Session *s){
 	session_remove(s);
 }
 
-gboolean session_error(Session *s){
+gboolean session_try_next(Session *s){
 GgServer *serv;
 
 	serv=(GgServer*)s->current_server->data;
@@ -352,9 +370,14 @@ GgServer *serv;
 		s->current_server=g_list_next(s->current_server);
 	}
 	if(s->current_server!=NULL)
-		if(!session_try_login(s))
-			return FALSE;
+		return session_try_login(s);
+	
+	return TRUE;
+}
 
+gboolean session_error(Session *s){
+	if(!session_try_next(s))
+		return FALSE;
 	session_broken(s);
 	return FALSE;
 }
@@ -490,6 +513,7 @@ char *jid,*str;
 int chat;
 GIOCondition condition=s->g_pollfd.revents;
 time_t timestamp;
+gboolean state;
 
 	user_load_locale(s->user);
 	debug(L_("Checking error conditions..."));
@@ -531,6 +555,7 @@ time_t timestamp;
 				presence_send(s->s,NULL,s->user->jid,0,NULL,str,0);
 				g_free(str);
 			}
+			state = FALSE;
 			if (!s->req_id)
 				switch(event->event.failure){
 					case GG_FAILURE_RESOLVING:
@@ -539,11 +564,15 @@ time_t timestamp;
 					case GG_FAILURE_READING:
 					case GG_FAILURE_WRITING:
 					case GG_FAILURE_TLS:
-						session_error(s);
+						state = session_try_next(s);
 					default:
 						break;
 				}
-			session_remove(s);
+			if (state) {
+				s->connected=0;
+				session_schedule_reconnect(s);
+			} else
+				session_remove(s);
 			gg_event_free(event);
 			return FALSE;
 		case GG_EVENT_CONN_SUCCESS:
@@ -623,11 +652,15 @@ time_t timestamp;
 			
 			if (event->event.msg.sender==0){
 				if (!user_sys_msg_received(s->user,event->event.msg.msgclass)) break;
+				if (ignore_system_messages == ISM_IGNORE_ALL) break;
+				if (ignore_system_messages == ISM_IGNORE_HTML
+					&& strstr((const char *)event->event.msg.message, "<HTML>")) break;
 				timestamp=event->event.msg.time;
 				str=g_strdup_printf(_("GG System message #%i"),
 							event->event.msg.msgclass);
-				message_xhtml_send_subject(s->s,NULL,s->user->jid,str,
-						string_from_gg((char *)event->event.msg.message),timestamp);
+				message_send_subject(s->s,jid, s->user->jid, str,
+						string_from_gg((const char *)event->event.msg.message),
+												timestamp);
 				g_free(str);
 				break;
 			}
@@ -653,7 +686,7 @@ time_t timestamp;
 						event->event.msg.formats_length,(void *)event->event.msg.formats);
 			else
 				message_send(s->s,jid,s->user->jid,chat,
-						string_from_gg((char *)event->event.msg.message),timestamp);
+						string_from_gg((const char *)event->event.msg.message),timestamp);
 			g_free(jid);
 			break;
 		case GG_EVENT_PONG:
@@ -713,6 +746,7 @@ GList *it;
 			gg_logoff(s->ggs);
 		}
 		gg_free_session(s->ggs);
+		s->ggs=NULL;
 	}
 	if (s->connected && s->s && s->jid){
 		for(it=g_list_first(s->user->contacts);it;it=g_list_next(it)){
@@ -1137,7 +1171,8 @@ unsigned char *mp;
 		mp=(unsigned char *)session_split_message(&m);
 		if (mp){
 			gg_messages_out++;
-			gg_send_message(s->ggs,chat?GG_CLASS_CHAT:GG_CLASS_MSG,uin,mp);
+			gg_send_message(s->ggs,chat?GG_CLASS_CHAT:GG_CLASS_MSG,uin,
+								(const unsigned char *)mp);
 			g_free(mp);
 		}
 	}

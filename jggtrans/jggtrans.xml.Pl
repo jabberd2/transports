@@ -130,6 +130,11 @@
  <!-- jak szybko ma transport spróbować się połączyć po rozłączeniu -->
  <reconnect>300</reconnect>
 
+ <!-- Ignoruj wiadomości systemowe. Jeśli which="html", to tylko te w HTMLu -->
+ <!--
+ <ignore_system_messages which="html" />
+ -->
+
  <!-- Katalog z danymi użytkowników. -->
  <!-- Proszę uważać na uprawnienie - hasła użytkowników (do GG) będą tam przechowywane -->
  <spool>/var/lib/jabber/spool/gg.localhost/</spool>
