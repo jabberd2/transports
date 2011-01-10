@@ -158,19 +158,6 @@ static void session_remove_g_source(Session *s) {
 	s->g_source=NULL;
 }
 
-	tag = xmlnode_get_tag(config, "ignore_system_messages");
-	if (!tag) {
-		ignore_system_messages = ISM_IGNORE_NONE;
-	}
-	else {
-		r=xmlnode_get_attrib(tag, "which");
-		if (r && !g_strcasecmp(r,"html")) {
-			ignore_system_messages = ISM_IGNORE_HTML;
-		}
-		else {
-			ignore_system_messages = ISM_IGNORE_ALL;
-		}
-	}
 
 int sessions_init(){
 char *proxy_ip,*proxy_username,*proxy_password,*proxy_http_only;
@@ -198,6 +185,19 @@ GgServer *server;
 	i=config_load_int("server_cutoff_timeout",0);
 	if (i>0) cutoff_timeout=i;
 
+	tag = xmlnode_get_tag(config, "ignore_system_messages");
+	if (!tag) {
+		ignore_system_messages = ISM_IGNORE_NONE;
+	}
+	else {
+		r=xmlnode_get_attrib(tag, "which");
+		if (r && !g_strcasecmp(r,"html")) {
+			ignore_system_messages = ISM_IGNORE_HTML;
+		}
+		else {
+			ignore_system_messages = ISM_IGNORE_ALL;
+		}
+	}
 
 	parent=xmlnode_get_tag(config,"servers");
 	if (parent && xmlnode_has_children(parent)){
