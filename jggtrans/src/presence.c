@@ -474,13 +474,9 @@ GTime timestamp;
 
 	uin=jid_get_uin(to);
 
-	c=user_get_contact(u,uin,FALSE);
-	if (!c) {
-		/* we've got a probe, for user not in our contact list */
-		/* probably server and transport rosters desynced */
-		/* process it like subscription request */
-	       	return presence_subscribe(stream,from,to,TRUE);
-	}
+	/* we've got a probe, so the user definetely has the contact on roster */
+	/* if not, we just create the user to fix it */
+	c=user_get_contact(u,uin,TRUE);
 
 	c->got_probe=TRUE;
 
