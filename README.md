@@ -1,6 +1,6 @@
 Jabber Transports
 =================
-*[[http://dictionary.reference.com/browse/transport|courtesy of dictionary.com]]:*
+*[courtesy of dictionary.com](http://dictionary.reference.com/browse/transport):*
 
 **trans·port** [ /v. trænsˈpɔrt, -ˈpoʊrt; n. ˈtrænspɔrt, -poʊrt ]
 
@@ -15,7 +15,7 @@ _–noun_
   - a ship or plane employed for transporting soldiers, military stores, etc.
   - an airplane carrying freight or passengers as part of a transportation system.
   - a system of public travel.
-  - [[http://dictionary.reference.com/search?q=transportation|transportation]] (def. 6).
+  - [transportation](http://dictionary.reference.com/search?q=transportation) (def. 6).
   - strong emotion; ecstatic joy, bliss, etc.
   - a convict sent into banishment, esp. to a penal colony: The country had been colonized largely by transports.
   - Recording. Also called tape transport. a mechanism that moves magnetic tape past the head in a tape deck or tape recorder.
@@ -41,4 +41,4 @@ What?
 
 More?
 -----
-Xiaoka is actively developing jggtrans and jtlentrans for [[http://www.chrome.pl/|Chrome Platform]] services: [[xmpp:gg.chrome.pl|gg.chrome.pl]], [[xmpp:tlen.chrome.pl|tlen.chrome.pl]] and is open to support requests ([[mailto:contact@xiaoka.com|e-mail]]) for these two.
+Xiaoka is actively developing jggtrans and jtlentrans for [Chrome Platform](http://www.chrome.pl/) services: [gg.chrome.pl](xmpp:gg.chrome.pl), [tlen.chrome.pl](xmpp:tlen.chrome.pl) and is open to support requests ([e-mail](mailto:contact@xiaoka.com)) for these two.
